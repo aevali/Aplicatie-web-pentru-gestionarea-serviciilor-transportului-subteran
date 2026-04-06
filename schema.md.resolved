@@ -1,0 +1,153 @@
+# Schema PostgreSQL — Transport Subteran
+
+## ✅ calatori
+```sql
+CREATE TYPE tip_calator AS ENUM ('adult', 'elev', 'student', 'pensionar');
+
+CREATE TABLE calatori (
+    id_calator  SERIAL       PRIMARY KEY,
+    nume        VARCHAR(50)  NOT NULL,
+    prenume     VARCHAR(50)  NOT NULL,
+    email       VARCHAR(100) NOT NULL UNIQUE CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    cnp         CHAR(13)     NOT NULL UNIQUE,
+    parola      VARCHAR(255) NOT NULL,
+    tip         tip_calator  NOT NULL DEFAULT 'adult'
+    -- documente_verificate, id_angajat -> mutate in cereri_reducere
+);
+```
+
+---
+
+## ✅ statii
+```sql
+CREATE TYPE magistrala_tip AS ENUM ('M1', 'M2', 'M3', 'M4', 'M5');
+
+CREATE TABLE statii (
+    id_statie SERIAL PRIMARY KEY,
+    nume      VARCHAR(100) NOT NULL UNIQUE,
+    este_nod  BOOLEAN      NOT NULL DEFAULT FALSE
+);
+```
+
+## ✅ statii_magistrale
+```sql
+-- Tabela de jonctiune: o statie poate fi pe mai multe magistrale
+-- pozitie = ordinea statiei pe magistrala (necesara pentru rutare)
+CREATE TABLE statii_magistrale (
+    id_statie  INT            NOT NULL REFERENCES statii(id_statie),
+    magistrala magistrala_tip NOT NULL,
+    pozitie    INT            NOT NULL, -- 1, 2, 3... ordinea pe linie
+    PRIMARY KEY (id_statie, magistrala)
+);
+```
+
+## ✅ metrouri
+```sql
+CREATE TYPE status_metrou AS ENUM ('pe_traseu', 'depou');
+
+CREATE TABLE metrouri (
+    id_metrou      SERIAL         PRIMARY KEY,
+    indicativ      TEXT           GENERATED ALWAYS AS (magistrala::TEXT || '-' || id_metrou::TEXT) STORED,
+    magistrala     magistrala_tip NOT NULL,
+    capacitate_max INT            NOT NULL CHECK (capacitate_max > 0),
+    status         status_metrou  NOT NULL DEFAULT 'depou'
+);
+```
+## ✅ angajati
+```sql
+CREATE TYPE rol_angajat AS ENUM ('angajat', 'admin');
+
+CREATE TABLE angajati (
+    id_angajat SERIAL       PRIMARY KEY,
+    nume       VARCHAR(50)  NOT NULL,
+    prenume    VARCHAR(50)  NOT NULL,
+    email      VARCHAR(100) NOT NULL UNIQUE CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    parola     VARCHAR(255) NOT NULL,
+    rol        rol_angajat  NOT NULL DEFAULT 'angajat'
+);
+```
+## ✅ bilete
+```sql
+CREATE TABLE bilete (
+    id_bilet                SERIAL PRIMARY KEY,
+    id_calator              INT            NOT NULL REFERENCES calatori(id_calator),
+    numar_calatorii         INT            NOT NULL,
+    numar_calatorii_ramase  INT            NOT NULL,
+    data_achizitie          DATE           NOT NULL DEFAULT CURRENT_DATE,
+    pret                    NUMERIC(10, 2) NOT NULL,
+    cod_qr                  UUID           NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+    activ                   BOOLEAN        NOT NULL DEFAULT TRUE,
+    CONSTRAINT chk_calatorii CHECK (numar_calatorii_ramase >= 0 AND numar_calatorii_ramase <= numar_calatorii)
+);
+```
+## ✅ abonamente
+```sql
+CREATE TYPE tip_abonament AS ENUM ('zi', 'saptamana', 'luna', 'an');
+
+CREATE TABLE abonamente (
+    id_abonament   SERIAL PRIMARY KEY,
+    id_calator     INT             NOT NULL REFERENCES calatori(id_calator),
+    tip            tip_abonament   NOT NULL,
+    data_achizitie DATE            NOT NULL DEFAULT CURRENT_DATE,
+    data_expirare  DATE            NOT NULL,
+    pret           NUMERIC(10, 2)  NOT NULL,
+    cod_qr         UUID            NOT NULL UNIQUE DEFAULT gen_random_uuid()
+);
+```
+
+## ✅ orare
+```sql
+CREATE TYPE tip_zi AS ENUM ('lucratoare', 'weekend', 'sarbatoare');
+
+CREATE TABLE orare (
+    id_orar    SERIAL   PRIMARY KEY,
+    id_metrou  INT      NOT NULL REFERENCES metrouri(id_metrou),
+    id_statie  INT      NOT NULL REFERENCES statii(id_statie),
+    tip_zi     tip_zi   NOT NULL DEFAULT 'lucratoare',
+    ora_sosire TIME     NOT NULL
+);
+```
+
+## ✅ cereri_reducere
+```sql
+CREATE TYPE status_cerere AS ENUM ('in_asteptare', 'aprobata', 'respinsa');
+
+CREATE TABLE cereri_reducere (
+    id_cerere         SERIAL        PRIMARY KEY,
+    id_calator        INT           NOT NULL REFERENCES calatori(id_calator),
+    tip_solicitat     tip_calator   NOT NULL CHECK (tip_solicitat <> 'adult'),
+    cale_document     TEXT          NOT NULL,             -- ex: /uploads/doc_123.pdf
+    status            status_cerere NOT NULL DEFAULT 'in_asteptare',
+    id_angajat        INT           REFERENCES angajati(id_angajat), -- NULL pana la procesare
+    motiv_respingere  TEXT,                               -- completat doar la respingere
+    created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## ✅ setari_aplicatie
+```sql
+-- Controlat doar de admin; chei-valoare pentru configurari globale
+CREATE TABLE setari_aplicatie (
+    cheie      VARCHAR(100) PRIMARY KEY, -- ex: 'pret_bilet_adult', 'zile_reminder_abonament'
+    valoare    TEXT         NOT NULL,
+    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## ✅ calatorii_efectuate
+```sql
+-- Inregistreaza fiecare scanare QR la intrarea in metrou
+CREATE TABLE calatorii_efectuate (
+    id_calatorie  SERIAL    PRIMARY KEY,
+    id_calator    INT       NOT NULL REFERENCES calatori(id_calator),
+    id_statie     INT       NOT NULL REFERENCES statii(id_statie),
+    id_bilet      INT       REFERENCES bilete(id_bilet),         -- NULL daca s-a folosit abonament
+    id_abonament  INT       REFERENCES abonamente(id_abonament), -- NULL daca s-a folosit bilet
+    scanat_la     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT chk_titlu_transport CHECK (
+        (id_bilet IS NOT NULL AND id_abonament IS NULL) OR
+        (id_bilet IS NULL     AND id_abonament IS NOT NULL)
+    )
+);
+```
