@@ -13,6 +13,7 @@ export default function AuthPage() {
     const [loginForm, setLoginForm] = useState({ email: '', parola: '' });
     const [loginEroare, setLoginEroare] = useState('');
     const [loginLoading, setLoginLoading] = useState(false);
+    const [showLoginParola, setShowLoginParola] = useState(false);
 
     // ── Register state ──
     const [regForm, setRegForm] = useState({
@@ -22,6 +23,26 @@ export default function AuthPage() {
     const [regEroare, setRegEroare] = useState('');
     const [regLoading, setRegLoading] = useState(false);
     const [regSuccess, setRegSuccess] = useState('');
+    const [showRegParola, setShowRegParola] = useState(false);
+    const [showRegConfirmare, setShowRegConfirmare] = useState(false);
+
+    // ── Eye icon SVG ──
+    const EyeIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+        </svg>
+    );
+
+    const EyeOffIcon = () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+            <line x1="1" y1="1" x2="23" y2="23" />
+        </svg>
+    );
 
     // ── Handlers login ──
     const handleLoginChange = (e) =>
@@ -94,12 +115,15 @@ export default function AuthPage() {
 
     return (
         <div className="auth-page">
-            {/* Animated orbs */}
+            {/* Fixed animated background */}
+            <div className="auth-bg" />
+
+            {/* Animated orbs (fixed) */}
             <div className="auth-orb auth-orb-1" />
             <div className="auth-orb auth-orb-2" />
             <div className="auth-orb auth-orb-3" />
 
-            {/* Moving metro dots */}
+            {/* Moving metro dots (fixed) */}
             <div className="auth-dots">
                 <div className="auth-dot" />
                 <div className="auth-dot" />
@@ -151,16 +175,26 @@ export default function AuthPage() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="login-parola">Parolă</label>
-                            <input
-                                id="login-parola"
-                                type="password"
-                                name="parola"
-                                placeholder="••••••••"
-                                value={loginForm.parola}
-                                onChange={handleLoginChange}
-                                required
-                                autoComplete="current-password"
-                            />
+                            <div className="password-wrapper">
+                                <input
+                                    id="login-parola"
+                                    type={showLoginParola ? 'text' : 'password'}
+                                    name="parola"
+                                    placeholder="••••••••"
+                                    value={loginForm.parola}
+                                    onChange={handleLoginChange}
+                                    required
+                                    autoComplete="current-password"
+                                />
+                                <button
+                                    type="button"
+                                    className="eye-toggle"
+                                    onClick={() => setShowLoginParola(v => !v)}
+                                    aria-label={showLoginParola ? 'Ascunde parola' : 'Arată parola'}
+                                >
+                                    {showLoginParola ? <EyeOffIcon /> : <EyeIcon />}
+                                </button>
+                            </div>
                         </div>
                         {loginEroare && <p className="auth-eroare">{loginEroare}</p>}
                         <button className="auth-btn" type="submit" disabled={loginLoading}>
@@ -240,29 +274,49 @@ export default function AuthPage() {
                         </div>
                         <div className="form-group">
                             <label htmlFor="reg-parola">Parolă</label>
-                            <input
-                                id="reg-parola"
-                                type="password"
-                                name="parola"
-                                placeholder="minim 8 caractere"
-                                value={regForm.parola}
-                                onChange={handleRegChange}
-                                required
-                                autoComplete="new-password"
-                            />
+                            <div className="password-wrapper">
+                                <input
+                                    id="reg-parola"
+                                    type={showRegParola ? 'text' : 'password'}
+                                    name="parola"
+                                    placeholder="minim 8 caractere"
+                                    value={regForm.parola}
+                                    onChange={handleRegChange}
+                                    required
+                                    autoComplete="new-password"
+                                />
+                                <button
+                                    type="button"
+                                    className="eye-toggle"
+                                    onClick={() => setShowRegParola(v => !v)}
+                                    aria-label={showRegParola ? 'Ascunde parola' : 'Arată parola'}
+                                >
+                                    {showRegParola ? <EyeOffIcon /> : <EyeIcon />}
+                                </button>
+                            </div>
                         </div>
                         <div className="form-group">
                             <label htmlFor="reg-confirmare">Confirmă parola</label>
-                            <input
-                                id="reg-confirmare"
-                                type="password"
-                                name="confirmare_parola"
-                                placeholder="••••••••"
-                                value={regForm.confirmare_parola}
-                                onChange={handleRegChange}
-                                required
-                                autoComplete="new-password"
-                            />
+                            <div className="password-wrapper">
+                                <input
+                                    id="reg-confirmare"
+                                    type={showRegConfirmare ? 'text' : 'password'}
+                                    name="confirmare_parola"
+                                    placeholder="••••••••"
+                                    value={regForm.confirmare_parola}
+                                    onChange={handleRegChange}
+                                    required
+                                    autoComplete="new-password"
+                                />
+                                <button
+                                    type="button"
+                                    className="eye-toggle"
+                                    onClick={() => setShowRegConfirmare(v => !v)}
+                                    aria-label={showRegConfirmare ? 'Ascunde parola' : 'Arată parola'}
+                                >
+                                    {showRegConfirmare ? <EyeOffIcon /> : <EyeIcon />}
+                                </button>
+                            </div>
                         </div>
                         {regEroare && <p className="auth-eroare">{regEroare}</p>}
                         <button className="auth-btn" type="submit" disabled={regLoading}>
