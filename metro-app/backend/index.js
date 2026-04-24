@@ -1,8 +1,16 @@
 const express = require('express');
-const cors = require('cors');
+const cors    = require('cors');
+const path    = require('path');
 require('dotenv').config();
 
-const authRouter = require('./routes/auth');
+const authRouter       = require('./routes/auth');
+const angajatiRouter   = require('./routes/angajati');
+const contRouter       = require('./routes/cont');
+const verificariRouter = require('./routes/verificari');
+const bileteRouter     = require('./routes/bilete');
+const notificariRouter = require('./routes/notificari');
+const statiiRouter     = require('./routes/statii');
+const suportRouter     = require('./routes/suport');
 
 const app = express();
 
@@ -11,7 +19,14 @@ app.use(cors());
 app.use(express.json());
 
 // Rute
-app.use('/api/auth', authRouter);
+app.use('/api/auth',       authRouter);
+app.use('/api/angajati',   angajatiRouter);
+app.use('/api/cont',       contRouter);
+app.use('/api/verificari', verificariRouter);
+app.use('/api/bilete',     bileteRouter);
+app.use('/api/notificari', notificariRouter);
+app.use('/api/statii',     statiiRouter);
+app.use('/api/suport',     suportRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

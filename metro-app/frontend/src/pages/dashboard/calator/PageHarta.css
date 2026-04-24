@@ -1,0 +1,433 @@
+/* ════════════════════════════════════════
+   PAGE HARTA — PLANIFICATOR RUTĂ
+════════════════════════════════════════ */
+.harta-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    max-width: 780px;
+}
+
+/* ─── Card căutare ─── */
+.ruta-search-card {
+    background: rgba(10, 15, 35, 0.72);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 20px;
+    padding: 1.5rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+.ruta-search-fields {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.75rem;
+}
+
+/* ─── Field ─── */
+.ruta-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    position: relative;
+}
+
+.ruta-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(165, 180, 252, 0.75);
+    letter-spacing: 0.3px;
+}
+
+.ruta-field-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ruta-field-dot--start {
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.ruta-field-dot--end {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.ruta-field input {
+    padding: 0.72rem 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.87rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s;
+}
+
+.ruta-field input::placeholder {
+    color: rgba(255, 255, 255, 0.22);
+}
+
+.ruta-field input:focus {
+    border-color: rgba(99, 102, 241, 0.55);
+    background: rgba(99, 102, 241, 0.08);
+}
+
+/* ─── Swap button ─── */
+.ruta-swap-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 12px;
+    color: #a5b4fc;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    margin-bottom: 1px;
+}
+
+.ruta-swap-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.22);
+    transform: rotate(180deg);
+}
+
+.ruta-swap-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* ─── Dropdown ─── */
+.ruta-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin-top: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+    background: rgba(10, 14, 36, 0.98);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 14px;
+    backdrop-filter: blur(24px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+    animation: dropIn 0.18s ease both;
+}
+
+.ruta-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s;
+    gap: 0.5rem;
+}
+
+.ruta-dropdown-item:hover {
+    background: rgba(99, 102, 241, 0.12);
+}
+
+.ruta-dropdown-item:first-child {
+    border-radius: 14px 14px 0 0;
+}
+
+.ruta-dropdown-item:last-child {
+    border-radius: 0 0 14px 14px;
+}
+
+.ruta-dropdown-name {
+    font-weight: 500;
+}
+
+.ruta-dropdown-mags {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.ruta-mag-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem 0.4rem;
+    border-radius: 50px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 0.3px;
+}
+
+.ruta-dropdown-empty {
+    padding: 1.2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.84rem;
+}
+
+/* ─── Actions ─── */
+.ruta-search-actions {
+    display: flex;
+    gap: 0.65rem;
+}
+
+/* ─── Rezultat ─── */
+.ruta-result {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    animation: fadeUp 0.35s ease both;
+}
+
+/* ─── Stats ─── */
+.ruta-stats {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.ruta-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 1rem 0.75rem;
+    background: rgba(10, 15, 35, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+}
+
+.ruta-stat-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #c7d2fe;
+    letter-spacing: -0.5px;
+}
+
+.ruta-stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ─── Journey (traseu vizual) ─── */
+.ruta-journey {
+    background: rgba(10, 15, 35, 0.72);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+/* ─── Segment (o magistrală) ─── */
+.ruta-segment {
+    display: flex;
+    flex-direction: column;
+}
+
+.ruta-segment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.5rem 0;
+    margin-bottom: 0.2rem;
+}
+
+.ruta-segment-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: 0.3px;
+}
+
+.ruta-segment-info {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+}
+
+/* ─── Transfer indicator ─── */
+.ruta-transfer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    margin: 0.5rem 0;
+    background: rgba(99, 102, 241, 0.07);
+    border: 1px dashed rgba(99, 102, 241, 0.25);
+    border-radius: 14px;
+    animation: fadeUp 0.25s ease both;
+}
+
+.ruta-transfer-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.ruta-transfer-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ruta-transfer-text strong {
+    color: #c7d2fe;
+    font-weight: 700;
+}
+
+.ruta-transfer-sub {
+    font-size: 0.73rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Station row ─── */
+.ruta-station {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.15rem 0;
+    min-height: 32px;
+}
+
+.ruta-station-track {
+    position: relative;
+    width: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+
+.ruta-station-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: calc(100% + 4px);
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.ruta-station-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2.5px solid;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.15s;
+}
+
+.ruta-station-dot.is-terminal {
+    width: 14px;
+    height: 14px;
+    border-width: 3px;
+}
+
+.ruta-station-dot.is-node {
+    width: 12px;
+    height: 12px;
+    border-width: 3px;
+}
+
+.ruta-station-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.ruta-station-name {
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+}
+
+.ruta-station.terminal .ruta-station-name {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 700;
+    font-size: 0.88rem;
+}
+
+.ruta-station.node .ruta-station-name {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+}
+
+.ruta-station-mags {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.ruta-station-terminal-label {
+    margin-left: auto;
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+    .ruta-search-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ruta-swap-btn {
+        align-self: center;
+        transform: rotate(0deg);
+    }
+
+    .ruta-swap-btn:hover:not(:disabled) {
+        transform: rotate(0deg);
+    }
+
+    .ruta-stats {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .ruta-stat {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .ruta-stat-value {
+        font-size: 1.1rem;
+    }
+}

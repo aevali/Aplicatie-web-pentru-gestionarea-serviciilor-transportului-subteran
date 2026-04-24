@@ -1,0 +1,449 @@
+/* ════════════════════════════════════════
+   PAGE CONT — CONTUL MEU
+════════════════════════════════════════ */
+.cont-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cont-card--narrow {
+    max-width: 720px;
+}
+
+.cont-card {
+    background: rgba(10, 15, 35, 0.72);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+}
+
+.cont-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.15rem 1.5rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+}
+
+.cont-card-icon {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
+}
+
+.cont-card-title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: #c7d2fe;
+    letter-spacing: -0.2px;
+}
+
+.cont-card-body {
+    padding: 1.4rem 1.5rem;
+}
+
+/* ─── Profil ─── */
+.cont-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.cont-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.35),
+                0 8px 24px rgba(99,102,241,0.2);
+}
+
+.cont-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.cont-profile-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #e2e8f0;
+}
+
+.cont-profile-email {
+    font-size: 0.83rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.cont-profile-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.1rem;
+}
+
+/* ─── Badges ─── */
+.cont-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.cont-badge--tip {
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    color: #a5b4fc;
+}
+
+.cont-badge--doc-ok {
+    background: rgba(34,197,94,0.12);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: #86efac;
+}
+
+.cont-badge--doc-pending {
+    background: rgba(234,179,8,0.12);
+    border: 1px solid rgba(234,179,8,0.3);
+    color: #fde68a;
+}
+
+.cont-badge--doc-none {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5;
+}
+
+/* ─── Info grid ─── */
+.cont-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.2rem;
+}
+
+.cont-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.cont-info-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(165,180,252,0.6);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.cont-info-value {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+}
+
+/* ─── Status card ─── */
+.cont-status-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 14px;
+    margin-bottom: 1.2rem;
+    border: 1px solid;
+}
+
+.cont-status-card--none {
+    background: rgba(239,68,68,0.07);
+    border-color: rgba(239,68,68,0.25);
+}
+
+.cont-status-card--pending {
+    background: rgba(234,179,8,0.07);
+    border-color: rgba(234,179,8,0.28);
+}
+
+.cont-status-card--ok {
+    background: rgba(34,197,94,0.08);
+    border-color: rgba(34,197,94,0.28);
+}
+
+.cont-status-card--rejected {
+    background: rgba(239,68,68,0.07);
+    border-color: rgba(239,68,68,0.25);
+}
+
+.cont-status-icon {
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.cont-status-text h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 0.25rem;
+}
+
+.cont-status-text p {
+    font-size: 0.81rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+}
+
+.cont-status-text .cont-motiv {
+    margin-top: 0.5rem;
+    padding: 0.55rem 0.8rem;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 9px;
+    font-size: 0.81rem;
+    color: #fca5a5;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.cont-status-date {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.28);
+    margin-top: 0.4rem;
+}
+
+/* ─── Upload zone ─── */
+.cont-upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 2rem 1.5rem;
+    border: 2px dashed rgba(99,102,241,0.3);
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(99,102,241,0.04);
+    position: relative;
+}
+
+.cont-upload-zone:hover,
+.cont-upload-zone.dragover {
+    border-color: rgba(99,102,241,0.6);
+    background: rgba(99,102,241,0.09);
+}
+
+.cont-upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.cont-upload-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 10px rgba(99,102,241,0.4));
+}
+
+.cont-upload-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+}
+
+.cont-upload-hint {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.3);
+}
+
+.cont-upload-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: flex-end;
+}
+
+/* ─── Parolă ─── */
+.cont-pass-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+}
+
+.cont-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.cont-field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(165,180,252,0.7);
+    letter-spacing: 0.3px;
+}
+
+.cont-field input {
+    padding: 0.72rem 0.9rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 11px;
+    color: rgba(255,255,255,0.88);
+    font-size: 0.87rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s;
+}
+
+.cont-field input::placeholder {
+    color: rgba(255,255,255,0.2);
+}
+
+.cont-field input:focus {
+    border-color: rgba(99,102,241,0.55);
+    background: rgba(99,102,241,0.08);
+}
+
+/* ─── Reguli validare reduceri ─── */
+.cont-reguli-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.9rem;
+}
+
+.cont-regula-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1.1rem 1.15rem;
+    border-radius: 16px;
+    border: 1px solid;
+    transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.cont-regula-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+}
+
+.cont-regula-card--elev {
+    background: rgba(59,130,246,0.07);
+    border-color: rgba(59,130,246,0.25);
+}
+
+.cont-regula-card--student {
+    background: rgba(99,102,241,0.07);
+    border-color: rgba(99,102,241,0.28);
+}
+
+.cont-regula-card--pensionar {
+    background: rgba(234,179,8,0.07);
+    border-color: rgba(234,179,8,0.25);
+}
+
+.cont-regula-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cont-regula-icon {
+    font-size: 1.65rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.cont-regula-titlu {
+    font-size: 0.97rem;
+    font-weight: 800;
+    color: #e2e8f0;
+    letter-spacing: -0.2px;
+}
+
+.cont-regula-reducere {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+}
+
+.cont-regula-card--elev .cont-regula-reducere { color: #93c5fd; }
+.cont-regula-card--student .cont-regula-reducere { color: #a5b4fc; }
+.cont-regula-card--pensionar .cont-regula-reducere { color: #fde68a; }
+
+.cont-regula-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.cont-regula-lista li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.4;
+    font-style: italic;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.cont-regula-text {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cont-regula-lista li strong {
+    color: rgba(255,255,255,0.88);
+    font-weight: 600;
+}
+
+.cont-regula-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 0.42rem;
+}
+
+.cont-regula-card--elev .cont-regula-dot { background: #60a5fa; }
+.cont-regula-card--student .cont-regula-dot { background: #818cf8; }
+.cont-regula-card--pensionar .cont-regula-dot { background: #fbbf24; }
+
+/* ─── Responsive ─── */
+@media (max-width: 720px) {
+    .cont-reguli-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 721px) and (max-width: 900px) {
+    .cont-reguli-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
