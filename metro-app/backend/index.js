@@ -15,7 +15,22 @@ const suportRouter     = require('./routes/suport');
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173',
+    process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Permite requesturi fara origin (Postman, curl) si cele din lista
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+}));
 app.use(express.json());
 
 // Rute

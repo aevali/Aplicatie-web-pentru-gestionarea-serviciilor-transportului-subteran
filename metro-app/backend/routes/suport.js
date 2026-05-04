@@ -4,6 +4,12 @@ const { verificaToken } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Migrare automată: adaugă coloana last_seen_calator dacă nu există
+pool.query(`
+    ALTER TABLE tickets_suport
+    ADD COLUMN IF NOT EXISTS last_seen_calator TIMESTAMPTZ
+`).catch(err => console.error('Migration last_seen_calator:', err.message));
+
 // Toate rutele necesită token
 router.use(verificaToken);
 
@@ -259,6 +265,56 @@ router.post('/ticket/:id/feedback', async (req, res) => {
         res.json({ mesaj: 'Feedback trimis! Mulțumim pentru evaluare.' });
     } catch (err) {
         console.error('POST /suport/ticket/:id/feedback:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/suport/mesaje-noi
+   Badge notificări pentru călător — mesaje noi de la angajat nevăzute de calator
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/mesaje-noi', async (req, res) => {
+    if (req.user?.tip_cont !== 'calator')
+        return res.status(403).json({ mesaj: 'Acces refuzat.' });
+
+    const idCalator = req.user.id;
+    try {
+        const r = await pool.query(
+            `SELECT COUNT(*) AS numar
+             FROM mesaje_ticket m
+             JOIN tickets_suport t ON t.id_ticket = m.id_ticket
+             WHERE t.id_calator = $1
+               AND m.expeditor_tip = 'angajat'
+               AND (t.last_seen_calator IS NULL OR m.created_at > t.last_seen_calator)`,
+            [idCalator]
+        );
+        res.json({ numar: parseInt(r.rows[0].numar, 10) });
+    } catch (err) {
+        console.error('GET /suport/mesaje-noi:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   POST /api/suport/ticket/:id/vazut
+   Călătorul marchează că a văzut conversația → actualizează last_seen_calator
+───────────────────────────────────────────────────────────────────────────── */
+router.post('/ticket/:id/vazut', async (req, res) => {
+    if (req.user?.tip_cont !== 'calator')
+        return res.status(403).json({ mesaj: 'Acces refuzat.' });
+
+    const { id }    = req.params;
+    const idCalator = req.user.id;
+    try {
+        await pool.query(
+            `UPDATE tickets_suport
+             SET last_seen_calator = CURRENT_TIMESTAMP
+             WHERE id_ticket = $1 AND id_calator = $2`,
+            [id, idCalator]
+        );
+        res.json({ ok: true });
+    } catch (err) {
+        console.error('POST /suport/ticket/:id/vazut:', err.message);
         res.status(500).json({ mesaj: 'Eroare internă server.' });
     }
 });

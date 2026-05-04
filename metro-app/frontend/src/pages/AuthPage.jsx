@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function AuthPage() {
     const [tab, setTab] = useState('login'); // 'login' | 'register'
     const navigate = useNavigate();
@@ -53,7 +55,7 @@ export default function AuthPage() {
         setLoginEroare('');
         setLoginLoading(true);
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/login', loginForm);
+            const { data } = await axios.post(`${API}/api/auth/login`, loginForm);
             login(data.token, data.user, data.tip_cont);
 
             if (data.tip_cont === 'angajat' && data.user.rol === 'admin') {
@@ -91,7 +93,7 @@ export default function AuthPage() {
 
         setRegLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/auth/register', regForm);
+            await axios.post(`${API}/api/auth/register`, regForm);
             // After register → switch to login with success message
             setRegForm({ nume: '', prenume: '', email: '', cnp: '', tip: 'adult', parola: '', confirmare_parola: '' });
             setTab('login');
