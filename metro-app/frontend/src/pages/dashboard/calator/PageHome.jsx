@@ -115,14 +115,22 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                     <div className="home-qr-wrapper">
                         <div className="home-qr-glow" />
                         <div className="home-qr-frame">
-                            <QRCodeSVG
-                                value={String(biletActiv.cod_qr)}
-                                size={200}
-                                bgColor="transparent"
-                                fgColor="#c7d2fe"
-                                level="H"
-                                includeMargin={false}
-                            />
+                            <div style={{
+                                background: '#ffffff',
+                                borderRadius: '12px',
+                                padding: '12px',
+                                display: 'inline-block',
+                                lineHeight: 0,
+                            }}>
+                                <QRCodeSVG
+                                    value={String(biletActiv.cod_qr)}
+                                    size={180}
+                                    bgColor="#ffffff"
+                                    fgColor="#0f0f1a"
+                                    level="H"
+                                    includeMargin={false}
+                                />
+                            </div>
                         </div>
                     </div>
 
