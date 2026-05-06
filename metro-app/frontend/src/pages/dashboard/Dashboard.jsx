@@ -15,6 +15,7 @@ import PageOverview from './angajat/PageOverview';
 import PageVerificari from './angajat/PageVerificari';
 import PageNotificari from './angajat/PageNotificari';
 import PageSuportClienti from './angajat/PageSuportClienti';
+import PageValidare from './angajat/PageValidare';
 import PageAngajati from './admin/PageAngajati';
 import './Dashboard.css';
 
@@ -121,7 +122,7 @@ export default function Dashboard() {
 
             // Angajat & Admin
             case 'verificari':     return <PageVerificari token={token} />;
-            case 'validare':       return <PagePlaceholder icon="✅" title="Validare Bilete"    desc="Verifică și validează titlurile de călătorie ale pasagerilor." />;
+            case 'validare':       return <PageValidare token={token} />;
             case 'suport_clienti': return <PageSuportClienti token={token} user={user} />;
             case 'raport':         return <PagePlaceholder icon="📑" title="Raport Tură"        desc="Raportul detaliat al activității din tura curentă." />;
 

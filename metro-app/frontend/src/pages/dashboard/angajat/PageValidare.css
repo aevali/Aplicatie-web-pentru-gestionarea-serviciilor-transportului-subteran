@@ -1,0 +1,337 @@
+/* ═══════════════════════════════════════════════
+   PAGE VALIDARE — Stiluri scanare QR angajat
+═══════════════════════════════════════════════ */
+
+.page-validare {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ── Header ── */
+.val-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.val-subtitle {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ── Layout 2 coloane ── */
+.val-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+@media (max-width: 860px) {
+    .val-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════
+   CAMERA
+═══════════════════════════════════════════════ */
+.val-camera-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.val-camera-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(10, 10, 30, 0.8);
+    border: 1.5px solid rgba(99, 102, 241, 0.25);
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.08);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.val-camera-frame--active {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.18), inset 0 0 30px rgba(99, 102, 241, 0.04);
+}
+
+.val-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s;
+    border-radius: 18px;
+}
+
+.val-video--visible {
+    opacity: 1;
+}
+
+.val-canvas {
+    display: none;
+}
+
+/* ── Overlay stari camera ── */
+.val-cam-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    z-index: 10;
+    background: rgba(10, 10, 30, 0.85);
+    backdrop-filter: blur(4px);
+}
+
+.val-cam-overlay--err {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.val-cam-overlay--processing {
+    background: rgba(10, 10, 30, 0.75);
+    color: rgba(255, 255, 255, 0.7);
+    gap: 1rem;
+}
+
+.val-cam-icon {
+    font-size: 2.5rem;
+    display: block;
+}
+
+.val-cam-hint {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.35);
+    max-width: 220px;
+}
+
+/* ── Viewfinder animat ── */
+.val-viewfinder {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.val-vf-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: #818cf8;
+    border-style: solid;
+    border-width: 0;
+}
+
+.val-vf-tl { top: 16%;   left: 16%;  border-top-width: 3px;    border-left-width: 3px;   border-top-left-radius: 4px; }
+.val-vf-tr { top: 16%;   right: 16%; border-top-width: 3px;    border-right-width: 3px;  border-top-right-radius: 4px; }
+.val-vf-bl { bottom: 16%; left: 16%;  border-bottom-width: 3px; border-left-width: 3px;   border-bottom-left-radius: 4px; }
+.val-vf-br { bottom: 16%; right: 16%; border-bottom-width: 3px; border-right-width: 3px;  border-bottom-right-radius: 4px; }
+
+/* Linie de scanare animata */
+.val-vf-scan-line {
+    position: absolute;
+    left: 16%;
+    right: 16%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #818cf8, transparent);
+    border-radius: 2px;
+    top: 16%;
+    animation: val-scan 2.4s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(129, 140, 248, 0.7);
+}
+
+@keyframes val-scan {
+    0%   { top: 16%; opacity: 1; }
+    50%  { top: 84%; opacity: 1; }
+    100% { top: 16%; opacity: 1; }
+}
+
+/* ── Hint sub camera ── */
+.val-camera-hint {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.38);
+    text-align: center;
+    min-height: 1.2em;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   COLOANA REZULTAT
+═══════════════════════════════════════════════ */
+.val-result-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Card asteptare ── */
+.val-waiting-card {
+    padding: 2.5rem 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.val-waiting-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    animation: val-pulse 2s ease-in-out infinite;
+}
+
+@keyframes val-pulse {
+    0%, 100% { transform: scale(1);    opacity: 1; }
+    50%       { transform: scale(1.08); opacity: 0.7; }
+}
+
+.val-waiting-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.val-waiting-card p {
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* ── Card rezultat ── */
+.val-result-card {
+    padding: 2rem;
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    animation: val-slide-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes val-slide-in {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.val-result-card--ok {
+    background: rgba(34, 197, 94, 0.07);
+    border: 1.5px solid rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 40px rgba(34, 197, 94, 0.08);
+}
+
+.val-result-card--err {
+    background: rgba(239, 68, 68, 0.07);
+    border: 1.5px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.08);
+}
+
+.val-result-icon {
+    font-size: 3rem;
+    line-height: 1;
+    animation: val-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes val-pop {
+    from { transform: scale(0.4); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+}
+
+/* ── Date calator ── */
+.val-result-calator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.val-result-name {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+}
+
+/* Badge tip calator */
+.val-result-tip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.val-result-tip--adult     { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+.val-result-tip--elev      { background: rgba(59, 130, 246, 0.18); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); }
+.val-result-tip--student   { background: rgba(168, 85, 247, 0.18); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.3); }
+.val-result-tip--pensionar { background: rgba(245, 158, 11, 0.18); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+.val-result-titlu {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.val-result-titlu strong {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Mesaj principal ── */
+.val-result-mesaj {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    width: 100%;
+}
+
+/* ── Buton scanează din nou ── */
+.val-scan-again-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.5rem;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 50px;
+    color: #a5b4fc;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    margin-top: 0.25rem;
+}
+
+.val-scan-again-btn:hover {
+    background: rgba(99, 102, 241, 0.28);
+    border-color: rgba(99, 102, 241, 0.6);
+    transform: translateY(-1px);
+}
+
+.val-scan-again-btn:active {
+    transform: translateY(0);
+}

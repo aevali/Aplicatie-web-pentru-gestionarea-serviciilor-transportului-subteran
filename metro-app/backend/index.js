@@ -11,6 +11,7 @@ const bileteRouter     = require('./routes/bilete');
 const notificariRouter = require('./routes/notificari');
 const statiiRouter     = require('./routes/statii');
 const suportRouter     = require('./routes/suport');
+const validareRouter   = require('./routes/validare');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use('/api/bilete',     bileteRouter);
 app.use('/api/notificari', notificariRouter);
 app.use('/api/statii',     statiiRouter);
 app.use('/api/suport',     suportRouter);
+app.use('/api/validare',   validareRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
