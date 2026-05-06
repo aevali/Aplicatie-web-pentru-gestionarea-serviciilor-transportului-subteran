@@ -12,10 +12,10 @@ export function normalizeazaEmail(str) {
 /* ─── Navigare per rol ─── */
 export const navByRole = {
     calator: [
-        { id: 'overview', icon: '🏠', label: 'Home' },
-        { id: 'cumparare', icon: '💳', label: 'Cumpărare' },
-        { id: 'bilete', icon: '🎫', label: 'Biletele Mele' },
-        { id: 'harta', icon: '🗺️', label: 'Harta Rețelei' },
+        { id: 'overview',  icon: '🏠', label: 'Home'           },
+        { id: 'cumparare', icon: '💳', label: 'Cumpărare'       },
+        { id: 'bilete',    icon: '🎫', label: 'Biletele Mele'   },
+        { id: 'harta',     icon: '🗺️', label: 'Harta Rețelei'  },
     ],
     angajat: [
         { id: 'overview', icon: '🏠', label: 'Home' },

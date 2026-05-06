@@ -255,14 +255,14 @@ router.post('/ticket/:id/feedback', async (req, res) => {
         const r = await pool.query(
             `UPDATE tickets_suport
              SET rating = $1, status = 'inchis', updated_at = CURRENT_TIMESTAMP
-             WHERE id_ticket = $2 AND id_calator = $3 AND status = 'rezolvat'
+             WHERE id_ticket = $2 AND id_calator = $3 AND status IN ('in_lucru', 'rezolvat')
              RETURNING id_ticket`,
             [rating, id, idCalator]
         );
         if (r.rows.length === 0)
             return res.status(404).json({ mesaj: 'Ticket negăsit sau nu este în starea „rezolvat".' });
 
-        res.json({ mesaj: 'Feedback trimis! Mulțumim pentru evaluare.' });
+        res.json({ mesaj: 'Conversăție finalizată! Mulțumim pentru evaluare.' });
     } catch (err) {
         console.error('POST /suport/ticket/:id/feedback:', err.message);
         res.status(500).json({ mesaj: 'Eroare internă server.' });
@@ -322,6 +322,67 @@ router.post('/ticket/:id/vazut', async (req, res) => {
 /* ═══════════════════════════════════════════════════════════
    RUTE ANGAJAT / ADMIN
 ═══════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/suport/rating-meu
+   Angajatul vede propriul rating mediu + nr tickete rezolvate
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/rating-meu', async (req, res) => {
+    if (req.user?.tip_cont !== 'angajat')
+        return res.status(403).json({ mesaj: 'Acces refuzat.' });
+
+    const idAngajat = req.user.id;
+    try {
+        const r = await pool.query(
+            `SELECT
+                COUNT(*)                            AS total_tickete,
+                COUNT(rating)                       AS tickete_cu_rating,
+                ROUND(AVG(rating)::numeric, 2)      AS rating_mediu,
+                COUNT(*) FILTER (WHERE rating = 5)  AS stele_5,
+                COUNT(*) FILTER (WHERE rating = 4)  AS stele_4,
+                COUNT(*) FILTER (WHERE rating = 3)  AS stele_3,
+                COUNT(*) FILTER (WHERE rating <= 2) AS stele_sub3
+             FROM tickets_suport
+             WHERE id_angajat = $1 AND status = 'inchis'`,
+            [idAngajat]
+        );
+        res.json(r.rows[0]);
+    } catch (err) {
+        console.error('GET /suport/rating-meu:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/suport/rating-angajati
+   Admin vede ratingul mediu al tuturor angajaților
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/rating-angajati', async (req, res) => {
+    if (req.user?.tip_cont !== 'angajat' || req.user?.rol !== 'admin')
+        return res.status(403).json({ mesaj: 'Acces refuzat. Doar admini.' });
+
+    try {
+        const r = await pool.query(
+            `SELECT
+                a.id_angajat,
+                a.prenume,
+                a.nume,
+                a.email,
+                COUNT(t.id_ticket)                  AS total_tickete,
+                COUNT(t.rating)                     AS tickete_cu_rating,
+                ROUND(AVG(t.rating)::numeric, 2)    AS rating_mediu
+             FROM angajati a
+             LEFT JOIN tickets_suport t
+                ON t.id_angajat = a.id_angajat AND t.status = 'inchis'
+             GROUP BY a.id_angajat, a.prenume, a.nume, a.email
+             ORDER BY rating_mediu DESC NULLS LAST`
+        );
+        res.json({ angajati: r.rows });
+    } catch (err) {
+        console.error('GET /suport/rating-angajati:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
 
 /* ─────────────────────────────────────────────────────────────────────────────
    GET /api/suport/tickets

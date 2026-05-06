@@ -30,8 +30,11 @@ export default function Dashboard() {
     const [profileOpen,   setProfileOpen]   = useState(false);
 
     // Status documente calator (pentru badge topbar)
-    const [docStatus, setDocStatus] = useState(null); // null=neincarcat, 'in_asteptare', 'aprobata', 'respinsa'
+    const [docStatus, setDocStatus] = useState(null);
     const docStatusRef = useRef(null);
+
+    // Badge mesaje suport noi (calator)
+    const [suportNoi, setSuportNoi] = useState(0);
 
     const rolEfectiv = getRolEfectiv(user, tipCont);
     const navItems   = navByRole[rolEfectiv] ?? navByRole.calator;
@@ -52,8 +55,28 @@ export default function Dashboard() {
             .catch(() => {});
     }, [tipCont, token]);
 
+    // Fetch + poll mesaje suport noi (doar calatori)
+    useEffect(() => {
+        if (tipCont !== 'calator' || !token) return;
+        const fetchSuportNoi = () => {
+            fetch(`${API}/api/suport/mesaje-noi`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(r => r.json())
+                .then(d => setSuportNoi(d.numar ?? 0))
+                .catch(() => {});
+        };
+        fetchSuportNoi();
+        const iv = setInterval(fetchSuportNoi, 30000);
+        return () => clearInterval(iv);
+    }, [tipCont, token]);
+
     const handleLogout = () => { logout(); navigate('/auth', { replace: true }); };
-    const handleNav    = (id) => { setActivePage(id); setSidebarOpen(false); };
+    const handleNav    = (id) => {
+        if (id === 'suport') setSuportNoi(0);
+        setActivePage(id);
+        setSidebarOpen(false);
+    };
 
     // Callback pt PageCont sa actualizeze statusul dupa upload
     const handleDocStatusChange = (newStatus) => {
@@ -64,7 +87,15 @@ export default function Dashboard() {
     const initials = [user?.prenume?.[0], user?.nume?.[0]]
         .filter(Boolean).join('').toUpperCase() || (user?.email?.[0] ?? 'U').toUpperCase();
 
-    // Badge topbar
+    // Badge suport calator
+    const suportBadge = tipCont === 'calator' && suportNoi > 0 ? (
+        <button className="topbar-suport-badge" onClick={() => handleNav('suport')}>
+            💬 Mesaj nou
+            <span className="topbar-suport-count">{suportNoi}</span>
+        </button>
+    ) : null;
+
+    // Badge documente calator
     const docBadge = tipCont === 'calator' && docStatus !== 'aprobata' ? (
         docStatus === 'in_asteptare'
             ? <button className="topbar-doc-badge topbar-doc-badge--yellow" onClick={() => handleNav('cont')}>🕐 În verificare</button>
@@ -200,8 +231,12 @@ export default function Dashboard() {
                     {/* Spacer */}
                     <div style={{ flex: 1 }} />
 
+                    {/* Badge mesaje suport nou (calator) */}
+                    {suportBadge}
+
                     {/* Badge documente calator */}
                     {docBadge}
+
 
                     {/* Profil dreapta */}
                     <div className="topbar-profile-wrap">

@@ -103,4 +103,35 @@ const stergeAngajat = async (req, res) => {
     }
 };
 
-module.exports = { listaAngajati, creeazaAngajat, stergeAngajat };
+// GET /api/angajati/statistici — rating suport + cereri documente per angajat
+const statisticiAngajati = async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT
+                a.id_angajat,
+                a.prenume,
+                a.nume,
+                -- Rating suport
+                COUNT(DISTINCT t.id_ticket)                             AS total_tickete,
+                COUNT(DISTINCT t.id_ticket) FILTER (WHERE t.rating IS NOT NULL) AS tickete_cu_rating,
+                ROUND(AVG(t.rating)::numeric, 2)                        AS rating_mediu,
+                -- Cereri documente
+                COUNT(DISTINCT cr.id_cerere)                            AS total_cereri,
+                COUNT(DISTINCT cr.id_cerere) FILTER (WHERE cr.status = 'aprobata')  AS cereri_aprobate,
+                COUNT(DISTINCT cr.id_cerere) FILTER (WHERE cr.status = 'respinsa')  AS cereri_respinse
+             FROM angajati a
+             LEFT JOIN tickets_suport t
+                ON t.id_angajat = a.id_angajat AND t.status = 'inchis'
+             LEFT JOIN cereri_reducere cr
+                ON cr.id_angajat = a.id_angajat AND cr.status IN ('aprobata', 'respinsa')
+             GROUP BY a.id_angajat, a.prenume, a.nume
+             ORDER BY a.id_angajat ASC`
+        );
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Eroare statisticiAngajati:', err.message);
+        res.status(500).json({ mesaj: 'Eroare interna server.' });
+    }
+};
+
+module.exports = { listaAngajati, creeazaAngajat, stergeAngajat, statisticiAngajati };

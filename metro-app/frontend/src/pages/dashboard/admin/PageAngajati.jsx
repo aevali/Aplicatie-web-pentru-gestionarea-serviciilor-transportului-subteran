@@ -14,6 +14,7 @@ export default function PageAngajati() {
     const [deleteId,    setDeleteId]    = useState(null);
     const [submitLoad,  setSubmitLoad]  = useState(false);
     const [successMsg,  setSuccessMsg]  = useState('');
+    const [ratingMap,   setRatingMap]   = useState({});
 
     const [form, setForm] = useState({ nume: '', prenume: '', parola: '', rol: 'angajat' });
     const [formEroare, setFormEroare] = useState('');
@@ -27,10 +28,23 @@ export default function PageAngajati() {
         setLoading(true);
         setEroare('');
         try {
-            const r = await fetch(`${API}/api/angajati`, { headers: { Authorization: `Bearer ${token}` } });
-            if (!r.ok) throw new Error('Eroare la încărcarea angajaților.');
-            const data = await r.json();
-            setAngajati(data);
+            const headers = { Authorization: `Bearer ${token}` };
+
+            const [rAngajati, rStat] = await Promise.all([
+                fetch(`${API}/api/angajati`, { headers }),
+                fetch(`${API}/api/angajati/statistici`, { headers }),
+            ]);
+
+            if (!rAngajati.ok) throw new Error('Eroare la încărcarea angajaților.');
+            const dataAngajati = await rAngajati.json();
+            setAngajati(dataAngajati);
+
+            if (rStat.ok) {
+                const dataStat = await rStat.json();
+                const map = {};
+                (dataStat ?? []).forEach(a => { map[a.id_angajat] = a; });
+                setRatingMap(map);
+            }
         } catch (e) { setEroare(e.message); }
         finally { setLoading(false); }
     }, [token]);
@@ -101,7 +115,50 @@ export default function PageAngajati() {
                                     <td><div className="ang-name-cell"><div className="ang-avatar">{(a.prenume?.[0] ?? '?').toUpperCase()}{(a.nume?.[0] ?? '').toUpperCase()}</div><div><p className="ang-fullname">{a.prenume} {a.nume}</p>{a.id_angajat === user?.id && <span className="ang-you-badge">Tu</span>}</div></div></td>
                                     <td className="ang-td-email">{a.email}</td>
                                     <td><span className={`ang-rol-badge ang-rol-badge--${a.rol}`}>{a.rol === 'admin' ? '🛡️ Admin' : '👷 Angajat'}</span></td>
-                                    <td><span className="ang-soon-tag">În curând</span></td>
+                                    <td>
+                                        {(() => {
+                                            const s = ratingMap[a.id_angajat];
+                                            const totalTickete  = parseInt(s?.total_tickete  ?? 0);
+                                            const cuRating      = parseInt(s?.tickete_cu_rating ?? 0);
+                                            const medie         = parseFloat(s?.rating_mediu ?? 0);
+                                            const totalCereri   = parseInt(s?.total_cereri   ?? 0);
+                                            const aprobate      = parseInt(s?.cereri_aprobate ?? 0);
+                                            const respinse      = parseInt(s?.cereri_respinse ?? 0);
+
+                                            const areActivitate = totalTickete > 0 || totalCereri > 0;
+                                            if (!areActivitate) return <span className="ang-soon-tag">Fără activitate</span>;
+
+                                            return (
+                                                <div className="ang-stat-cell">
+                                                    {totalTickete > 0 && (
+                                                        <div className="ang-rating-cell">
+                                                            <div className="ang-rating-stars">
+                                                                {'★'.repeat(Math.round(medie))}{'☆'.repeat(5 - Math.round(medie))}
+                                                            </div>
+                                                            <div className="ang-rating-details">
+                                                                {cuRating > 0
+                                                                    ? <span className="ang-rating-val">{medie.toFixed(1)} <span className="ang-rating-muted">/ 5</span></span>
+                                                                    : <span className="ang-rating-muted">Fără rating</span>
+                                                                }
+                                                                <span className="ang-rating-tickets">
+                                                                    {totalTickete} ticket{totalTickete !== 1 ? 'e' : ''}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {totalCereri > 0 && (
+                                                        <div className="ang-cereri-cell">
+                                                            <span className="ang-cereri-total">{totalCereri} cereri</span>
+                                                            <div className="ang-cereri-pills">
+                                                                {aprobate > 0 && <span className="ang-cereri-pill ang-cereri-pill--ok">✓ {aprobate}</span>}
+                                                                {respinse > 0 && <span className="ang-cereri-pill ang-cereri-pill--rej">✗ {respinse}</span>}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })()}
+                                    </td>
                                     <td>{a.id_angajat !== user?.id ? (<button className="ang-btn-delete" onClick={() => setDeleteId(a.id_angajat)} title="Șterge angajat">🗑️</button>) : (<span className="ang-no-delete">—</span>)}</td>
                                 </tr>
                             ))}
