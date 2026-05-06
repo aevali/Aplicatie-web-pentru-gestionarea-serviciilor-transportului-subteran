@@ -233,3 +233,53 @@
     .home-empty-card { padding: 1.75rem 1.25rem; }
     .home-cta-btn { font-size: 0.85rem; padding: 0.75rem 1.1rem; }
 }
+
+/* ─── Banner cooldown abonament ─── */
+.home-qr-wrapper {
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.home-cooldown-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 1.1rem;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 50px;
+    animation: cooldownPulse 2s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes cooldownPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+    50%       { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+}
+
+.home-cooldown-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.home-cooldown-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    line-height: 1.2;
+}
+
+.home-cooldown-timer {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fcd34d;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+}
+
+.home-cooldown-label {
+    font-size: 0.68rem;
+    color: rgba(252, 211, 77, 0.6);
+    letter-spacing: 0.2px;
+}
+

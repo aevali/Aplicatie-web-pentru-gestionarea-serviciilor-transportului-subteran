@@ -390,3 +390,43 @@
 .val-manual-btn:hover:not(:disabled) { background: rgba(99,102,241,0.35); }
 .val-manual-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* ── Countdown cooldown in cardul angajat ── */
+.val-cooldown-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.2rem;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 14px;
+    width: 100%;
+    animation: cooldownBoxPulse 2s ease-in-out infinite;
+}
+
+@keyframes cooldownBoxPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.25); }
+    50%       { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+}
+
+.val-cooldown-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.val-cooldown-timer {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fcd34d;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+}
+
+.val-cooldown-label {
+    font-size: 0.72rem;
+    color: rgba(252, 211, 77, 0.55);
+    letter-spacing: 0.2px;
+}
+
+

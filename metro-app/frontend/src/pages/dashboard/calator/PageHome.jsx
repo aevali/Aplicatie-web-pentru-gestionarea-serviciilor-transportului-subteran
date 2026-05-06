@@ -143,6 +143,21 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
 
                     <div className="home-qr-wrapper">
                         <div className="home-qr-glow" />
+
+                        {/* Banner cooldown deasupra QR (doar abonament) */}
+                        {biletActiv.tip === 'abonament' && cooldownSec > 0 && (
+                            <div className="home-cooldown-banner">
+                                <span className="home-cooldown-icon">⏳</span>
+                                <div className="home-cooldown-text">
+                                    <span className="home-cooldown-timer">
+                                        {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
+                                        :{String(cooldownSec % 60).padStart(2, '0')}
+                                    </span>
+                                    <span className="home-cooldown-label">până la următoarea scanare</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="home-qr-frame">
                             <div style={{
                                 background: '#ffffff',

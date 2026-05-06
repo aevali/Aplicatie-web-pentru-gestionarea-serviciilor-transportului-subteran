@@ -20,6 +20,20 @@ export default function PageValidare({ token }) {
     const [camStatus, setCamStatus] = useState('loading');
     const [rezultat,  setRezultat]  = useState(null);
     const [loading,   setLoading]   = useState(false);
+    const [cooldownSec, setCooldownSec] = useState(0); // countdown dupa scanare abonament
+
+    // Countdown local dupa scanare abonament
+    useEffect(() => {
+        if (cooldownSec <= 0) return;
+        const t = setInterval(() => {
+            setCooldownSec(s => {
+                if (s <= 1) { clearInterval(t); return 0; }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cooldownSec > 0]);
 
     /* ── Pornire camera ── */
     const pornesteCamera = useCallback(async () => {
@@ -105,6 +119,10 @@ export default function PageValidare({ token }) {
             });
             const data = await r.json();
             setRezultat({ ...data, status: r.status });
+            // Porneste countdown de 15 min dupa scanare abonament cu succes
+            if (data.ok && data.tip === 'abonament') {
+                setCooldownSec(15 * 60);
+            }
         } catch {
             setRezultat({ ok: false, mesaj: '❌ Eroare de rețea. Verifică conexiunea și încearcă din nou.', status: 500 });
         } finally {
@@ -116,6 +134,7 @@ export default function PageValidare({ token }) {
     const reseteaza = () => {
         setRezultat(null);
         setLoading(false);
+        // Nu resetam cooldownSec — continua sa numere
         scanningRef.current = true;
 
         const scan = () => {
@@ -171,6 +190,20 @@ export default function PageValidare({ token }) {
                                 </strong>
                             </p>
                         )}
+                    </div>
+                )}
+
+                {/* Countdown cooldown dupa scanare abonament */}
+                {ok && tip === 'abonament' && cooldownSec > 0 && (
+                    <div className="val-cooldown-box">
+                        <span className="val-cooldown-icon">⏳</span>
+                        <div>
+                            <div className="val-cooldown-timer">
+                                {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
+                                :{String(cooldownSec % 60).padStart(2, '0')}
+                            </div>
+                            <div className="val-cooldown-label">până la următoarea scanare</div>
+                        </div>
                     </div>
                 )}
 
