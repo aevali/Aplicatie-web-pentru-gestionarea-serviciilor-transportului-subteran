@@ -335,3 +335,58 @@
 .val-scan-again-btn:active {
     transform: translateY(0);
 }
+
+/* ── Debug: cod citit ── */
+.val-debug-cod {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    word-break: break-all;
+    text-align: left;
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    margin: 0;
+}
+.val-debug-cod code {
+    color: rgba(165, 180, 252, 0.7);
+    font-family: monospace;
+    font-size: 0.72rem;
+}
+
+/* ── Input manual (test/fallback) ── */
+.val-manual-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.val-manual-input {
+    flex: 1;
+    padding: 0.55rem 0.85rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.val-manual-input::placeholder { color: rgba(255,255,255,0.25); }
+.val-manual-input:focus { border-color: rgba(99,102,241,0.5); }
+
+.val-manual-btn {
+    padding: 0.55rem 1rem;
+    background: rgba(99,102,241,0.2);
+    border: 1px solid rgba(99,102,241,0.35);
+    border-radius: 10px;
+    color: #a5b4fc;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+.val-manual-btn:hover:not(:disabled) { background: rgba(99,102,241,0.35); }
+.val-manual-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
