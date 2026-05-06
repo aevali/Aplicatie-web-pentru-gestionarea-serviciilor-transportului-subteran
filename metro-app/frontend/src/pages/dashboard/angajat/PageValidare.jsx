@@ -78,7 +78,7 @@ export default function PageValidare({ token }) {
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const cod = jsQR(imageData.data, imageData.width, imageData.height, {
-                inversionAttempts: 'dontInvert',
+                inversionAttempts: 'attemptBoth',
             });
 
             if (cod) {
