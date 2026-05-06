@@ -70,7 +70,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
         const labelTip = {
             zi: '1 zi', trei_zile: '3 zile', saptamana: '1 săptămână',
             luna: '1 lună', sase_luni: '6 luni', an: '1 an',
-        }[biletActiv.tip] ?? biletActiv.tip;
+        }[biletActiv.tip_abonament] ?? biletActiv.tip_abonament;
         return `Abonament ${labelTip}`;
     };
 

@@ -71,7 +71,7 @@ async function getActiv(idCalator) {
 
     // Abonament activ (data_expirare >= azi)
     const abon = await pool.query(
-        `SELECT id_abonament, tip, data_achizitie, data_expirare,
+        `SELECT id_abonament, tip AS tip_abonament, data_achizitie, data_expirare,
                 pret, cod_qr, reducere_aplicata
          FROM abonamente
          WHERE id_calator = $1 AND data_expirare >= CURRENT_DATE
