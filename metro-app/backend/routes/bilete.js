@@ -125,6 +125,43 @@ router.get('/activ', async (req, res) => {
 });
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/bilete/cooldown
+   Returnează secundele rămase din cooldown-ul de 15 min al abonamentului activ
+   Răspuns: { cooldownActiv: bool, secundeRamase: number }
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/cooldown', async (req, res) => {
+    try {
+        const activ = await getActiv(req.user.id);
+
+        // Cooldown-ul se aplică doar abonamentelor
+        if (!activ || activ.tip !== 'abonament') {
+            return res.json({ cooldownActiv: false, secundeRamase: 0 });
+        }
+
+        const r = await pool.query(
+            `SELECT GREATEST(0,
+                EXTRACT(EPOCH FROM (scanat_la + INTERVAL '15 minutes' - NOW()))
+             )::INTEGER AS secunde_ramase
+             FROM calatorii_efectuate
+             WHERE id_abonament = $1
+             ORDER BY scanat_la DESC
+             LIMIT 1`,
+            [activ.id_abonament]
+        );
+
+        if (r.rows.length === 0) {
+            return res.json({ cooldownActiv: false, secundeRamase: 0 });
+        }
+
+        const secunde = r.rows[0].secunde_ramase;
+        return res.json({ cooldownActiv: secunde > 0, secundeRamase: secunde });
+    } catch (err) {
+        console.error('GET /bilete/cooldown:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
    GET /api/bilete/eligibilitate
    Returnează dacă se aplică reducerea și procentul
 ───────────────────────────────────────────────────────────────────────────── */

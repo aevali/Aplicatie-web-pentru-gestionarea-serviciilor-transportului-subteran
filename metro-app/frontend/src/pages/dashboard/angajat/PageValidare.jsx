@@ -17,11 +17,9 @@ export default function PageValidare({ token }) {
     const rafRef      = useRef(null);
     const scanningRef = useRef(true);
 
-    const [camStatus,  setCamStatus]  = useState('loading');
-    const [rezultat,   setRezultat]   = useState(null);
-    const [loading,    setLoading]    = useState(false);
-    const [ultimulCod, setUltimulCod] = useState(''); // debug: ultimul cod citit
-    const [inputManual, setInputManual] = useState(''); // fallback manual
+    const [camStatus, setCamStatus] = useState('loading');
+    const [rezultat,  setRezultat]  = useState(null);
+    const [loading,   setLoading]   = useState(false);
 
     /* ── Pornire camera ── */
     const pornesteCamera = useCallback(async () => {
@@ -67,7 +65,6 @@ export default function PageValidare({ token }) {
 
         const scan = () => {
             if (!scanningRef.current) return;
-
             const video  = videoRef.current;
             const canvas = canvasRef.current;
             if (!video || !canvas) { rafRef.current = requestAnimationFrame(scan); return; }
@@ -83,11 +80,9 @@ export default function PageValidare({ token }) {
             });
 
             if (cod) {
-                setUltimulCod(cod.data); // debug
                 trimiteScan(cod.data);
                 return;
             }
-
             rafRef.current = requestAnimationFrame(scan);
         };
 
@@ -121,7 +116,6 @@ export default function PageValidare({ token }) {
     const reseteaza = () => {
         setRezultat(null);
         setLoading(false);
-        setUltimulCod('');
         scanningRef.current = true;
 
         const scan = () => {
@@ -137,25 +131,11 @@ export default function PageValidare({ token }) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            // FIX: attemptBoth si in reseteaza
             const cod = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
-            if (cod) {
-                setUltimulCod(cod.data);
-                trimiteScan(cod.data);
-                return;
-            }
+            if (cod) { trimiteScan(cod.data); return; }
             rafRef.current = requestAnimationFrame(scan);
         };
         rafRef.current = requestAnimationFrame(scan);
-    };
-
-    /* ── Submit manual ── */
-    const submitManual = (e) => {
-        e.preventDefault();
-        const val = inputManual.trim();
-        if (!val) return;
-        setUltimulCod(val);
-        trimiteScan(val);
     };
 
     /* ── Render card rezultat ── */
@@ -194,13 +174,6 @@ export default function PageValidare({ token }) {
                     </div>
                 )}
 
-                {/* Debug: cod citit */}
-                {ultimulCod && (
-                    <p className="val-debug-cod">
-                        🔍 Cod citit: <code>{ultimulCod}</code>
-                    </p>
-                )}
-
                 <p className="val-result-mesaj">{mesaj}</p>
 
                 <button className="val-scan-again-btn" onClick={reseteaza}>
@@ -218,9 +191,7 @@ export default function PageValidare({ token }) {
     return (
         <div className="dash-section page-validare">
             <div className="val-header">
-                <h2 className="dash-section-title">
-                    🎫 Validare Bilete
-                </h2>
+                <h2 className="dash-section-title">🎫 Validare Bilete</h2>
                 <p className="val-subtitle">
                     Scanează codul QR al călătorului pentru a valida titlul de călătorie.
                 </p>
@@ -286,21 +257,6 @@ export default function PageValidare({ token }) {
                             ? '📷 Camera este activă'
                             : ''}
                     </p>
-
-                    {/* ── Fallback: introducere manuală UUID (debug / test) ── */}
-                    <form className="val-manual-form" onSubmit={submitManual}>
-                        <input
-                            className="val-manual-input"
-                            type="text"
-                            placeholder="Sau introdu UUID-ul manual (test)…"
-                            value={inputManual}
-                            onChange={e => setInputManual(e.target.value)}
-                            disabled={loading}
-                        />
-                        <button className="val-manual-btn" type="submit" disabled={loading || !inputManual.trim()}>
-                            Validează
-                        </button>
-                    </form>
                 </div>
 
                 {/* ── Coloana rezultat ── */}

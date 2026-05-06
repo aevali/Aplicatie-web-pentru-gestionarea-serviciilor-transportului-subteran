@@ -5,7 +5,8 @@ import './PageHome.css';
 
 /* ─── Pagina Home — călător ─── */
 export default function PageHome({ user, token, onNavigate, docStatus }) {
-    const [biletActiv, setBiletActiv] = useState(undefined); // undefined = se încarcă
+    const [biletActiv, setBiletActiv] = useState(undefined);
+    const [cooldownSec, setCooldownSec] = useState(0); // secunde ramase cooldown abonament
 
     useEffect(() => {
         if (!token) return;
@@ -16,6 +17,34 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
             .then(data => setBiletActiv(data.activ ?? null))
             .catch(() => setBiletActiv(null));
     }, [token]);
+
+    // Fetch cooldown la montare (si la fiecare 30s) — doar pentru abonamente
+    useEffect(() => {
+        if (!token) return;
+        const fetchCooldown = () => {
+            fetch(`${API}/api/bilete/cooldown`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(r => r.json())
+                .then(d => { if (d.cooldownActiv) setCooldownSec(d.secundeRamase); })
+                .catch(() => {});
+        };
+        fetchCooldown();
+        const iv = setInterval(fetchCooldown, 30000);
+        return () => clearInterval(iv);
+    }, [token]);
+
+    // Countdown local — scade o secunda pe secunda
+    useEffect(() => {
+        if (cooldownSec <= 0) return;
+        const t = setInterval(() => {
+            setCooldownSec(s => {
+                if (s <= 1) { clearInterval(t); return 0; }
+                return s - 1;
+            });
+        }, 1000);
+        return () => clearInterval(t);
+    }, [cooldownSec > 0]); // porneste/opreste cand trece de la 0 la >0
 
     const [timpCurent, setTimpCurent] = useState(new Date());
 
@@ -121,6 +150,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                                 padding: '12px',
                                 display: 'inline-block',
                                 lineHeight: 0,
+                                position: 'relative',
                             }}>
                                 <QRCodeSVG
                                     value={String(biletActiv.cod_qr)}
@@ -130,6 +160,33 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                                     level="H"
                                     includeMargin={false}
                                 />
+                                {/* Overlay cooldown peste QR */}
+                                {cooldownSec > 0 && (
+                                    <div style={{
+                                        position: 'absolute', inset: 0,
+                                        background: 'rgba(15,15,26,0.88)',
+                                        borderRadius: '12px',
+                                        display: 'flex', flexDirection: 'column',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        gap: '0.4rem',
+                                    }}>
+                                        <span style={{ fontSize: '1.6rem' }}>⏳</span>
+                                        <span style={{
+                                            fontSize: '1.5rem', fontWeight: 700,
+                                            color: '#fcd34d', fontVariantNumeric: 'tabular-nums',
+                                            letterSpacing: '0.05em',
+                                        }}>
+                                            {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
+                                            :{String(cooldownSec % 60).padStart(2, '0')}
+                                        </span>
+                                        <span style={{
+                                            fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)',
+                                            textAlign: 'center', maxWidth: '120px',
+                                        }}>
+                                            până la următoarea scanare
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
