@@ -4,7 +4,7 @@ import { API } from '../dashboardConstants';
 import './PageHome.css';
 
 /* ─── Pagina Home — călător ─── */
-export default function PageHome({ user, token, onNavigate }) {
+export default function PageHome({ user, token, onNavigate, docStatus }) {
     const [biletActiv, setBiletActiv] = useState(undefined); // undefined = se încarcă
 
     useEffect(() => {
@@ -45,13 +45,34 @@ export default function PageHome({ user, token, onNavigate }) {
         return `Abonament ${labelTip}`;
     };
 
+    // Banner documente
+    const docBanner = docStatus !== 'aprobata' && docStatus !== 'in_asteptare' ? (
+        <button
+            className={`home-doc-banner ${
+                docStatus === 'respinsa' ? 'home-doc-banner--red' : 'home-doc-banner--orange'
+            }`}
+            onClick={() => onNavigate('cont')}
+        >
+            <span className="home-doc-banner-icon">
+                {docStatus === 'respinsa' ? '❌' : '⚠️'}
+            </span>
+            <span>
+                {docStatus === 'respinsa' ? 'DOCUMENTE RESPINSE' : 'DOCUMENTE NETRIMISE'}
+            </span>
+            <span className="home-doc-banner-arrow">→</span>
+        </button>
+    ) : null;
+
     return (
         <div className="dash-section page-home">
             {/* Greeting */}
             <div className="home-greeting">
-                <h2 className="dash-section-title">
-                    Bun venit, <span>{user?.prenume ?? 'utilizator'}</span>!
-                </h2>
+                <div className="home-greeting-row">
+                    <h2 className="dash-section-title">
+                        Bun venit, <span>{user?.prenume ?? 'utilizator'}</span>!
+                    </h2>
+                    {docBanner}
+                </div>
                 <p className="home-date">{dataText}</p>
             </div>
 

@@ -162,7 +162,7 @@ export default function PageCont({ user, token, onDocStatusChange }) {
                 <div className="cont-card-header"><span className="cont-card-icon">📋</span><span className="cont-card-title">Reguli validare reduceri</span></div>
                 <div className="cont-card-body">
                     <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.38)', marginBottom: '1.1rem', lineHeight: 1.6 }}>Pentru a beneficia de reducere, documentele trimise trebuie să respecte condițiile de mai jos, specifice categoriei tale.</p>
-                    <div className="cont-reguli-grid">
+                    <div className="cont-reguli-scroll"><div className="cont-reguli-grid">
                         <div className="cont-regula-card cont-regula-card--elev">
                             <div className="cont-regula-header"><span className="cont-regula-icon">🎒</span><div><p className="cont-regula-titlu">Elev</p><p className="cont-regula-reducere">Reducere 100% — gratuit</p></div></div>
                             <ul className="cont-regula-lista">
@@ -187,7 +187,7 @@ export default function PageCont({ user, token, onDocStatusChange }) {
                                 <li><span className="cont-regula-dot" /><span className="cont-regula-text">Buletin de identitate (față + verso)</span></li>
                             </ul>
                         </div>
-                    </div>
+                    </div></div>
                 </div>
             </div>
 

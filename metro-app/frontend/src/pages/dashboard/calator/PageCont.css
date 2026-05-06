@@ -322,10 +322,32 @@
 }
 
 /* ─── Reguli validare reduceri ─── */
+.cont-reguli-scroll {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    /* scrollbar subtil */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99,102,241,0.35) transparent;
+}
+
+.cont-reguli-scroll::-webkit-scrollbar {
+    height: 5px;
+}
+
+.cont-reguli-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cont-reguli-scroll::-webkit-scrollbar-thumb {
+    background: rgba(99,102,241,0.35);
+    border-radius: 10px;
+}
+
 .cont-reguli-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.9rem;
+    min-width: 560px;
 }
 
 .cont-regula-card {
@@ -412,9 +434,7 @@
 .cont-regula-text {
     flex: 1;
     min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.45;
 }
 
 .cont-regula-lista li strong {
@@ -436,14 +456,8 @@
 .cont-regula-card--pensionar .cont-regula-dot { background: #fbbf24; }
 
 /* ─── Responsive ─── */
-@media (max-width: 720px) {
+@media (max-width: 900px) {
     .cont-reguli-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (min-width: 721px) and (max-width: 900px) {
-    .cont-reguli-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
     }
 }

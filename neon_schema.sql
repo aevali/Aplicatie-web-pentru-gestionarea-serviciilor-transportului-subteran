@@ -1,34 +1,29 @@
--- ==============================================
--- Transport Subteran — Schema PostgreSQL
--- Rulati acest fisier in baza de date creata
--- ==============================================
+-- ================================================
+-- Metro App — Schema finala pentru Neon PostgreSQL
+-- ================================================
 
--- Extensii necesare (pentru gen_random_uuid)
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- ==============================================
+-- ------------------------------------------------
 -- TIPURI ENUM
--- ==============================================
+-- ------------------------------------------------
+CREATE TYPE magistrala_tip  AS ENUM ('M1', 'M2', 'M3', 'M4', 'M5');
+CREATE TYPE rol_angajat      AS ENUM ('angajat', 'admin');
+CREATE TYPE status_cerere    AS ENUM ('in_asteptare', 'aprobata', 'respinsa');
+CREATE TYPE status_metrou    AS ENUM ('pe_traseu', 'depou');
+CREATE TYPE tip_abonament    AS ENUM ('zi', 'trei_zile', 'saptamana', 'luna', 'sase_luni', 'an');
+CREATE TYPE tip_calator      AS ENUM ('adult', 'elev', 'student', 'pensionar');
+CREATE TYPE tip_zi           AS ENUM ('lucratoare', 'weekend', 'sarbatoare');
 
-CREATE TYPE tip_calator    AS ENUM ('adult', 'elev', 'student', 'pensionar');
-CREATE TYPE magistrala_tip AS ENUM ('M1', 'M2', 'M3', 'M4', 'M5');
-CREATE TYPE status_metrou  AS ENUM ('pe_traseu', 'depou');
-CREATE TYPE tip_abonament  AS ENUM ('zi', 'trei_zile', 'saptamana', 'luna', 'sase_luni', 'an');
-CREATE TYPE tip_zi         AS ENUM ('lucratoare', 'weekend', 'sarbatoare');
-CREATE TYPE status_cerere  AS ENUM ('in_asteptare', 'aprobata', 'respinsa');
-CREATE TYPE rol_angajat    AS ENUM ('angajat', 'admin');
-
--- ==============================================
--- TABELE
--- (ordine respecta foreign key dependencies)
--- ==============================================
+-- ------------------------------------------------
+-- TABELE (ordine respecta FK dependencies)
+-- ------------------------------------------------
 
 CREATE TABLE angajati (
     id_angajat  SERIAL       PRIMARY KEY,
     nume        VARCHAR(50)  NOT NULL,
     prenume     VARCHAR(50)  NOT NULL,
-    email       VARCHAR(100) NOT NULL UNIQUE
-                CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    email       VARCHAR(100) NOT NULL UNIQUE,
     parola      VARCHAR(255) NOT NULL,
     rol         rol_angajat  NOT NULL DEFAULT 'angajat'
 );
@@ -37,8 +32,7 @@ CREATE TABLE calatori (
     id_calator  SERIAL       PRIMARY KEY,
     nume        VARCHAR(50)  NOT NULL,
     prenume     VARCHAR(50)  NOT NULL,
-    email       VARCHAR(100) NOT NULL UNIQUE
-                CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    email       VARCHAR(100) NOT NULL UNIQUE,
     cnp         CHAR(13)     NOT NULL UNIQUE,
     parola      VARCHAR(255) NOT NULL,
     tip         tip_calator  NOT NULL DEFAULT 'adult'
@@ -57,11 +51,21 @@ CREATE TABLE metrouri (
     status         status_metrou  NOT NULL DEFAULT 'depou'
 );
 
-CREATE TABLE statii_magistrale (
-    id_statie   INT            NOT NULL REFERENCES statii(id_statie),
-    magistrala  magistrala_tip NOT NULL,
-    pozitie     INT            NOT NULL, -- ordinea statiei pe magistrala (pt rutare)
-    PRIMARY KEY (id_statie, magistrala)
+CREATE TABLE setari_aplicatie (
+    cheie       VARCHAR(100) PRIMARY KEY,
+    valoare     TEXT         NOT NULL,
+    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE abonamente (
+    id_abonament       SERIAL         PRIMARY KEY,
+    id_calator         INT            NOT NULL REFERENCES calatori(id_calator),
+    tip                tip_abonament  NOT NULL,
+    data_achizitie     DATE           NOT NULL DEFAULT CURRENT_DATE,
+    data_expirare      DATE           NOT NULL,
+    pret               NUMERIC(10,2)  NOT NULL,
+    cod_qr             UUID           NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+    reducere_aplicata  BOOLEAN        NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE bilete (
@@ -70,23 +74,38 @@ CREATE TABLE bilete (
     numar_calatorii        INT            NOT NULL,
     numar_calatorii_ramase INT            NOT NULL,
     data_achizitie         DATE           NOT NULL DEFAULT CURRENT_DATE,
-    pret                   NUMERIC(10, 2) NOT NULL,
+    pret                   NUMERIC(10,2)  NOT NULL,
     cod_qr                 UUID           NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     activ                  BOOLEAN        NOT NULL DEFAULT TRUE,
-    CONSTRAINT chk_calatorii CHECK (
-        numar_calatorii_ramase >= 0 AND
-        numar_calatorii_ramase <= numar_calatorii
-    )
+    reducere_aplicata      BOOLEAN        NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE abonamente (
-    id_abonament   SERIAL         PRIMARY KEY,
-    id_calator     INT            NOT NULL REFERENCES calatori(id_calator),
-    tip            tip_abonament  NOT NULL,
-    data_achizitie DATE           NOT NULL DEFAULT CURRENT_DATE,
-    data_expirare  DATE           NOT NULL,
-    pret           NUMERIC(10, 2) NOT NULL,
-    cod_qr         UUID           NOT NULL UNIQUE DEFAULT gen_random_uuid()
+CREATE TABLE cereri_reducere (
+    id_cerere        SERIAL        PRIMARY KEY,
+    id_calator       INT           NOT NULL REFERENCES calatori(id_calator),
+    tip_solicitat    tip_calator   NOT NULL,
+    cale_document    TEXT          NOT NULL,
+    status           status_cerere NOT NULL DEFAULT 'in_asteptare',
+    id_angajat       INT           REFERENCES angajati(id_angajat),
+    motiv_respingere TEXT,
+    created_at       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE calatorii_efectuate (
+    id_calatorie  SERIAL    PRIMARY KEY,
+    id_calator    INT       NOT NULL REFERENCES calatori(id_calator),
+    id_statie     INT       NOT NULL REFERENCES statii(id_statie),
+    id_bilet      INT       REFERENCES bilete(id_bilet),
+    id_abonament  INT       REFERENCES abonamente(id_abonament),
+    scanat_la     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE statii_magistrale (
+    id_statie   INT            NOT NULL REFERENCES statii(id_statie),
+    magistrala  magistrala_tip NOT NULL,
+    pozitie     INT            NOT NULL,
+    PRIMARY KEY (id_statie, magistrala)
 );
 
 CREATE TABLE orare (
@@ -97,77 +116,40 @@ CREATE TABLE orare (
     ora_sosire TIME           NOT NULL
 );
 
-CREATE TABLE cereri_reducere (
-    id_cerere        SERIAL        PRIMARY KEY,
-    id_calator       INT           NOT NULL REFERENCES calatori(id_calator),
-    tip_solicitat    tip_calator   NOT NULL CHECK (tip_solicitat <> 'adult'),
-    cale_document    TEXT          NOT NULL,  -- ex: /uploads/doc_123.pdf
-    status           status_cerere NOT NULL DEFAULT 'in_asteptare',
-    id_angajat       INT           REFERENCES angajati(id_angajat), -- NULL pana la procesare
-    motiv_respingere TEXT,                    -- completat doar la respingere
-    created_at       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at       TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE calatorii_efectuate (
-    id_calatorie  SERIAL    PRIMARY KEY,
-    id_calator    INT       NOT NULL REFERENCES calatori(id_calator),
-    id_statie     INT       NOT NULL REFERENCES statii(id_statie),
-    id_bilet      INT       REFERENCES bilete(id_bilet),         -- NULL daca s-a folosit abonament
-    id_abonament  INT       REFERENCES abonamente(id_abonament), -- NULL daca s-a folosit bilet
-    scanat_la     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT chk_titlu_transport CHECK (
-        (id_bilet IS NOT NULL AND id_abonament IS NULL) OR
-        (id_bilet IS NULL     AND id_abonament IS NOT NULL)
-    )
-);
-
-CREATE TABLE setari_aplicatie (
-    cheie       VARCHAR(100) PRIMARY KEY,
-    valoare     TEXT         NOT NULL,
-    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE notificari (
     id_notificare  SERIAL       PRIMARY KEY,
     mesaj          TEXT         NOT NULL,
-    tip            VARCHAR(50)  NOT NULL DEFAULT 'general',
+    tip            VARCHAR(50)  NOT NULL DEFAULT 'info',
     id_calator     INT          REFERENCES calatori(id_calator),
     citita         BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TYPE status_ticket AS ENUM ('deschis', 'in_lucru', 'rezolvat', 'inchis');
-
 CREATE TABLE tickets_suport (
-    id_ticket          SERIAL        PRIMARY KEY,
-    id_calator         INT           NOT NULL REFERENCES calatori(id_calator),
-    id_angajat         INT           REFERENCES angajati(id_angajat),
-    subiect            TEXT          NOT NULL,
-    status             status_ticket NOT NULL DEFAULT 'deschis',
+    id_ticket          SERIAL       PRIMARY KEY,
+    id_calator         INT          NOT NULL REFERENCES calatori(id_calator),
+    id_angajat         INT          REFERENCES angajati(id_angajat),
+    subiect            VARCHAR(300) NOT NULL,
+    status             VARCHAR(20)  NOT NULL DEFAULT 'deschis',
     rezumat            TEXT,
-    rating             INT           CHECK (rating BETWEEN 1 AND 5),
+    rating             INT          CHECK (rating BETWEEN 1 AND 5),
     last_seen_calator  TIMESTAMPTZ,
-    created_at         TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at         TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at         TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at         TIMESTAMPTZ  NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TYPE expeditor_tip AS ENUM ('calator', 'angajat');
 
 CREATE TABLE mesaje_ticket (
-    id_mesaj       SERIAL        PRIMARY KEY,
-    id_ticket      INT           NOT NULL REFERENCES tickets_suport(id_ticket) ON DELETE CASCADE,
-    expeditor_tip  expeditor_tip NOT NULL,
-    expeditor_id   INT           NOT NULL,
-    continut       TEXT          NOT NULL,
-    created_at     TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id_mesaj       SERIAL      PRIMARY KEY,
+    id_ticket      INT         NOT NULL REFERENCES tickets_suport(id_ticket) ON DELETE CASCADE,
+    expeditor_tip  VARCHAR(10) NOT NULL,
+    expeditor_id   INT         NOT NULL,
+    continut       TEXT        NOT NULL,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
--- ==============================================
+-- ------------------------------------------------
 -- TRIGGERS: updated_at automat
--- ==============================================
+-- ------------------------------------------------
 
 CREATE OR REPLACE FUNCTION fn_update_updated_at()
 RETURNS TRIGGER AS $$
@@ -185,9 +167,9 @@ CREATE TRIGGER trg_setari_updated_at
     BEFORE UPDATE ON setari_aplicatie
     FOR EACH ROW EXECUTE FUNCTION fn_update_updated_at();
 
--- ==============================================
+-- ------------------------------------------------
 -- DATE INITIALE: Statii
--- ==============================================
+-- ------------------------------------------------
 
 INSERT INTO statii (nume, este_nod) VALUES
 ('Pantelimon',           false),
@@ -255,15 +237,13 @@ INSERT INTO statii (nume, este_nod) VALUES
 ('Academia Militara',    false),
 ('Eroilor 2',            true);
 
--- ==============================================
--- DATE INITIALE: Statii Magistrale (cu pozitie)
--- Rezolva numele la id-uri prin JOIN
--- ==============================================
+-- ------------------------------------------------
+-- DATE INITIALE: Statii Magistrale
+-- ------------------------------------------------
 
 INSERT INTO statii_magistrale (id_statie, magistrala, pozitie)
 SELECT s.id_statie, m.magistrala::magistrala_tip, m.pozitie
 FROM (VALUES
-    -- M1 (Pantelimon → Dristor 2)
     ('Pantelimon',           'M1',  1),
     ('Republica',            'M1',  2),
     ('Costin Georgian',      'M1',  3),
@@ -286,7 +266,6 @@ FROM (VALUES
     ('Iancului',             'M1', 20),
     ('Piata Muncii',         'M1', 21),
     ('Dristor 2',            'M1', 22),
-    -- M2 (Pipera → Tudor Arghezi)
     ('Pipera',               'M2',  1),
     ('Aurel Vlaicu',         'M2',  2),
     ('Aviatorilor',          'M2',  3),
@@ -302,7 +281,6 @@ FROM (VALUES
     ('Dimitrie Leonida',     'M2', 13),
     ('Berceni',              'M2', 14),
     ('Tudor Arghezi',        'M2', 15),
-    -- M3 (Anghel Saligny → Preciziei)
     ('Anghel Saligny',       'M3',  1),
     ('Nicolae Teclu',        'M3',  2),
     ('1 Decembrie 1918',     'M3',  3),
@@ -318,7 +296,6 @@ FROM (VALUES
     ('Gorjului',             'M3', 13),
     ('Pacii',                'M3', 14),
     ('Preciziei',            'M3', 15),
-    -- M4 (Gara de Nord 2 → Straulesti)
     ('Gara de Nord 2',       'M4',  1),
     ('Basarab 2',            'M4',  2),
     ('Grivita',              'M4',  3),
@@ -327,7 +304,6 @@ FROM (VALUES
     ('Parc Bazilescu',       'M4',  6),
     ('Laminorului',          'M4',  7),
     ('Straulesti',           'M4',  8),
-    -- M5 (Raul Doamnei → Eroilor 2)
     ('Raul Doamnei',         'M5',  1),
     ('Constantin Brancusi',  'M5',  2),
     ('Valea Ialomitei',      'M5',  3),
@@ -341,9 +317,9 @@ FROM (VALUES
 ) AS m(nume_statie, magistrala, pozitie)
 JOIN statii s ON s.nume = m.nume_statie;
 
--- ==============================================
+-- ------------------------------------------------
 -- DATE INITIALE: Setari aplicatie
--- ==============================================
+-- ------------------------------------------------
 
 INSERT INTO setari_aplicatie (cheie, valoare) VALUES
 ('pret_bilet_1_calatorie',    '3.00'),
@@ -354,12 +330,3 @@ INSERT INTO setari_aplicatie (cheie, valoare) VALUES
 ('pret_abonament_luna',       '70.00'),
 ('pret_abonament_an',         '700.00'),
 ('zile_reminder_abonament',   '7');
-
--- ==============================================
--- NOTA: Contul de admin initial se creeaza
--- din backend dupa ce parola e hash-uita cu bcrypt
--- Exemplu rapid (inlocuieste hash-ul real):
---
--- INSERT INTO angajati (nume, prenume, email, parola, rol)
--- VALUES ('Admin', 'System', 'admin@metrou.ro', '<bcrypt_hash>', 'admin');
--- ==============================================

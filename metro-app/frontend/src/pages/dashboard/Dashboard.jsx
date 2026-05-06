@@ -78,7 +78,7 @@ export default function Dashboard() {
             // Home — diferit per rol
             case 'overview':
                 if (rolEfectiv === 'calator')
-                    return <PageHome user={user} token={token} onNavigate={handleNav} />;
+                    return <PageHome user={user} token={token} onNavigate={handleNav} docStatus={docStatus} />;
                 return <PageOverview user={user} rol={rolEfectiv} />;
 
             // Calator
