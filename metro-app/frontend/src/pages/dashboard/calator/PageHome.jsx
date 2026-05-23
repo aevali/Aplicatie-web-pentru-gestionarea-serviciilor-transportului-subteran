@@ -160,53 +160,31 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
 
                         <div className="home-qr-frame">
                             <div style={{
-                                background: '#ffffff',
+                                background: cooldownSec > 0 ? '#8a8a8a' : '#ffffff',
                                 borderRadius: '12px',
                                 padding: '12px',
                                 display: 'inline-block',
                                 lineHeight: 0,
-                                position: 'relative',
+                                opacity: cooldownSec > 0 ? 0.45 : 1,
+                                filter: cooldownSec > 0 ? 'grayscale(1)' : 'none',
+                                transition: 'opacity 0.4s, filter 0.4s, background 0.4s',
                             }}>
                                 <QRCodeSVG
                                     value={String(biletActiv.cod_qr)}
                                     size={180}
-                                    bgColor="#ffffff"
+                                    bgColor={cooldownSec > 0 ? '#8a8a8a' : '#ffffff'}
                                     fgColor="#0f0f1a"
                                     level="H"
                                     includeMargin={false}
                                 />
-                                {/* Overlay cooldown peste QR */}
-                                {cooldownSec > 0 && (
-                                    <div style={{
-                                        position: 'absolute', inset: 0,
-                                        background: 'rgba(15,15,26,0.88)',
-                                        borderRadius: '12px',
-                                        display: 'flex', flexDirection: 'column',
-                                        alignItems: 'center', justifyContent: 'center',
-                                        gap: '0.4rem',
-                                    }}>
-                                        <span style={{ fontSize: '1.6rem' }}>⏳</span>
-                                        <span style={{
-                                            fontSize: '1.5rem', fontWeight: 700,
-                                            color: '#fcd34d', fontVariantNumeric: 'tabular-nums',
-                                            letterSpacing: '0.05em',
-                                        }}>
-                                            {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
-                                            :{String(cooldownSec % 60).padStart(2, '0')}
-                                        </span>
-                                        <span style={{
-                                            fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)',
-                                            textAlign: 'center', maxWidth: '120px',
-                                        }}>
-                                            până la următoarea scanare
-                                        </span>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
 
+                    {cooldownSec <= 0 && (
                     <p className="home-qr-hint">Prezintă acest cod la turnichet</p>
+                    )}
+
                 </div>
             ) : (
                 <div className="home-empty-card">
