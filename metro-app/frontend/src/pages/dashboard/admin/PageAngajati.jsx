@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Plus, User, Shield, Trash2, X } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import { API, normalizeazaEmail } from '../dashboardConstants';
 import './PageAngajati.css';
@@ -94,7 +95,7 @@ export default function PageAngajati() {
                     <h2 className="dash-section-title">Gestionare Angajați</h2>
                     <p className="dash-section-sub">{angajati.length} angajat{angajati.length !== 1 ? 'i' : ''} înregistrat{angajati.length !== 1 ? 'i' : ''}</p>
                 </div>
-                <button className="ang-btn-primary" onClick={() => { setShowModal(true); setFormEroare(''); }}><span>＋</span> Cont nou</button>
+                <button className="ang-btn-primary" onClick={() => { setShowModal(true); setFormEroare(''); }}><Plus size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Cont nou</button>
             </div>
 
             {successMsg && <div className="ang-toast ang-toast--success">{successMsg}</div>}
@@ -103,7 +104,7 @@ export default function PageAngajati() {
             {loading ? (
                 <div className="ang-loading"><div className="ang-spinner" /><span>Se încarcă angajații...</span></div>
             ) : angajati.length === 0 ? (
-                <div className="ang-empty"><div className="ang-empty-icon">👤</div><p>Niciun angajat înregistrat.</p><p className="ang-empty-sub">Apasă „Cont nou" pentru a adăuga primul angajat.</p></div>
+                <div className="ang-empty"><div className="ang-empty-icon"><User size={36} /></div><p>Niciun angajat înregistrat.</p><p className="ang-empty-sub">Apasă „Cont nou" pentru a adăuga primul angajat.</p></div>
             ) : (
                 <div className="ang-table-wrap">
                     <table className="ang-table">
@@ -114,7 +115,7 @@ export default function PageAngajati() {
                                     <td className="ang-td-idx">{idx + 1}</td>
                                     <td><div className="ang-name-cell"><div className="ang-avatar">{(a.prenume?.[0] ?? '?').toUpperCase()}{(a.nume?.[0] ?? '').toUpperCase()}</div><div><p className="ang-fullname">{a.prenume} {a.nume}</p>{a.id_angajat === user?.id && <span className="ang-you-badge">Tu</span>}</div></div></td>
                                     <td className="ang-td-email">{a.email}</td>
-                                    <td><span className={`ang-rol-badge ang-rol-badge--${a.rol}`}>{a.rol === 'admin' ? '🛡️ Admin' : '👷 Angajat'}</span></td>
+                                    <td><span className={`ang-rol-badge ang-rol-badge--${a.rol}`}>{a.rol === 'admin' ? <><Shield size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Admin</> : <><User size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Angajat</>}</span></td>
                                     <td>
                                         {(() => {
                                             const s = ratingMap[a.id_angajat];
@@ -159,7 +160,7 @@ export default function PageAngajati() {
                                             );
                                         })()}
                                     </td>
-                                    <td>{a.id_angajat !== user?.id ? (<button className="ang-btn-delete" onClick={() => setDeleteId(a.id_angajat)} title="Șterge angajat">🗑️</button>) : (<span className="ang-no-delete">—</span>)}</td>
+                                    <td>{a.id_angajat !== user?.id ? (<button className="ang-btn-delete" onClick={() => setDeleteId(a.id_angajat)} title="Șterge angajat"><Trash2 size={16} /></button>) : (<span className="ang-no-delete">—</span>)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -171,7 +172,7 @@ export default function PageAngajati() {
                 <>
                     <div className="ang-modal-backdrop" onClick={() => setShowModal(false)} />
                     <div className="ang-modal">
-                        <div className="ang-modal-header"><h3 className="ang-modal-title">Cont angajat nou</h3><button className="ang-modal-close" onClick={() => setShowModal(false)}>✕</button></div>
+                        <div className="ang-modal-header"><h3 className="ang-modal-title">Cont angajat nou</h3><button className="ang-modal-close" onClick={() => setShowModal(false)}><X size={20} /></button></div>
                         {emailPreview && (<div className="ang-email-preview"><span className="ang-email-preview-label">Email generat automat:</span><span className="ang-email-preview-val">{emailPreview}</span></div>)}
                         <form className="ang-form" onSubmit={handleCreare} noValidate>
                             <div className="ang-form-row">
@@ -194,11 +195,11 @@ export default function PageAngajati() {
                 <>
                     <div className="ang-modal-backdrop" onClick={() => setDeleteId(null)} />
                     <div className="ang-modal ang-modal--sm">
-                        <div className="ang-modal-header"><h3 className="ang-modal-title">Confirmare ștergere</h3><button className="ang-modal-close" onClick={() => setDeleteId(null)}>✕</button></div>
+                        <div className="ang-modal-header"><h3 className="ang-modal-title">Confirmare ștergere</h3><button className="ang-modal-close" onClick={() => setDeleteId(null)}><X size={20} /></button></div>
                         <p className="ang-confirm-text">Ești sigur că vrei să ștergi angajatul{' '}<strong>{angajati.find(a => a.id_angajat === deleteId)?.prenume}{' '}{angajati.find(a => a.id_angajat === deleteId)?.nume}</strong>?<br />Această acțiune este ireversibilă.</p>
                         <div className="ang-form-actions">
                             <button className="ang-btn-secondary" onClick={() => setDeleteId(null)}>Anulează</button>
-                            <button className="ang-btn-danger" onClick={() => handleStergere(deleteId)}>🗑️ Șterge</button>
+                            <button className="ang-btn-danger" onClick={() => handleStergere(deleteId)}><Trash2 size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Șterge</button>
                         </div>
                     </div>
                 </>

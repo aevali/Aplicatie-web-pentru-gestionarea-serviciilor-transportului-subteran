@@ -1,543 +1,346 @@
 /* ════════════════════════════════════════
-   PAGE BILETELE MELE
-════════════════════════════════════════ */
+   PAGE BILETELE — RECEIPT / BON TERMIC
+   ════════════════════════════════════════ */
 .bilete-page {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    max-width: 820px;
-}
-
-.bilete-header {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.bilete-title {
-    font-size: 1.45rem;
-    font-weight: 800;
-    color: #e2e8f0;
-    letter-spacing: -0.5px;
-}
-
-.bilete-sub {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.38);
-}
-
-.bilete-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-/* ─── Card bilet ─── */
-.bilet-card {
-    position: relative;
-    overflow: hidden;
-    background: rgba(10,15,35,0.75);
-    border: 1.5px solid rgba(99,102,241,0.18);
-    border-radius: 20px;
-    padding: 1.4rem 1.5rem;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    animation: fadeUp 0.3s ease both;
-}
-
-.bilet-card--activ {
-    border-color: rgba(99,102,241,0.5);
-    background: rgba(14,18,48,0.88);
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.15),
-                0 12px 48px rgba(99,102,241,0.18);
-}
-
-.bilet-card--activ::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6, #3b82f6);
-    border-radius: 20px 20px 0 0;
-}
-
-.bilet-card--inactiv {
-    opacity: 0.55;
-    filter: grayscale(0.4);
-    border-color: rgba(255,255,255,0.06);
-}
-
-/* ─── Layout interior ─── */
-.bilet-card-inner {
-    display: flex;
-    align-items: flex-start;
     gap: 1.25rem;
-    flex-wrap: wrap;
+    max-width: 520px;
+    animation: fadeUp 0.35s var(--ease-out) both;
 }
 
-.bilet-card-icon-wrap {
-    width: 52px;
-    height: 52px;
-    border-radius: 15px;
-    flex-shrink: 0;
+.bilete-header { display: flex; flex-direction: column; gap: 0.3rem; }
+.bilete-title { font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text-primary); }
+.bilete-sub { font-size: 0.84rem; color: var(--text-secondary); }
+
+.bilete-lista { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* ═══════════════════════════════════════════════
+   RECEIPT — Thermal ticket style
+   ═══════════════════════════════════════════════ */
+.receipt {
+    position: relative;
+    background: #1a1e2e;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    font-family: 'Courier New', 'Consolas', monospace;
+    animation: fadeUp 0.3s var(--ease-out) both;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.receipt--activ { border-color: rgba(37,99,235,0.15); }
+.receipt--inactiv { opacity: 0.45; }
+
+/* ── Zigzag edges ── */
+.receipt-zigzag {
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    height: 10px;
+    z-index: 2;
+}
+
+.receipt-zigzag--top {
+    top: -10px;
+    background: linear-gradient(135deg, #1a1e2e 33.33%, transparent 33.33%) 0 0,
+                linear-gradient(225deg, #1a1e2e 33.33%, transparent 33.33%) 0 0;
+    background-size: 12px 10px;
+    background-repeat: repeat-x;
+    background-position: left top;
+}
+
+.receipt-zigzag--bottom {
+    bottom: -10px;
+    background: linear-gradient(315deg, #1a1e2e 33.33%, transparent 33.33%) 0 0,
+                linear-gradient(45deg, #1a1e2e 33.33%, transparent 33.33%) 0 0;
+    background-size: 12px 10px;
+    background-repeat: repeat-x;
+    background-position: left bottom;
+}
+
+/* ── Receipt header ── */
+.receipt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.receipt-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.receipt-logo-icon {
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
-    background: rgba(99,102,241,0.12);
-    border: 1px solid rgba(99,102,241,0.22);
-}
-
-.bilet-card--inactiv .bilet-card-icon-wrap {
-    background: rgba(255,255,255,0.04);
-    border-color: rgba(255,255,255,0.08);
-}
-
-.bilet-card-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-}
-
-.bilet-card-top {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-}
-
-/* ─── Badges ─── */
-.bilet-card-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.22rem 0.65rem;
-    border-radius: 50px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-}
-
-.bilet-card-badge--activ-bilet {
-    background: rgba(99,102,241,0.18);
-    border: 1px solid rgba(99,102,241,0.4);
-    color: #c7d2fe;
-}
-
-.bilet-card-badge--activ-abon {
-    background: rgba(34,197,94,0.12);
-    border: 1px solid rgba(34,197,94,0.3);
-    color: #86efac;
-}
-
-.bilet-card-badge--inactiv {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.3);
-}
-
-.bilet-card-badge--reducere {
-    background: rgba(34,197,94,0.1);
-    border: 1px solid rgba(34,197,94,0.25);
-    color: #86efac;
-}
-
-/* ─── Titlu & meta ─── */
-.bilet-card-title {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.88);
-    letter-spacing: -0.2px;
-}
-
-.bilet-card--inactiv .bilet-card-title {
-    color: rgba(255,255,255,0.45);
-}
-
-.bilet-card-meta {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.bilet-card-meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-}
-
-.bilet-card-meta-label {
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: rgba(165,180,252,0.5);
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-}
-
-.bilet-card-meta-value {
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.7);
-    font-weight: 500;
-}
-
-/* ─── Progress bar ─── */
-.bilet-card-progress {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.bilet-card-progress-bar {
-    height: 6px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 50px;
-    overflow: hidden;
-}
-
-.bilet-card-progress-fill {
-    height: 100%;
-    border-radius: 50px;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
-    transition: width 0.6s ease;
-}
-
-/* ─── Acțiuni ─── */
-.bilet-card-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-}
-
-.bilet-btn-annul {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.5rem 1rem;
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.28);
-    border-radius: 10px;
-    color: #fca5a5;
-    font-size: 0.8rem;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background 0.18s;
-    white-space: nowrap;
-}
-
-.bilet-btn-annul:hover {
-    background: rgba(239,68,68,0.2);
-}
-
-.bilet-btn-reinnoieste {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(139,92,246,0.18));
-    border: 1px solid rgba(99,102,241,0.45);
-    border-radius: 10px;
-    color: #c7d2fe;
-    font-size: 0.8rem;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    box-shadow: 0 2px 12px rgba(99,102,241,0.2);
-}
-
-.bilet-btn-reinnoieste:hover {
-    background: linear-gradient(135deg, rgba(99,102,241,0.38), rgba(139,92,246,0.28));
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(99,102,241,0.3);
-}
-
-.bilet-btn-reinnoieste:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* ─── Preț inline ─── */
-.bilet-card-pret {
-    margin-left: auto;
-    font-size: 0.97rem;
+    font-family: 'Outfit', sans-serif;
     font-weight: 800;
-    color: #a5b4fc;
-    letter-spacing: -0.5px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: #fff;
 }
 
-.bilet-card--inactiv .bilet-card-pret {
-    color: rgba(255,255,255,0.25);
-}
-
-/* ─── Banner reînnoire ─── */
-.bilet-reinnoieste-banner {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.65rem 0.9rem;
-    background: rgba(99,102,241,0.08);
-    border: 1px solid rgba(99,102,241,0.2);
-    border-radius: 10px;
-    font-size: 0.78rem;
-    color: rgba(165,180,252,0.8);
-    margin-top: 0.1rem;
-}
-
-/* ─── Empty state ─── */
-.bilete-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 4rem 2rem;
-    text-align: center;
-    background: rgba(10,15,35,0.5);
-    border: 1px dashed rgba(99,102,241,0.18);
-    border-radius: 20px;
-}
-
-.bilete-empty-icon {
-    font-size: 3.5rem;
-    opacity: 0.35;
-}
-
-.bilete-empty-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.4);
-}
-
-.bilete-empty-desc {
-    font-size: 0.84rem;
-    color: rgba(255,255,255,0.25);
-    max-width: 280px;
-    line-height: 1.6;
-}
-
-.bilete-empty-btn {
-    margin-top: 0.5rem;
-    padding: 0.65rem 1.5rem;
-    background: rgba(99,102,241,0.15);
-    border: 1px solid rgba(99,102,241,0.35);
-    border-radius: 11px;
-    color: #a5b4fc;
-    font-size: 0.9rem;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background 0.18s;
-}
-
-.bilete-empty-btn:hover {
-    background: rgba(99,102,241,0.25);
-}
-
-/* ─── Modal anulare / reînnoire ─── */
-.bilete-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    z-index: 400;
-    backdrop-filter: blur(5px);
-}
-
-.bilete-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 401;
-    width: min(440px, 95vw);
-    background: rgba(10,14,36,0.98);
-    border: 1px solid rgba(99,102,241,0.28);
-    border-radius: 22px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.6),
-                0 0 60px rgba(99,102,241,0.1);
-    animation: dropIn 0.22s cubic-bezier(0.16,1,0.3,1) both;
-    padding: 1.75rem 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.bilete-modal--danger {
-    border-color: rgba(239,68,68,0.3);
-}
-
-.bilete-modal--reinnoieste {
-    width: min(520px, 96vw);
-}
-
-.bilete-modal-top {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.bilete-modal-icon {
-    font-size: 2.2rem;
-    flex-shrink: 0;
-    line-height: 1;
-}
-
-.bilete-modal-texts {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-}
-
-.bilete-modal-title {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: #e2e8f0;
-}
-
-.bilete-modal-message {
-    font-size: 0.84rem;
-    color: rgba(255,255,255,0.45);
-    line-height: 1.6;
-}
-
-.bilete-modal-actions {
-    display: flex;
-    gap: 0.7rem;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-}
-
-/* ─── Grid opțiuni reînnoire ─── */
-.reinnoi-optiuni {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.7rem;
-}
-
-.reinnoi-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 1rem 0.6rem 0.9rem;
-    background: rgba(99,102,241,0.06);
-    border: 1.5px solid rgba(99,102,241,0.18);
-    border-radius: 16px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.reinnoi-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(99,102,241,0.18), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.reinnoi-card:hover:not(:disabled)::before { opacity: 1; }
-
-.reinnoi-card:hover:not(:disabled) {
-    border-color: rgba(99,102,241,0.45);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99,102,241,0.18);
-}
-
-.reinnoi-card--selected {
-    border-color: rgba(99,102,241,0.75) !important;
-    background: rgba(99,102,241,0.2) !important;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.25),
-                0 8px 24px rgba(99,102,241,0.22) !important;
-    transform: translateY(-2px);
-}
-
-.reinnoi-card--selected::before { opacity: 1 !important; }
-
-.reinnoi-card--selected::after {
-    content: '✓';
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #6366f1;
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 900;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 18px;
-    text-align: center;
-}
-
-.reinnoi-card:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-
-.reinnoi-card-icon { font-size: 1.6rem; line-height: 1; }
-
-.reinnoi-card-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.82);
-}
-
-.reinnoi-card-pret {
+.receipt-logo-text {
+    font-family: 'Outfit', sans-serif;
     font-size: 0.78rem;
     font-weight: 600;
-    color: #a5b4fc;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
 }
 
-.reinnoi-card-pret--redus {
-    font-size: 0.82rem;
-    font-weight: 800;
-    color: #86efac;
-}
-
-.reinnoi-card-pret-vechi {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.28);
-    text-decoration: line-through;
-}
-
-.reinnoi-card-badge-reducere {
-    display: inline-block;
-    padding: 0.1rem 0.45rem;
-    border-radius: 50px;
+.receipt-status {
     font-size: 0.62rem;
     font-weight: 800;
-    letter-spacing: 0.4px;
-    background: rgba(34,197,94,0.18);
-    border: 1px solid rgba(34,197,94,0.35);
-    color: #86efac;
-    margin-top: 1px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
 }
 
-/* ─── Responsive ─── */
-@media (max-width: 480px) {
-    .reinnoi-optiuni {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .bilete-modal--reinnoieste {
-        width: 95vw;
-    }
+.receipt-status--activ {
+    color: #6ee7b7;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.2);
+}
+
+.receipt-status--inactiv {
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ── Separator ── */
+.receipt-separator {
+    border: none;
+    border-top: 1px dashed rgba(255,255,255,0.1);
+    margin: 0.75rem 0;
+}
+
+/* ── Title ── */
+.receipt-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 0.35rem 0;
+}
+
+/* ── Body rows ── */
+.receipt-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.35rem 0;
+}
+
+.receipt-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.receipt-row-label {
+    flex-shrink: 0;
+    font-weight: 400;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+}
+
+.receipt-row-dots {
+    flex: 1;
+    border-bottom: 1px dotted rgba(255,255,255,0.08);
+    margin: 0 0.25rem;
+    min-width: 20px;
+    align-self: center;
+}
+
+.receipt-row-value {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+}
+
+.receipt-row--discount .receipt-row-value { color: #6ee7b7; }
+.receipt-row--muted .receipt-row-value { color: var(--text-muted); }
+
+/* ── Progress bar ── */
+.receipt-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin: 0.5rem 0 0.15rem;
+}
+
+.receipt-progress-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.receipt-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.5s var(--ease-out);
+}
+
+.receipt-progress-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-align: right;
+    letter-spacing: 0.3px;
+}
+
+/* ── Alert banner ── */
+.receipt-alert {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fcd34d;
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.15);
+    border-radius: 3px;
+    padding: 0.4rem 0.6rem;
+    margin: 0.35rem 0;
+    text-align: center;
+}
+
+/* ── Footer ── */
+.receipt-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.receipt-ref {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.receipt-date {
+    font-size: 0.62rem;
+    color: var(--text-muted);
+}
+
+/* ── Actions ── */
+.receipt-actions {
+    display: flex;
+    gap: 0.45rem;
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+}
+
+.receipt-btn {
+    flex: 1;
+    padding: 0.45rem 0.75rem;
+    border: none;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background var(--transition-fast), transform 0.1s;
+}
+
+.receipt-btn:hover { transform: translateY(-1px); }
+
+.receipt-btn--renew {
+    background: var(--accent-muted);
+    color: #93c5fd;
+    border: 1px solid rgba(37,99,235,0.15);
+}
+.receipt-btn--renew:hover { background: rgba(37,99,235,0.2); }
+
+.receipt-btn--cancel {
+    background: var(--danger-muted);
+    color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.12);
+}
+.receipt-btn--cancel:hover { background: rgba(239,68,68,0.15); }
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════ */
+.bilete-empty {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.75rem; padding: 3rem 2rem; text-align: center;
+    background: var(--bg-card); border: 1px dashed var(--border-hover);
+    border-radius: var(--radius-xl); animation: fadeUp 0.35s ease both;
+}
+.bilete-empty-icon { font-size: 2.5rem; opacity: 0.7; }
+.bilete-empty-title { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.bilete-empty-desc { font-size: 0.82rem; color: var(--text-secondary); max-width: 280px; }
+.bilete-empty-btn {
+    margin-top: 0.2rem; padding: 0.6rem 1.35rem; background: var(--accent);
+    border: none; border-radius: var(--radius-md); color: #fff;
+    font-size: 0.85rem; font-weight: 600; font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: background var(--transition-fast); box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.bilete-empty-btn:hover { background: var(--accent-hover); }
+
+/* ═══════════════════════════════════════════════
+   MODALS
+   ═══════════════════════════════════════════════ */
+.bilete-modal-backdrop { position: fixed; inset: 0; background: var(--bg-overlay); z-index: 400; backdrop-filter: blur(4px); }
+.bilete-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 401;
+    width: min(440px, 92vw); background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);
+    padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+    animation: fadeUp 0.25s var(--ease-out) both;
+}
+
+.bilete-modal-top { display: flex; align-items: flex-start; gap: 0.85rem; }
+.bilete-modal-icon { font-size: 1.75rem; line-height: 1; flex-shrink: 0; }
+.bilete-modal-texts { display: flex; flex-direction: column; gap: 0.3rem; }
+.bilete-modal-title { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0; }
+.bilete-modal-message { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.55; margin: 0; }
+.bilete-modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; }
+
+/* ── Reînnoire opțiuni ── */
+.reinnoi-optiuni { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+
+.reinnoi-card {
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    padding: 0.75rem 0.4rem; background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform 0.1s;
+}
+
+.reinnoi-card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+.reinnoi-card--selected { border-color: var(--accent); background: var(--accent-muted); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+.reinnoi-card-icon { font-size: 1.15rem; }
+.reinnoi-card-label { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); }
+.reinnoi-card-pret { font-size: 0.8rem; font-weight: 700; color: var(--accent-hover); }
+.reinnoi-card-pret-vechi { font-size: 0.65rem; color: var(--text-muted); text-decoration: line-through; }
+.reinnoi-card-pret--redus { color: var(--success); }
+.reinnoi-card-badge-reducere {
+    font-size: 0.58rem; font-weight: 700; color: #6ee7b7;
+    background: var(--success-muted); border: 1px solid rgba(16,185,129,0.2);
+    padding: 0.05rem 0.3rem; border-radius: 50px;
+}
+
+@media (max-width: 500px) {
+    .reinnoi-optiuni { grid-template-columns: repeat(2, 1fr); }
+    .receipt { padding: 1rem 1.1rem; }
 }

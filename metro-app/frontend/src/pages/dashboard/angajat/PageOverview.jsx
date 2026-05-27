@@ -1,14 +1,15 @@
 /* ─── Pagina Home — Admin & Angajat ─── */
+import { CheckCircle, Clock, Users, Ticket, TrendingUp } from 'lucide-react';
 export default function PageOverview({ user, rol }) {
     const cards = {
         angajat: [
-            { icon: '✅', title: 'Bilete validate azi', value: '0',  sub: 'nicio validare' },
-            { icon: '⏱️', title: 'Ore tură',            value: '0h', sub: 'tură neîncepută' },
+            { Icon: CheckCircle, title: 'Bilete validate azi', value: '0',  sub: 'nicio validare' },
+            { Icon: Clock, title: 'Ore tură',            value: '0h', sub: 'tură neîncepută' },
         ],
         admin: [
-            { icon: '👥', title: 'Angajați activi',    value: '—', sub: 'se încarcă...' },
-            { icon: '🎫', title: 'Bilete vândute azi', value: '—', sub: 'se încarcă...' },
-            { icon: '📈', title: 'Venituri totale',    value: '—', sub: 'se încarcă...' },
+            { Icon: Users, title: 'Angajați activi',    value: '—', sub: 'se încarcă...' },
+            { Icon: Ticket, title: 'Bilete vândute azi', value: '—', sub: 'se încarcă...' },
+            { Icon: TrendingUp, title: 'Venituri totale',    value: '—', sub: 'se încarcă...' },
         ],
     };
     const items = cards[rol] ?? [];
@@ -24,7 +25,7 @@ export default function PageOverview({ user, rol }) {
             <div className="dash-stats">
                 {items.map(c => (
                     <div className="dash-stat-card" key={c.title}>
-                        <div className="dash-stat-icon">{c.icon}</div>
+                        <div className="dash-stat-icon"><c.Icon size={24} /></div>
                         <div className="dash-stat-body">
                             <p className="dash-stat-value">{c.value}</p>
                             <p className="dash-stat-label">{c.title}</p>

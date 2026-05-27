@@ -1,0 +1,245 @@
+/* ════════════════════════════════════════
+   PAGE TURIȘTI — ADMIN
+   ════════════════════════════════════════ */
+.tur-page {
+    animation: fadeUp 0.35s var(--ease-out) both;
+}
+
+/* ─── Stat cards ─── */
+.tur-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.tur-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tur-stat-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.tur-stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tur-stat-card--blue .tur-stat-icon   { background: rgba(37, 99, 235, 0.12);  color: #60a5fa; }
+.tur-stat-card--green .tur-stat-icon  { background: rgba(16, 185, 129, 0.12); color: #6ee7b7; }
+.tur-stat-card--purple .tur-stat-icon { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
+.tur-stat-card--amber .tur-stat-icon  { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+
+.tur-stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+}
+
+.tur-stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.tur-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ─── Search ─── */
+.tur-search-wrap {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.tur-search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.tur-search-input {
+    width: 100%;
+    padding: 0.65rem 0.85rem 0.65rem 2.5rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.tur-search-input:focus {
+    border-color: var(--accent);
+    background: var(--bg-input-focus);
+    box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.tur-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* ─── Table specifics ─── */
+.tur-table th,
+.tur-table td {
+    white-space: nowrap;
+}
+
+/* Country cell */
+.tur-country {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.tur-country-icon {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+/* Passport */
+.tur-td-passport {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #93c5fd;
+    letter-spacing: 0.3px;
+}
+
+/* Plan badge */
+.tur-plan-badge {
+    display: inline-block;
+    padding: 0.18rem 0.55rem;
+    background: var(--accent-muted);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #93c5fd;
+    white-space: nowrap;
+}
+
+/* Price */
+.tur-td-price {
+    font-weight: 700;
+    color: #fbbf24 !important;
+    font-size: 0.85rem;
+}
+
+/* Station */
+.tur-station {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.tur-station-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+/* Code */
+.tur-cod {
+    font-family: 'Outfit', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--accent-warm);
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.5px;
+}
+
+/* Status badges */
+.tur-status {
+    display: inline-block;
+    padding: 0.18rem 0.55rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tur-status--active {
+    background: var(--success-muted);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #6ee7b7;
+}
+
+.tur-status--pending {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+.tur-status--expired {
+    background: var(--danger-muted);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+/* Date */
+.tur-td-date {
+    font-size: 0.78rem;
+    color: var(--text-muted) !important;
+}
+
+/* Spin animation for refresh */
+.tur-spin {
+    animation: spinRefresh 1s linear infinite;
+}
+
+@keyframes spinRefresh {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+    .tur-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .tur-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* Ascunde coloanele mai puțin importante pe mobil */
+    .tur-table th:nth-child(4),
+    .tur-table td:nth-child(4),
+    .tur-table th:nth-child(7),
+    .tur-table td:nth-child(7),
+    .tur-table th:nth-child(10),
+    .tur-table td:nth-child(10) {
+        display: none;
+    }
+}

@@ -1,12 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { API } from '../dashboardConstants';
+import { XCircle, AlertTriangle, Hourglass, Calendar, Ticket, CheckCircle, MapPin, X, CreditCard } from 'lucide-react';
 import './PageHome.css';
+
+const LINE_COLORS = { M1: '#FFD200', M2: '#2B78E4', M3: '#E4002B', M4: '#00A651', M5: '#F58220' };
 
 /* ─── Pagina Home — călător ─── */
 export default function PageHome({ user, token, onNavigate, docStatus }) {
     const [biletActiv, setBiletActiv] = useState(undefined);
-    const [cooldownSec, setCooldownSec] = useState(0); // secunde ramase cooldown abonament
+    const [cooldownSec, setCooldownSec] = useState(0);
+
+    /* Station picker state */
+    const [stations, setStations] = useState([]);
+    const [statiePlecare, setStatiePlecare] = useState(null);
+    const [statieQuery, setStatieQuery] = useState('');
+    const [showStatieDrop, setShowStatieDrop] = useState(false);
+    const statieRef = useRef(null);
 
     useEffect(() => {
         if (!token) return;
@@ -17,6 +27,29 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
             .then(data => setBiletActiv(data.activ ?? null))
             .catch(() => setBiletActiv(null));
     }, [token]);
+
+    /* Fetch stations for picker */
+    useEffect(() => {
+        fetch(`${API}/api/statii`)
+            .then(r => r.json())
+            .then(d => setStations(d.statii || []))
+            .catch(() => {});
+    }, []);
+
+    /* Close station dropdown on outside click */
+    useEffect(() => {
+        const handler = (e) => {
+            if (statieRef.current && !statieRef.current.contains(e.target)) setShowStatieDrop(false);
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    const filteredStations = stations.filter(s => {
+        if (!statieQuery.trim()) return true;
+        const q = statieQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return s.nume.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q);
+    });
 
     // Fetch cooldown la montare (si la fiecare 30s) — doar pentru abonamente
     useEffect(() => {
@@ -83,7 +116,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
             onClick={() => onNavigate('cont')}
         >
             <span className="home-doc-banner-icon">
-                {docStatus === 'respinsa' ? '❌' : '⚠️'}
+                {docStatus === 'respinsa' ? <XCircle size={16} /> : <AlertTriangle size={16} />}
             </span>
             <span>
                 {docStatus === 'respinsa' ? 'DOCUMENTE RESPINSE' : 'DOCUMENTE NETRIMISE'}
@@ -118,7 +151,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                 <div className="home-qr-card">
                     <div className="home-qr-header">
                         <div className="home-qr-badge">
-                            {biletActiv.tip === 'abonament' ? '📅 Abonament activ' : '🎫 Bilet activ'}
+                            {biletActiv.tip === 'abonament' ? <><Calendar size={14} /> Abonament activ</> : <><Ticket size={14} /> Bilet activ</>}
                         </div>
                         <p className="home-qr-desc">{descriereTitlu()}</p>
                         {biletActiv.tip === 'abonament' && biletActiv.data_expirare && (
@@ -137,7 +170,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                                 padding: '0.2rem 0.65rem',
                                 background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.3)',
                                 borderRadius: '50px', fontSize: '0.72rem', color: '#86efac', fontWeight: 600,
-                            }}>✅ Reducere aplicată</span>
+                            }}><CheckCircle size={12} style={{ display: 'inline', verticalAlign: 'middle' }} /> Reducere aplicată</span>
                         )}
                     </div>
 
@@ -147,7 +180,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                         {/* Banner cooldown deasupra QR (doar abonament) */}
                         {biletActiv.tip === 'abonament' && cooldownSec > 0 && (
                             <div className="home-cooldown-banner">
-                                <span className="home-cooldown-icon">⏳</span>
+                                <span className="home-cooldown-icon"><Hourglass size={16} /></span>
                                 <div className="home-cooldown-text">
                                     <span className="home-cooldown-timer">
                                         {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
@@ -185,10 +218,58 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                     <p className="home-qr-hint">Prezintă acest cod la turnichet</p>
                     )}
 
+                    {/* Station picker */}
+                    <div className="home-station-picker" ref={statieRef}>
+                        <div className="home-station-selected">
+                            {statiePlecare ? (
+                                <>
+                                    <span className="home-station-pin"><MapPin size={14} /></span>
+                                    <span className="home-station-name">{statiePlecare.nume}</span>
+                                    <div className="home-station-mags">
+                                        {(statiePlecare.magistrale || []).map(m => (
+                                            <span key={m.magistrala} className="home-station-mag" style={{ background: LINE_COLORS[m.magistrala] }}>{m.magistrala}</span>
+                                        ))}
+                                    </div>
+                                    <button className="home-station-clear" onClick={(e) => { e.stopPropagation(); setStatiePlecare(null); setStatieQuery(''); }}><X size={12} /></button>
+                                </>
+                            ) : (
+                                <span className="home-station-placeholder" onClick={() => setShowStatieDrop(true)}><MapPin size={13} style={{ display: 'inline', verticalAlign: 'middle' }} /> Selectează stația de plecare</span>
+                            )}
+                        </div>
+
+                        {!statiePlecare && (
+                            <input
+                                className="home-station-input"
+                                type="text"
+                                placeholder="Caută stația..."
+                                value={statieQuery}
+                                onChange={e => { setStatieQuery(e.target.value); setShowStatieDrop(true); }}
+                                onFocus={() => setShowStatieDrop(true)}
+                                autoComplete="off"
+                            />
+                        )}
+
+                        {showStatieDrop && !statiePlecare && (
+                            <div className="home-station-dropdown">
+                                {filteredStations.slice(0, 8).map(s => (
+                                    <button key={s.id_statie} className="home-station-option" onClick={() => { setStatiePlecare(s); setStatieQuery(''); setShowStatieDrop(false); }}>
+                                        <span>{s.nume}</span>
+                                        <span className="home-station-option-mags">
+                                            {(s.magistrale || []).map(m => (
+                                                <span key={m.magistrala} className="home-station-mag" style={{ background: LINE_COLORS[m.magistrala] }}>{m.magistrala}</span>
+                                            ))}
+                                        </span>
+                                    </button>
+                                ))}
+                                {filteredStations.length === 0 && <div className="home-station-empty">Nicio stație găsită</div>}
+                            </div>
+                        )}
+                    </div>
+
                 </div>
             ) : (
                 <div className="home-empty-card">
-                    <div className="home-empty-icon">🎫</div>
+                    <div className="home-empty-icon"><Ticket size={40} /></div>
                     <h3 className="home-empty-title">Niciun bilet sau abonament activ</h3>
                     <p className="home-empty-desc">
                         Nu ai niciun titlu de călătorie valabil în acest moment.
@@ -198,7 +279,7 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
                         className="home-cta-btn"
                         onClick={() => onNavigate('cumparare')}
                     >
-                        <span>💳</span>
+                        <span><CreditCard size={16} /></span>
                         <span>Cumpără bilet sau abonament</span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" strokeWidth="2.5"

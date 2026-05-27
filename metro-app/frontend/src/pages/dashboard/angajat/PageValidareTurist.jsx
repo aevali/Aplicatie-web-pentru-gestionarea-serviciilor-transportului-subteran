@@ -1,17 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { User, School, GraduationCap, House, CheckCircle, XCircle, Ticket, Calendar, Hourglass, CameraOff, AlertTriangle, Scan, Camera, Smartphone } from 'lucide-react';
+import { Globe, CheckCircle, XCircle, Plane, MapPin, Calendar, CameraOff, AlertTriangle, Scan, Camera, Smartphone, Keyboard } from 'lucide-react';
 import jsQR from 'jsqr';
 import { API } from '../dashboardConstants';
-import './PageValidare.css';
+import '../angajat/PageValidare.css';
+import './PageValidareTurist.css';
 
-const TIP_LABEL = {
-    adult:     { label: 'Adult',     Icon: User, cls: 'adult'     },
-    elev:      { label: 'Elev',      Icon: School, cls: 'elev'      },
-    student:   { label: 'Student',   Icon: GraduationCap, cls: 'student'   },
-    pensionar: { label: 'Pensionar', Icon: House, cls: 'pensionar' },
-};
-
-export default function PageValidare({ token }) {
+export default function PageValidareTurist({ token }) {
     const videoRef    = useRef(null);
     const canvasRef   = useRef(null);
     const streamRef   = useRef(null);
@@ -21,20 +15,8 @@ export default function PageValidare({ token }) {
     const [camStatus, setCamStatus] = useState('loading');
     const [rezultat,  setRezultat]  = useState(null);
     const [loading,   setLoading]   = useState(false);
-    const [cooldownSec, setCooldownSec] = useState(0); // countdown dupa scanare abonament
-
-    // Countdown local dupa scanare abonament
-    useEffect(() => {
-        if (cooldownSec <= 0) return;
-        const t = setInterval(() => {
-            setCooldownSec(s => {
-                if (s <= 1) { clearInterval(t); return 0; }
-                return s - 1;
-            });
-        }, 1000);
-        return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cooldownSec > 0]);
+    const [manualCod, setManualCod] = useState('');
+    const [showManual, setShowManual] = useState(false);
 
     /* ── Pornire camera ── */
     const pornesteCamera = useCallback(async () => {
@@ -95,7 +77,7 @@ export default function PageValidare({ token }) {
             });
 
             if (cod) {
-                trimiteScan(cod.data);
+                trimiteScan(cod.data, 'qr');
                 return;
             }
             rafRef.current = requestAnimationFrame(scan);
@@ -107,35 +89,43 @@ export default function PageValidare({ token }) {
     }, [camStatus]);
 
     /* ── Apel API ── */
-    const trimiteScan = async (codQr) => {
-        if (!scanningRef.current) return;
+    const trimiteScan = async (cod, tip = 'qr') => {
+        if (!scanningRef.current && tip === 'qr') return;
         scanningRef.current = false;
         setLoading(true);
 
         try {
-            const r = await fetch(`${API}/api/validare/scaneaza`, {
-                method:  'POST',
+            const r = await fetch(`${API}/api/turisti/valideaza`, {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                body:    JSON.stringify({ cod_qr: codQr }),
+                body: JSON.stringify({ cod, tip }),
             });
             const data = await r.json();
             setRezultat({ ...data, status: r.status });
-            // Porneste countdown de 15 min dupa scanare abonament cu succes
-            if (data.ok && data.tip === 'abonament') {
-                setCooldownSec(15 * 60);
-            }
         } catch {
-            setRezultat({ ok: false, mesaj: <><XCircle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Eroare de rețea. Verifică conexiunea și încearcă din nou.</>, status: 500 });
+            setRezultat({
+                ok: false,
+                mesaj: 'Eroare de rețea. Verifică conexiunea și încearcă din nou.',
+                status: 500,
+            });
         } finally {
             setLoading(false);
         }
+    };
+
+    /* ── Introducere manuala ── */
+    const handleManualSubmit = (e) => {
+        e.preventDefault();
+        const cod = manualCod.trim().toUpperCase();
+        if (!cod) return;
+        trimiteScan(cod, 'manual');
     };
 
     /* ── Resetare ── */
     const reseteaza = () => {
         setRezultat(null);
         setLoading(false);
-        // Nu resetam cooldownSec — continua sa numere
+        setManualCod('');
         scanningRef.current = true;
 
         const scan = () => {
@@ -152,7 +142,7 @@ export default function PageValidare({ token }) {
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const cod = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
-            if (cod) { trimiteScan(cod.data); return; }
+            if (cod) { trimiteScan(cod.data, 'qr'); return; }
             rafRef.current = requestAnimationFrame(scan);
         };
         rafRef.current = requestAnimationFrame(scan);
@@ -161,49 +151,50 @@ export default function PageValidare({ token }) {
     /* ── Render card rezultat ── */
     const renderRezultat = () => {
         if (!rezultat) return null;
-        const { ok, calator, mesaj, tip, titlu } = rezultat;
-        const tipInfo = TIP_LABEL[calator?.tip_calator] ?? TIP_LABEL.adult;
+        const { ok, pass, mesaj } = rezultat;
 
         return (
             <div className={`val-result-card ${ok ? 'val-result-card--ok' : 'val-result-card--err'}`}>
                 <div className="val-result-icon">{ok ? <CheckCircle size={48} /> : <XCircle size={48} />}</div>
 
-                {calator && (
+                {ok && pass && (
                     <div className="val-result-calator">
                         <h3 className="val-result-name">
-                            {calator.prenume} {calator.nume}
+                            Tourist — {pass.tara}
                         </h3>
-                        <span className={`val-result-tip val-result-tip--${tipInfo.cls}`}>
-                            <tipInfo.Icon size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> {tipInfo.label}
+                        <span className="vt-tourist-badge">
+                            <Globe size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Tourist Pass
                         </span>
-                        {tip === 'bilet' && titlu && (
-                            <p className="val-result-titlu">
-                                <Ticket size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Bilet — {titlu.calatorii_ramase} / {titlu.numar_calatorii} călătorii rămase
-                            </p>
-                        )}
-                        {tip === 'abonament' && titlu && (
-                            <p className="val-result-titlu">
-                                <Calendar size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Abonament — valabil până la{' '}
-                                <strong>
-                                    {new Date(titlu.data_expirare).toLocaleDateString('ro-RO', {
+
+                        <div className="vt-pass-details">
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Email</span>
+                                <span className="vt-detail-value">{pass.email}</span>
+                            </div>
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Pașaport</span>
+                                <span className="vt-detail-value">{pass.pasaport || '—'}</span>
+                            </div>
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Plan</span>
+                                <span className="vt-detail-value">{pass.zile} {pass.zile === 1 ? 'zi' : 'zile'}</span>
+                            </div>
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Preț</span>
+                                <span className="vt-detail-value">€{Number(pass.pret).toFixed(0)}</span>
+                            </div>
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Stație</span>
+                                <span className="vt-detail-value">{pass.statie_nume}</span>
+                            </div>
+                            <div className="vt-detail-row">
+                                <span className="vt-detail-label">Expiră</span>
+                                <span className="vt-detail-value vt-detail-value--accent">
+                                    {new Date(pass.data_expirare).toLocaleDateString('ro-RO', {
                                         day: 'numeric', month: 'long', year: 'numeric',
                                     })}
-                                </strong>
-                            </p>
-                        )}
-                    </div>
-                )}
-
-                {/* Countdown cooldown dupa scanare abonament */}
-                {ok && tip === 'abonament' && cooldownSec > 0 && (
-                    <div className="val-cooldown-box">
-                        <span className="val-cooldown-icon"><Hourglass size={24} /></span>
-                        <div>
-                            <div className="val-cooldown-timer">
-                                {String(Math.floor(cooldownSec / 60)).padStart(2, '0')}
-                                :{String(cooldownSec % 60).padStart(2, '0')}
+                                </span>
                             </div>
-                            <div className="val-cooldown-label">până la următoarea scanare</div>
                         </div>
                     </div>
                 )}
@@ -223,11 +214,13 @@ export default function PageValidare({ token }) {
     };
 
     return (
-        <div className="dash-section page-validare">
+        <div className="dash-section page-validare page-validare-turist">
             <div className="val-header">
-                <h2 className="dash-section-title"><Ticket size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Validare Bilete</h2>
+                <h2 className="dash-section-title">
+                    <Globe size={24} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Validare Card Turist
+                </h2>
                 <p className="val-subtitle">
-                    Scanează codul QR al călătorului pentru a valida titlul de călătorie.
+                    Scanează codul QR sau introdu codul de ridicare al turistului pentru a activa cardul.
                 </p>
             </div>
 
@@ -279,33 +272,62 @@ export default function PageValidare({ token }) {
                         {loading && (
                             <div className="val-cam-overlay val-cam-overlay--processing">
                                 <div className="ang-spinner" style={{ width: '2.5rem', height: '2.5rem' }} />
-                                <p>Se procesează...</p>
+                                <p>Se verifică codul...</p>
                             </div>
                         )}
                     </div>
 
                     <p className="val-camera-hint">
                         {camStatus === 'ok' && !loading && !rezultat
-                            ? <><Scan size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Îndreaptă camera spre codul QR al călătorului</>
+                            ? <><Scan size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Îndreaptă camera spre codul QR al turistului</>
                             : camStatus === 'ok' && rezultat
                             ? <><Camera size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Camera este activă</>
                             : ''}
                     </p>
+
+                    {/* ── Input manual cod ── */}
+                    <button
+                        className="vt-manual-toggle"
+                        onClick={() => setShowManual(v => !v)}
+                        type="button"
+                    >
+                        <Keyboard size={14} /> {showManual ? 'Ascunde introducere manuală' : 'Introdu codul manual'}
+                    </button>
+
+                    {showManual && (
+                        <form className="val-manual-form" onSubmit={handleManualSubmit}>
+                            <input
+                                className="val-manual-input"
+                                type="text"
+                                placeholder="ex. TR-A3K9X2"
+                                value={manualCod}
+                                onChange={e => setManualCod(e.target.value)}
+                                autoFocus
+                            />
+                            <button
+                                className="val-manual-btn"
+                                type="submit"
+                                disabled={loading || !manualCod.trim()}
+                            >
+                                Validează
+                            </button>
+                        </form>
+                    )}
                 </div>
 
                 {/* ── Coloana rezultat ── */}
                 <div className="val-result-col">
                     {!rezultat && !loading && (
                         <div className="val-waiting-card">
-                            <div className="val-waiting-icon"><Smartphone size={48} /></div>
+                            <div className="val-waiting-icon"><Plane size={48} /></div>
                             <h3>În așteptare</h3>
-                            <p>Rezultatul validării va apărea aici după scanarea codului QR.</p>
+                            <p>Scanează sau introdu codul turistului. Rezultatul va apărea aici.</p>
                         </div>
                     )}
                     {loading && (
                         <div className="val-waiting-card">
                             <div className="ang-spinner" style={{ margin: '0 auto' }} />
-                            <p style={{ marginTop: '1rem', color: 'rgba(255,255,255,0.5)' }}>Se verifică titlul...</p>
+                            <p style={{ marginTop: '1rem', color: 'rgba(255,255,255,0.5)' }}>Se verifică codul...</p>
                         </div>
                     )}
                     {rezultat && renderRezultat()}

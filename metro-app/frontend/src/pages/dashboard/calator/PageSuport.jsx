@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { API } from '../dashboardConstants';
+import { User, Hourglass, CheckCircle, ClipboardList, Lock, MessageCircle, Ticket, HelpCircle, Mail, Send } from 'lucide-react';
 import './PageSuport.css';
 
 const FAQ = [
@@ -209,12 +210,12 @@ export default function PageSuport({ user, token }) {
                             </span>
                             {ticketSel.angajat_prenume && (
                                 <span className="sp-chat-agent">
-                                    👤 {ticketSel.angajat_prenume} {ticketSel.angajat_nume}
+                                    <User size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> {ticketSel.angajat_prenume} {ticketSel.angajat_nume}
                                 </span>
                             )}
                             {!ticketSel.angajat_prenume && (
                                 <span className="sp-chat-agent sp-chat-agent--wait">
-                                    ⏳ Se așteaptă preluarea de un agent...
+                                    <Hourglass size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Se așteaptă preluarea de un agent...
                                 </span>
                             )}
                         </div>
@@ -261,8 +262,8 @@ export default function PageSuport({ user, token }) {
                 {/* Dacă a fost marcat rezolvat de angajat (fallback) */}
                 {isRezolvat && (
                     <div className="sp-feedback-card">
-                        <p className="sp-feedback-title">✅ Agentul a marcat problema ca rezolvată</p>
-                        {ticketSel.rezumat && <p className="sp-feedback-rezumat">📋 {ticketSel.rezumat}</p>}
+                        <p className="sp-feedback-title"><CheckCircle size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Agentul a marcat problema ca rezolvată</p>
+                        {ticketSel.rezumat && <p className="sp-feedback-rezumat"><ClipboardList size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> {ticketSel.rezumat}</p>}
                         <p className="sp-feedback-sub">Lasă un rating pentru a închide conversația:</p>
                         <div className="sp-stars">
                             {[1,2,3,4,5].map(s => (
@@ -279,7 +280,7 @@ export default function PageSuport({ user, token }) {
 
                 {isClosed && (
                     <div className="sp-closed-banner">
-                        🔒 Conversație închisă · Rating: <span className="sp-stars-inline">{'★'.repeat(ticketSel.rating ?? 0)}</span>
+                        <Lock size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Conversație închisă · Rating: <span className="sp-stars-inline">{'★'.repeat(ticketSel.rating ?? 0)}</span>
                     </div>
                 )}
 
@@ -307,7 +308,7 @@ export default function PageSuport({ user, token }) {
     return (
         <div className="dash-section sp-page">
             <div className="sp-hero">
-                <div className="sp-hero-icon">💬</div>
+                <div className="sp-hero-icon"><MessageCircle size={32} /></div>
                 <div>
                     <h2 className="dash-section-title">Centru de Asistență</h2>
                     <p className="sp-hero-sub">Găsește răspunsuri rapide sau contactează un agent de suport.</p>
@@ -318,7 +319,7 @@ export default function PageSuport({ user, token }) {
             {ticketActiv && (
                 <div className="sp-active-ticket" onClick={() => openChat(ticketActiv)}>
                     <div className="sp-active-left">
-                        <span className="sp-active-icon">🎫</span>
+                        <span className="sp-active-icon"><Ticket size={24} /></span>
                         <div>
                             <p className="sp-active-title">{ticketActiv.subiect}</p>
                             <p className="sp-active-sub">
@@ -339,7 +340,7 @@ export default function PageSuport({ user, token }) {
 
             {/* FAQ */}
             <div className="sp-section">
-                <h3 className="sp-section-title">❓ Întrebări frecvente</h3>
+                <h3 className="sp-section-title"><HelpCircle size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Întrebări frecvente</h3>
                 <div className="sp-faq-list">
                     {Object.entries(faqBycat).map(([cat, items]) => (
                         <div key={cat} className="sp-faq-cat">
@@ -361,7 +362,7 @@ export default function PageSuport({ user, token }) {
             {/* Form ticket nou */}
             {!ticketActiv && (
                 <div className="sp-section">
-                    <h3 className="sp-section-title">📩 Contactează suportul</h3>
+                    <h3 className="sp-section-title"><Mail size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Contactează suportul</h3>
                     <p className="sp-section-sub">Nu ai găsit răspunsul? Un agent îți va răspunde în cel mai scurt timp.</p>
                     <form className="sp-form" onSubmit={handleSubmitTicket}>
                         <div className="sp-form-field">
@@ -377,7 +378,7 @@ export default function PageSuport({ user, token }) {
                         {fMsg && <div className={`cont-msg cont-msg--${fMsg.tip}`}>{fMsg.text}</div>}
                         <button type="submit" className="ang-btn-primary"
                             disabled={!fSubiect.trim() || !fMesaj.trim() || fLoad}>
-                            {fLoad ? 'Se trimite...' : '📨 Trimite cerere'}
+                            {fLoad ? 'Se trimite...' : <><Send size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Trimite cerere</>}
                         </button>
                     </form>
                 </div>
@@ -386,7 +387,7 @@ export default function PageSuport({ user, token }) {
             {/* Istoric */}
             {ticketsInchise.length > 0 && (
                 <div className="sp-section">
-                    <h3 className="sp-section-title">📋 Istoricul sesiunilor</h3>
+                    <h3 className="sp-section-title"><ClipboardList size={18} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Istoricul sesiunilor</h3>
                     <div className="sp-history-list">
                         {ticketsInchise.map(t => (
                             <div key={t.id_ticket} className="sp-history-item" onClick={() => openChat(t)}>

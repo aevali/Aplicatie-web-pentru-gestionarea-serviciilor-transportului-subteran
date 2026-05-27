@@ -1,0 +1,749 @@
+/* ════════════════════════════════════════
+   PAGE TRANSFER — TRANSFER BILETE
+   ════════════════════════════════════════ */
+.transfer-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 560px;
+    animation: fadeUp 0.35s var(--ease-out) both;
+}
+
+.transfer-header { display: flex; flex-direction: column; gap: 0.3rem; }
+.transfer-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.transfer-sub {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+}
+
+/* ═══════════════════════════════════════════════
+   STEPPER — 3 pași
+   ═══════════════════════════════════════════════ */
+.transfer-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0.5rem 0;
+}
+
+.transfer-step {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: default;
+}
+
+.transfer-step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 2px solid rgba(255,255,255,0.08);
+    color: var(--text-muted);
+    background: transparent;
+    transition: all 0.3s var(--ease-out);
+    flex-shrink: 0;
+}
+
+.transfer-step-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.transfer-step--active .transfer-step-num {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(37,99,235,0.3);
+}
+.transfer-step--active .transfer-step-label {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.transfer-step--done .transfer-step-num {
+    background: rgba(16,185,129,0.15);
+    border-color: rgba(16,185,129,0.4);
+    color: #6ee7b7;
+}
+.transfer-step--done .transfer-step-label {
+    color: var(--text-secondary);
+}
+
+.transfer-step-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    margin: 0 0.5rem;
+    min-width: 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+.transfer-step-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-out);
+}
+
+.transfer-step-line--done::after {
+    transform: scaleX(1);
+}
+
+/* ═══════════════════════════════════════════════
+   PAS 1 — SELECTARE BILET
+   ═══════════════════════════════════════════════ */
+.transfer-bilete-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.transfer-bilet-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+    background: #1a1e2e;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    font-family: 'Inter', sans-serif;
+}
+
+.transfer-bilet-card:hover {
+    border-color: rgba(37,99,235,0.2);
+    background: #1e2238;
+    transform: translateY(-1px);
+}
+
+.transfer-bilet-card--selected {
+    border-color: var(--accent) !important;
+    background: rgba(37,99,235,0.06) !important;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.transfer-bilet-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--accent-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #93c5fd;
+    flex-shrink: 0;
+}
+
+.transfer-bilet-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.transfer-bilet-tip {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.transfer-bilet-meta {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.transfer-bilet-ramase {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.transfer-bilet-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #6ee7b7;
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.2);
+    padding: 0.2rem 0.55rem;
+    border-radius: 50px;
+}
+
+.transfer-bilet-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.transfer-bilet-card--selected .transfer-bilet-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* ═══════════════════════════════════════════════
+   PAS 2 — CĂUTARE DESTINATAR
+   ═══════════════════════════════════════════════ */
+.transfer-search-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.transfer-search-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.transfer-search-input {
+    flex: 1;
+    padding: 0.65rem 0.85rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+}
+.transfer-search-input::placeholder { color: var(--text-muted); }
+.transfer-search-input:focus {
+    border-color: var(--accent);
+    background: rgba(37,99,235,0.04);
+}
+
+.transfer-search-btn {
+    padding: 0.65rem 1.1rem;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+.transfer-search-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.transfer-search-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* Destinatar card */
+.transfer-dest-card {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.1rem;
+    background: rgba(16,185,129,0.05);
+    border: 1px solid rgba(16,185,129,0.15);
+    border-radius: 6px;
+    animation: fadeUp 0.25s var(--ease-out) both;
+}
+
+.transfer-dest-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #6ee7b7;
+    flex-shrink: 0;
+}
+
+.transfer-dest-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.transfer-dest-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.transfer-dest-email {
+    font-size: 0.73rem;
+    color: var(--text-secondary);
+}
+
+.transfer-dest-ok {
+    color: #6ee7b7;
+    flex-shrink: 0;
+}
+
+/* Destinatar are titlu activ (warning card) */
+.transfer-dest-card--warning {
+    background: rgba(245,158,11,0.05);
+    border-color: rgba(245,158,11,0.2);
+}
+
+.transfer-dest-avatar--warning {
+    background: rgba(245,158,11,0.15);
+    color: #fcd34d;
+}
+
+.transfer-dest-warning-icon {
+    color: #fcd34d;
+    flex-shrink: 0;
+}
+
+/* Reset/schimbare destinatar */
+.transfer-dest-change {
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+.transfer-dest-change:hover {
+    border-color: rgba(255,255,255,0.15);
+    color: var(--text-secondary);
+}
+
+/* Eroare căutare */
+.transfer-search-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.12);
+    border-radius: 6px;
+    color: #fca5a5;
+    font-size: 0.8rem;
+    animation: fadeUp 0.2s var(--ease-out) both;
+}
+
+/* ═══════════════════════════════════════════════
+   PAS 3 — CONFIRMARE TRANSFER
+   ═══════════════════════════════════════════════ */
+.transfer-confirm-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Selector cantitate */
+.transfer-qty-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.transfer-qty-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.transfer-qty-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.transfer-qty-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+}
+.transfer-qty-btn:hover:not(:disabled) {
+    background: var(--accent-muted);
+    border-color: var(--accent);
+    color: #93c5fd;
+}
+.transfer-qty-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+.transfer-qty-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    min-width: 50px;
+    text-align: center;
+}
+
+.transfer-qty-max {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-left: 0.35rem;
+}
+
+/* Slider */
+.transfer-qty-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    outline: none;
+    margin-top: 0.25rem;
+}
+.transfer-qty-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.4);
+    transition: transform 0.1s;
+}
+.transfer-qty-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+.transfer-qty-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.4);
+}
+
+/* Rezumat transfer */
+.transfer-summary {
+    background: #1a1e2e;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-family: 'Courier New', 'Consolas', monospace;
+}
+
+.transfer-summary-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.15rem;
+}
+
+.transfer-summary-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.transfer-summary-label {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.5px;
+}
+
+.transfer-summary-dots {
+    flex: 1;
+    border-bottom: 1px dotted rgba(255,255,255,0.08);
+    margin: 0 0.25rem;
+    min-width: 20px;
+    align-self: center;
+}
+
+.transfer-summary-value {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.78rem;
+}
+
+.transfer-summary-value--accent {
+    color: #93c5fd;
+}
+
+/* Butoane acțiune */
+.transfer-actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+}
+
+.transfer-btn-back {
+    flex: 0 0 auto;
+    padding: 0.55rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.transfer-btn-back:hover { border-color: rgba(255,255,255,0.15); color: var(--text-primary); }
+
+.transfer-btn-next {
+    flex: 1;
+    padding: 0.6rem 1.25rem;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.transfer-btn-next:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.transfer-btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.transfer-btn-confirm {
+    flex: 1;
+    padding: 0.65rem 1.25rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    box-shadow: 0 2px 12px rgba(16,185,129,0.3);
+}
+.transfer-btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(16,185,129,0.4); }
+.transfer-btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ═══════════════════════════════════════════════
+   SUCCES — Animație transfer complet
+   ═══════════════════════════════════════════════ */
+.transfer-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    animation: fadeUp 0.4s var(--ease-out) both;
+}
+
+.transfer-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(16,185,129,0.12);
+    border: 2px solid rgba(16,185,129,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6ee7b7;
+    animation: successPop 0.5s var(--ease-out) both;
+}
+
+@keyframes successPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.transfer-success-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.transfer-success-desc {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+.transfer-success-btn {
+    margin-top: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.transfer-success-btn:hover { background: var(--accent-hover); }
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE — Niciun bilet transferabil
+   ═══════════════════════════════════════════════ */
+.transfer-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-hover);
+    border-radius: var(--radius-xl);
+    animation: fadeUp 0.35s ease both;
+}
+
+.transfer-empty-icon { font-size: 2.5rem; opacity: 0.7; color: var(--text-muted); }
+.transfer-empty-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.transfer-empty-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    max-width: 280px;
+}
+.transfer-empty-btn {
+    margin-top: 0.2rem;
+    padding: 0.6rem 1.35rem;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.transfer-empty-btn:hover { background: var(--accent-hover); }
+
+/* ═══════════════════════════════════════════════
+   SECTION LABEL
+   ═══════════════════════════════════════════════ */
+.transfer-section-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* ═══════════════════════════════════════════════
+   EROARE MESAJ (general)
+   ═══════════════════════════════════════════════ */
+.transfer-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    animation: fadeUp 0.2s var(--ease-out) both;
+}
+.transfer-msg--err {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.12);
+    color: #fca5a5;
+}
+.transfer-msg--ok {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.15);
+    color: #6ee7b7;
+}
+
+/* ═══════════════════════════════════════════════
+   LOADING SPINNER (inline)
+   ═══════════════════════════════════════════════ */
+.transfer-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════ */
+@media (max-width: 500px) {
+    .transfer-page { gap: 1rem; }
+    .transfer-step-label { font-size: 0.62rem; }
+    .transfer-search-row { flex-direction: column; }
+    .transfer-summary { padding: 0.85rem 1rem; }
+    .transfer-actions { flex-direction: column; }
+    .transfer-btn-back { text-align: center; }
+}

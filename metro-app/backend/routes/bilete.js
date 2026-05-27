@@ -482,5 +482,278 @@ router.post('/abonament/:id/reinnoieste', async (req, res) => {
     }
 });
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/bilete/bilete-transferabile
+   Returnează biletele active cu călătorii rămase ale călătorului curent
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/bilete-transferabile', async (req, res) => {
+    const idCalator = req.user.id;
+    try {
+        const r = await pool.query(
+            `SELECT id_bilet, numar_calatorii, numar_calatorii_ramase,
+                    data_achizitie, pret, cod_qr
+             FROM bilete
+             WHERE id_calator = $1 AND activ = TRUE AND numar_calatorii_ramase > 0
+             ORDER BY data_achizitie DESC`,
+            [idCalator]
+        );
+        res.json({ bilete: r.rows });
+    } catch (err) {
+        console.error('GET /bilete/bilete-transferabile:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/bilete/cauta-destinatar?email=...
+   Caută un călător după email pentru transfer
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/cauta-destinatar', async (req, res) => {
+    const { email } = req.query;
+    const idCalator = req.user.id;
+
+    if (!email || typeof email !== 'string' || !email.trim()) {
+        return res.status(400).json({ gasit: false, mesaj: 'Adresa de email este obligatorie.' });
+    }
+
+    const emailNorm = email.trim().toLowerCase();
+
+    try {
+        // Verifică să nu fie propriul email
+        const eu = await pool.query(
+            `SELECT email FROM calatori WHERE id_calator = $1`,
+            [idCalator]
+        );
+        if (eu.rows.length > 0 && eu.rows[0].email.toLowerCase() === emailNorm) {
+            return res.status(400).json({ gasit: false, mesaj: 'Nu poți transfera bilete către propriul cont.' });
+        }
+
+        // Caută destinatarul
+        const r = await pool.query(
+            `SELECT id_calator, prenume, nume, email
+             FROM calatori
+             WHERE LOWER(email) = $1`,
+            [emailNorm]
+        );
+
+        if (r.rows.length === 0) {
+            return res.json({ gasit: false, mesaj: 'Nu a fost găsit niciun utilizator cu acest email.' });
+        }
+
+        const dest = r.rows[0];
+
+        // Verifică dacă destinatarul are deja un titlu activ
+        const activ = await getActiv(dest.id_calator);
+        if (activ) {
+            return res.json({
+                gasit: true,
+                are_activ: true,
+                destinatar: { id_calator: dest.id_calator, prenume: dest.prenume, nume: dest.nume, email: dest.email },
+                mesaj: 'Utilizatorul are deja un titlu de călătorie activ. Transferul nu este posibil.',
+            });
+        }
+
+        res.json({
+            gasit: true,
+            are_activ: false,
+            destinatar: { id_calator: dest.id_calator, prenume: dest.prenume, nume: dest.nume, email: dest.email },
+        });
+    } catch (err) {
+        console.error('GET /bilete/cauta-destinatar:', err.message);
+        res.status(500).json({ gasit: false, mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   POST /api/bilete/transfera
+   Body: { id_bilet, email_destinatar, numar_calatorii }
+   Transferă călătorii dintr-un bilet propriu către un alt călător
+───────────────────────────────────────────────────────────────────────────── */
+router.post('/transfera', async (req, res) => {
+    const { id_bilet, email_destinatar, numar_calatorii } = req.body;
+    const idCalator = req.user.id;
+
+    if (!id_bilet || !email_destinatar || !numar_calatorii) {
+        return res.status(400).json({ mesaj: 'Toate câmpurile sunt obligatorii.' });
+    }
+
+    const nrTransfer = parseInt(numar_calatorii, 10);
+    if (isNaN(nrTransfer) || nrTransfer < 1) {
+        return res.status(400).json({ mesaj: 'Numărul de călătorii trebuie să fie cel puțin 1.' });
+    }
+
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // 1. Verifică biletul sursă (cu lock)
+        const biletR = await client.query(
+            `SELECT id_bilet, id_calator, numar_calatorii, numar_calatorii_ramase, activ
+             FROM bilete
+             WHERE id_bilet = $1
+             FOR UPDATE`,
+            [id_bilet]
+        );
+
+        if (biletR.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ mesaj: 'Biletul nu a fost găsit.' });
+        }
+
+        const bilet = biletR.rows[0];
+
+        if (bilet.id_calator !== idCalator) {
+            await client.query('ROLLBACK');
+            return res.status(403).json({ mesaj: 'Acest bilet nu îți aparține.' });
+        }
+
+        if (!bilet.activ || bilet.numar_calatorii_ramase <= 0) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ mesaj: 'Biletul nu este activ sau nu are călătorii rămase.' });
+        }
+
+        if (nrTransfer > bilet.numar_calatorii_ramase) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({
+                mesaj: `Nu poți transfera ${nrTransfer} călătorii. Ai doar ${bilet.numar_calatorii_ramase} rămase.`,
+            });
+        }
+
+        // 2. Verifică destinatarul
+        const emailNorm = email_destinatar.trim().toLowerCase();
+
+        const euR = await client.query(`SELECT email FROM calatori WHERE id_calator = $1`, [idCalator]);
+        if (euR.rows.length > 0 && euR.rows[0].email.toLowerCase() === emailNorm) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ mesaj: 'Nu poți transfera bilete către propriul cont.' });
+        }
+
+        const destR = await client.query(
+            `SELECT id_calator, prenume, nume, email FROM calatori WHERE LOWER(email) = $1`,
+            [emailNorm]
+        );
+
+        if (destR.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ mesaj: 'Destinatarul nu a fost găsit.' });
+        }
+
+        const dest = destR.rows[0];
+
+        // 3. Verifică dacă destinatarul are titlu activ
+        const activBilet = await client.query(
+            `SELECT id_bilet FROM bilete
+             WHERE id_calator = $1 AND activ = TRUE AND numar_calatorii_ramase > 0
+             LIMIT 1`,
+            [dest.id_calator]
+        );
+        const activAbon = await client.query(
+            `SELECT id_abonament FROM abonamente
+             WHERE id_calator = $1 AND data_expirare >= CURRENT_DATE
+             LIMIT 1`,
+            [dest.id_calator]
+        );
+
+        if (activBilet.rows.length > 0 || activAbon.rows.length > 0) {
+            await client.query('ROLLBACK');
+            return res.status(409).json({
+                mesaj: `${dest.prenume} ${dest.nume} are deja un titlu de călătorie activ. Transferul nu este posibil.`,
+            });
+        }
+
+        // 4. Scade călătoriile din biletul sursă
+        const ramase = bilet.numar_calatorii_ramase - nrTransfer;
+        await client.query(
+            `UPDATE bilete
+             SET numar_calatorii_ramase = $1,
+                 activ = CASE WHEN $1 = 0 THEN FALSE ELSE TRUE END
+             WHERE id_bilet = $2`,
+            [ramase, id_bilet]
+        );
+
+        // 5. Creează bilet NOU la destinatar (cod_qr UUID generat automat de DB)
+        const nouBilet = await client.query(
+            `INSERT INTO bilete
+                (id_calator, numar_calatorii, numar_calatorii_ramase, pret, reducere_aplicata)
+             VALUES ($1, $2, $2, 0, FALSE)
+             RETURNING id_bilet, numar_calatorii, numar_calatorii_ramase, data_achizitie, pret, cod_qr`,
+            [dest.id_calator, nrTransfer]
+        );
+
+        // 6. Notificare pentru destinatar
+        const euData = await client.query(
+            `SELECT prenume, nume FROM calatori WHERE id_calator = $1`, [idCalator]
+        );
+        const expeditor = euData.rows[0] ?? { prenume: 'Un utilizator', nume: '' };
+
+        await client.query(
+            `INSERT INTO notificari (mesaj, tip, id_calator)
+             VALUES ($1, 'transfer_bilet', $2)`,
+            [`${expeditor.prenume} ${expeditor.nume} ți-a transferat ${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} de metrou!`,
+             dest.id_calator]
+        );
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            mesaj: `${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} transferate cu succes către ${dest.prenume} ${dest.nume}!`,
+            bilet_sursa: {
+                id_bilet: bilet.id_bilet,
+                numar_calatorii_ramase: ramase,
+                activ: ramase > 0,
+            },
+            bilet_destinatar: nouBilet.rows[0],
+            destinatar: { prenume: dest.prenume, nume: dest.nume, email: dest.email },
+        });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('POST /bilete/transfera:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    } finally {
+        client.release();
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GET /api/bilete/notificari-transfer
+   Returnează notificările de transfer necitite pentru călătorul curent
+───────────────────────────────────────────────────────────────────────────── */
+router.get('/notificari-transfer', async (req, res) => {
+    const idCalator = req.user.id;
+    try {
+        const r = await pool.query(
+            `SELECT id_notificare, mesaj, tip, created_at
+             FROM notificari
+             WHERE id_calator = $1 AND tip = 'transfer_bilet' AND citita = FALSE
+             ORDER BY created_at DESC
+             LIMIT 10`,
+            [idCalator]
+        );
+        res.json({ notificari: r.rows });
+    } catch (err) {
+        console.error('GET /bilete/notificari-transfer:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   PUT /api/bilete/notificari-transfer/citite
+   Marchează toate notificările de transfer ca citite
+───────────────────────────────────────────────────────────────────────────── */
+router.put('/notificari-transfer/citite', async (req, res) => {
+    const idCalator = req.user.id;
+    try {
+        await pool.query(
+            `UPDATE notificari SET citita = TRUE
+             WHERE id_calator = $1 AND tip = 'transfer_bilet' AND citita = FALSE`,
+            [idCalator]
+        );
+        res.json({ mesaj: 'Notificări marcate ca citite.' });
+    } catch (err) {
+        console.error('PUT /bilete/notificari-transfer/citite:', err.message);
+        res.status(500).json({ mesaj: 'Eroare internă server.' });
+    }
+});
+
 module.exports = router;
 

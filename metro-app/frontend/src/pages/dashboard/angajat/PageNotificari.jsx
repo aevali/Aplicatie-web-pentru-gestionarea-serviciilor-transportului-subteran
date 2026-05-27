@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
+import { RefreshCw, Bell, Check } from 'lucide-react';
 import { API } from '../dashboardConstants';
 import './PageNotificari.css';
 
 const TIP_NOTIF_ICON = {
-    reinoire_abonament: '🔄',
-    info:              '🔔',
+    reinoire_abonament: RefreshCw,
+    info:              Bell,
 };
 
 export default function PageNotificari({ token }) {
@@ -53,7 +54,7 @@ export default function PageNotificari({ token }) {
         <div className="dash-section notif-page">
             <div className="notif-header-row">
                 <div>
-                    <h2 className="notif-title">🔔 Notificări</h2>
+                    <h2 className="notif-title"><Bell size={20} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} /> Notificări</h2>
                     <p className="notif-sub">
                         {loading ? 'Se încarcă...' : (
                             necitite > 0
@@ -64,7 +65,7 @@ export default function PageNotificari({ token }) {
                 </div>
                 {!loading && necitite > 0 && (
                     <button className="notif-marcheaza-btn" onClick={handleMarcheazaTot} disabled={marcLoad}>
-                        {marcLoad ? 'Se marchează...' : '✓ Marchează toate ca citite'}
+                        {marcLoad ? 'Se marchează...' : <><Check size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Marchează toate ca citite</>}
                     </button>
                 )}
             </div>
@@ -73,7 +74,7 @@ export default function PageNotificari({ token }) {
 
             {!loading && notificari?.length === 0 && (
                 <div className="notif-empty">
-                    <div className="notif-empty-icon">🔔</div>
+                    <div className="notif-empty-icon"><Bell size={36} /></div>
                     <h3 className="notif-empty-title">Nicio notificare</h3>
                     <p className="notif-empty-desc">Veți fi notificați când călătorii efectuează acțiuni importante.</p>
                 </div>
@@ -83,7 +84,7 @@ export default function PageNotificari({ token }) {
                 <div className="notif-lista">
                     {notificari.map(n => (
                         <div key={n.id_notificare} className={`notif-item ${n.citita ? 'notif-item--citita' : 'notif-item--necitita'}`} onClick={() => !n.citita && handleCiteste(n.id_notificare)}>
-                            <div className="notif-item-icon">{TIP_NOTIF_ICON[n.tip] ?? '🔔'}</div>
+                            <div className="notif-item-icon">{TIP_NOTIF_ICON[n.tip] ? (() => { const Icon = TIP_NOTIF_ICON[n.tip]; return <Icon size={20} />; })() : <Bell size={20} />}</div>
                             <div className="notif-item-body">
                                 <p className="notif-item-mesaj">{n.mesaj}</p>
                                 <div className="notif-item-meta">

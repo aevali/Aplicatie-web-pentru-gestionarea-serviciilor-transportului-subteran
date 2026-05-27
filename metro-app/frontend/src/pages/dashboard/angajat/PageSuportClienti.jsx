@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { User, CheckCircle, MessageCircle, Hourglass, Lock, Headphones, Mail, UserCheck, ClipboardList, Mailbox, Calendar } from 'lucide-react';
 import { API } from '../dashboardConstants';
 import './PageSuportClienti.css';
 
@@ -157,7 +158,7 @@ export default function PageSuportClienti({ token, user }) {
                             </span>
                         </div>
                         <p className="spc-chat-sub">
-                            👤 {ticketSel.calator_prenume} {ticketSel.calator_nume}
+                            <User size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> {ticketSel.calator_prenume} {ticketSel.calator_nume}
                             {ticketSel.angajat_prenume && ` · Agent: ${ticketSel.angajat_prenume} ${ticketSel.angajat_nume}`}
                         </p>
                     </div>
@@ -169,7 +170,7 @@ export default function PageSuportClienti({ token, user }) {
                     <div className="spc-action-bar">
                         <p className="spc-action-info">Acest ticket nu a fost preluat. Poți accepta și prelua conversația.</p>
                         <button className="ang-btn-primary" onClick={handleAccepta} disabled={actLoad}>
-                            {actLoad ? 'Se procesează...' : '✅ Acceptă ticket'}
+                            {actLoad ? 'Se procesează...' : <><CheckCircle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Acceptă ticket</>}
                         </button>
                     </div>
                 )}
@@ -195,7 +196,7 @@ export default function PageSuportClienti({ token, user }) {
                 {/* Angajatul nu mai marchează rezolvat — călătorul închi de conversăția */}
                 {canWrite && (
                     <div className="spc-agent-hint">
-                        💬 Răspunde călătorului. El va finaliza conversația când are răspunsul.
+                        <MessageCircle size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Răspunde călătorului. El va finaliza conversația când are răspunsul.
                     </div>
                 )}
 
@@ -217,12 +218,12 @@ export default function PageSuportClienti({ token, user }) {
 
                 {ticketSel.status === 'rezolvat' && (
                     <div className="spc-closed-banner">
-                        ⏳ Se așteaptă confirmarea și ratingul de la călător.
+                        <Hourglass size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Se așteaptă confirmarea și ratingul de la călător.
                     </div>
                 )}
                 {ticketSel.status === 'inchis' && (
                     <div className="spc-closed-banner">
-                        🔒 Ticket închis · Rating: <span style={{ color: '#fbbf24' }}>{'★'.repeat(ticketSel.rating ?? 0)}</span>
+                        <Lock size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Ticket închis · Rating: <span style={{ color: '#fbbf24' }}>{'★'.repeat(ticketSel.rating ?? 0)}</span>
                     </div>
                 )}
             </div>
@@ -237,7 +238,7 @@ export default function PageSuportClienti({ token, user }) {
     return (
         <div className="dash-section spc-page">
             <div className="spc-header">
-                <div className="spc-hero-icon">🎧</div>
+                <div className="spc-hero-icon"><Headphones size={32} /></div>
                 <div style={{ flex: 1 }}>
                     <h2 className="dash-section-title">Suport Clienți</h2>
                     <p className="spc-hero-sub">Gestionează și răspunde la solicitările călătorilor.</p>
@@ -259,9 +260,9 @@ export default function PageSuportClienti({ token, user }) {
             {/* Tabs */}
             <div className="spc-tabs">
                 {[
-                    { id: 'deschis', label: '📬 Deschise' },
-                    { id: 'al_meu',  label: '🙋 Ale mele' },
-                    { id: 'toate',   label: '📋 Toate'    },
+                    { id: 'deschis', label: <><Mail size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Deschise</> },
+                    { id: 'al_meu',  label: <><UserCheck size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Ale mele</> },
+                    { id: 'toate',   label: <><ClipboardList size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 4 }} /> Toate</>    },
                 ].map(t => (
                     <button key={t.id} className={`spc-tab ${tab === t.id ? 'spc-tab--active' : ''}`}
                         onClick={() => setTab(t.id)}>
@@ -275,7 +276,7 @@ export default function PageSuportClienti({ token, user }) {
                 <div className="ang-loading"><div className="ang-spinner" /></div>
             ) : tabTickets.length === 0 ? (
                 <div className="spc-empty">
-                    <span>📭</span>
+                    <div style={{ marginBottom: 16 }}><Mailbox size={48} /></div>
                     <p>{tab === 'deschis' ? 'Nu există tickete deschise.' : tab === 'al_meu' ? 'Nu ai preluat niciun ticket.' : 'Nu există tickete.'}</p>
                 </div>
             ) : (
@@ -290,9 +291,9 @@ export default function PageSuportClienti({ token, user }) {
                             </div>
                             <p className="spc-ticket-subiect">{t.subiect}</p>
                             <div className="spc-ticket-meta">
-                                <span>👤 {t.calator_prenume} {t.calator_nume}</span>
-                                <span>📅 {fmtDate(t.created_at)}</span>
-                                {t.angajat_prenume && <span>🙋 {t.angajat_prenume} {t.angajat_nume}</span>}
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><User size={14} /> {t.calator_prenume} {t.calator_nume}</span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Calendar size={14} /> {fmtDate(t.created_at)}</span>
+                                {t.angajat_prenume && <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><UserCheck size={14} /> {t.angajat_prenume} {t.angajat_nume}</span>}
                             </div>
                         </div>
                     ))}

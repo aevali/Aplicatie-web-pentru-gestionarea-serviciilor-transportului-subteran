@@ -1,251 +1,562 @@
 /* ════════════════════════════════════════
-   PAGE CONT — CONTUL MEU
-════════════════════════════════════════ */
+   PAGE CONT — METRO PASS + LED BOARD
+   ════════════════════════════════════════ */
 .cont-page {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-}
-
-.cont-card--narrow {
+    gap: 1rem;
     max-width: 720px;
+    animation: fadeUp 0.35s var(--ease-out) both;
 }
 
-.cont-card {
-    background: rgba(10, 15, 35, 0.72);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    border-radius: 20px;
-    backdrop-filter: blur(20px);
+/* ═══════════════════════════════════════════════
+   METRO PASS — Legitimație de transport
+   ═══════════════════════════════════════════════ */
+.metro-pass {
+    position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    border-radius: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-.cont-card-header {
+.metro-pass-stripe {
+    height: 4px;
+    background: var(--metro-gradient);
+}
+
+.metro-pass-stripe--bottom { opacity: 0.5; }
+
+.metro-pass-body {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1.15rem 1.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.12);
-}
-
-.cont-card-icon {
-    font-size: 1.3rem;
-    filter: drop-shadow(0 0 8px rgba(99,102,241,0.5));
-}
-
-.cont-card-title {
-    font-size: 0.97rem;
-    font-weight: 700;
-    color: #c7d2fe;
-    letter-spacing: -0.2px;
-}
-
-.cont-card-body {
-    padding: 1.4rem 1.5rem;
-}
-
-/* ─── Profil ─── */
-.cont-profile-row {
-    display: flex;
-    align-items: center;
+    align-items: stretch;
+    background: #141827;
+    padding: 1.25rem 1.5rem;
     gap: 1.25rem;
-    flex-wrap: wrap;
 }
 
-.cont-avatar {
+/* Left — Avatar + LED */
+.metro-pass-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.metro-pass-avatar {
     width: 64px;
     height: 64px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    border-radius: 4px;
+    background: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
     color: #fff;
-    flex-shrink: 0;
-    box-shadow: 0 0 0 3px rgba(99,102,241,0.35),
-                0 8px 24px rgba(99,102,241,0.2);
+    box-shadow: 0 3px 12px rgba(37, 99, 235, 0.35);
 }
 
-.cont-profile-info {
+.metro-pass-led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.metro-pass-led--green { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+.metro-pass-led--yellow { background: #eab308; box-shadow: 0 0 8px #eab308; animation: ledBlink 1.5s ease-in-out infinite; }
+.metro-pass-led--red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+@keyframes ledBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Center — Info */
+.metro-pass-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.2rem;
+    min-width: 0;
 }
 
-.cont-profile-name {
+.metro-pass-org {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.metro-pass-name {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
-    color: #e2e8f0;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
 }
 
-.cont-profile-email {
-    font-size: 0.83rem;
-    color: rgba(255,255,255,0.4);
+.metro-pass-detail {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.3rem;
 }
 
-.cont-profile-badges {
+.metro-pass-fields {
     display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-top: 0.1rem;
+    gap: 1.5rem;
+    margin-top: 0.15rem;
 }
 
-/* ─── Badges ─── */
-.cont-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 50px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+.metro-pass-field { display: flex; flex-direction: column; gap: 0.05rem; }
+
+.metro-pass-field-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
     text-transform: uppercase;
 }
 
-.cont-badge--tip {
-    background: rgba(99,102,241,0.15);
-    border: 1px solid rgba(99,102,241,0.3);
-    color: #a5b4fc;
+.metro-pass-field-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.cont-badge--doc-ok {
-    background: rgba(34,197,94,0.12);
-    border: 1px solid rgba(34,197,94,0.3);
-    color: #86efac;
-}
+.metro-pass-field-value--green { color: #6ee7b7; }
+.metro-pass-field-value--yellow { color: #fde68a; }
+.metro-pass-field-value--red { color: #fca5a5; }
 
-.cont-badge--doc-pending {
-    background: rgba(234,179,8,0.12);
-    border: 1px solid rgba(234,179,8,0.3);
-    color: #fde68a;
-}
-
-.cont-badge--doc-none {
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.25);
-    color: #fca5a5;
-}
-
-/* ─── Info grid ─── */
-.cont-info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1.2rem;
-}
-
-.cont-info-item {
+/* Right — Barcode */
+.metro-pass-barcode {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0.3rem;
+    flex-shrink: 0;
+    padding-left: 1rem;
+    border-left: 1px dashed rgba(255,255,255,0.06);
 }
 
-.cont-info-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: rgba(165,180,252,0.6);
-    letter-spacing: 0.4px;
+.metro-pass-barcode-lines {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 35px;
+}
+
+.metro-pass-barcode-line {
+    width: 2px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 1px;
+}
+
+.metro-pass-id {
+    font-family: 'Courier New', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════
+   LED BOARD — Status panou stație
+   ═══════════════════════════════════════════════ */
+.led-board {
+    background: #0a0e1a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.led-board-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.led-board-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+}
+
+.led-board-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
     text-transform: uppercase;
 }
 
-.cont-info-value {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.8);
-    font-weight: 500;
+.led-board-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
 }
 
-/* ─── Status card ─── */
-.cont-status-card {
+.led-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.led-indicator--green { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.led-indicator--yellow { background: #eab308; box-shadow: 0 0 6px #eab308; }
+.led-indicator--red { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+
+.led-indicator--blink { animation: ledBlink 1.5s ease-in-out infinite; }
+
+.led-board-text {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+}
+
+.led-board-text strong { color: var(--accent-hover); }
+
+.led-board-hint {
+    font-family: 'Courier New', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    width: 100%;
+    padding-left: 1.45rem;
+}
+
+.led-board-date {
+    font-family: 'Courier New', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-left: auto;
+}
+
+.led-board-loading {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    animation: ledBlink 1s ease-in-out infinite;
+}
+
+.led-board-reason {
+    padding: 0.5rem 1rem 0.75rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #fca5a5;
+    font-style: italic;
+    border-top: 1px dashed rgba(239,68,68,0.12);
+}
+
+.led-board-note {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.5rem 0;
+    letter-spacing: 0.2px;
+}
+
+/* ═══════════════════════════════════════════════
+   SCANNER ZONE — Upload documente
+   ═══════════════════════════════════════════════ */
+.scanner-zone {
+    position: relative;
+    background: #0a0e1a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.scanner-zone-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.scanner-zone-icon { font-size: 0.85rem; }
+
+.scanner-zone-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.scanner-zone-body { padding: 1rem 1.25rem; }
+
+.scanner-zone-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.85rem;
+}
+
+/* Animated scanline */
+.scanner-zone-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.4), transparent);
+    animation: scanline 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline {
+    0%   { top: 10%; opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { top: 90%; opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   INFO BOARD — Reguli reduceri
+   ═══════════════════════════════════════════════ */
+.info-board {
+    background: #0a0e1a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.info-board-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.info-board-icon { font-size: 0.85rem; }
+
+.info-board-title {
+    font-family: 'Courier New', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.info-board-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 0.65rem 1rem 0;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.info-board-scroll {
+    overflow-x: auto;
+    padding: 0.85rem 1rem 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37, 99, 235, 0.25) transparent;
+}
+
+.info-board-scroll::-webkit-scrollbar { height: 4px; }
+.info-board-scroll::-webkit-scrollbar-track { background: transparent; }
+.info-board-scroll::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.25); border-radius: 10px; }
+
+.info-board-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    min-width: 540px;
+}
+
+.info-board-category {
+    padding: 0.85rem;
+    border-radius: 4px;
+    border-left: 3px solid;
+    background: rgba(255,255,255,0.02);
+}
+
+.info-board-category--elev { border-color: #60a5fa; }
+.info-board-category--student { border-color: #818cf8; }
+.info-board-category--pensionar { border-color: #fbbf24; }
+
+.info-board-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.65rem;
+}
+
+.info-board-cat-icon { font-size: 1.25rem; line-height: 1; }
+
+.info-board-cat-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.info-board-cat-pct {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.info-board-category--elev .info-board-cat-pct { color: #93c5fd; }
+.info-board-category--student .info-board-cat-pct { color: #a5b4fc; }
+.info-board-category--pensionar .info-board-cat-pct { color: #fde68a; }
+
+.info-board-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.info-board-rules li {
     display: flex;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1.1rem 1.2rem;
-    border-radius: 14px;
-    margin-bottom: 1.2rem;
-    border: 1px solid;
+    gap: 0.45rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
 }
 
-.cont-status-card--none {
-    background: rgba(239,68,68,0.07);
-    border-color: rgba(239,68,68,0.25);
-}
+.info-board-rule-text { flex: 1; min-width: 0; }
+.info-board-rules li strong { color: var(--text-primary); font-weight: 600; }
 
-.cont-status-card--pending {
-    background: rgba(234,179,8,0.07);
-    border-color: rgba(234,179,8,0.28);
-}
-
-.cont-status-card--ok {
-    background: rgba(34,197,94,0.08);
-    border-color: rgba(34,197,94,0.28);
-}
-
-.cont-status-card--rejected {
-    background: rgba(239,68,68,0.07);
-    border-color: rgba(239,68,68,0.25);
-}
-
-.cont-status-icon {
-    font-size: 1.6rem;
+.info-board-rule-dot {
+    display: inline-block;
     flex-shrink: 0;
-    line-height: 1;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 0.35rem;
 }
 
-.cont-status-text h4 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #e2e8f0;
-    margin-bottom: 0.25rem;
+.info-board-rule-dot--elev { background: #60a5fa; }
+.info-board-rule-dot--student { background: #818cf8; }
+.info-board-rule-dot--pensionar { background: #fbbf24; }
+
+/* ═══════════════════════════════════════════════
+   PASSWORD ACCORDION
+   ═══════════════════════════════════════════════ */
+.pass-accordion-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.cont-status-text p {
-    font-size: 0.81rem;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.55;
+.pass-accordion-toggle:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-primary);
 }
 
-.cont-status-text .cont-motiv {
-    margin-top: 0.5rem;
-    padding: 0.55rem 0.8rem;
-    background: rgba(239,68,68,0.1);
-    border: 1px solid rgba(239,68,68,0.2);
-    border-radius: 9px;
-    font-size: 0.81rem;
-    color: #fca5a5;
-    line-height: 1.5;
-    font-style: italic;
+.pass-accordion-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.cont-status-date {
+.pass-accordion-icon { font-size: 0.9rem; }
+
+.pass-accordion-arrow {
+    font-size: 1.2rem;
+    transition: transform 0.2s;
+    color: var(--text-muted);
+}
+
+.pass-accordion-arrow.open { transform: rotate(90deg); }
+
+.pass-accordion-body {
+    background: #0a0e1a;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    padding: 1rem 1.25rem;
+    animation: fadeUp 0.2s var(--ease-out) both;
+    margin-top: -4px;
+}
+
+.pass-accordion-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pass-field { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.pass-field label {
     font-size: 0.72rem;
-    color: rgba(255,255,255,0.28);
-    margin-top: 0.4rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
 }
 
-/* ─── Upload zone ─── */
+.pass-field input {
+    padding: 0.6rem 0.8rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.pass-field input::placeholder { color: var(--text-muted); }
+.pass-field input:focus { border-color: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   UPLOAD ZONE (shared component)
+   ═══════════════════════════════════════════════ */
 .cont-upload-zone {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
-    padding: 2rem 1.5rem;
-    border: 2px dashed rgba(99,102,241,0.3);
-    border-radius: 16px;
+    gap: 0.45rem;
+    padding: 1.75rem 1.5rem;
+    border: 2px dashed rgba(255,255,255,0.08);
+    border-radius: 4px;
     cursor: pointer;
     text-align: center;
-    transition: border-color 0.2s, background 0.2s;
-    background: rgba(99,102,241,0.04);
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    background: rgba(255, 255, 255, 0.01);
     position: relative;
 }
 
 .cont-upload-zone:hover,
 .cont-upload-zone.dragover {
-    border-color: rgba(99,102,241,0.6);
-    background: rgba(99,102,241,0.09);
+    border-color: var(--accent);
+    background: rgba(37, 99, 235, 0.05);
 }
 
 .cont-upload-zone input[type="file"] {
@@ -257,207 +568,26 @@
     height: 100%;
 }
 
-.cont-upload-icon {
-    font-size: 2.2rem;
-    filter: drop-shadow(0 0 10px rgba(99,102,241,0.4));
-}
+.cont-upload-icon { font-size: 2rem; }
+.cont-upload-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+.cont-upload-hint { font-size: 0.72rem; color: var(--text-muted); }
 
-.cont-upload-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.75);
-}
-
-.cont-upload-hint {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.3);
-}
-
-.cont-upload-actions {
-    display: flex;
-    gap: 0.75rem;
-    margin-top: 1rem;
-    justify-content: flex-end;
-}
-
-/* ─── Parolă ─── */
-.cont-pass-form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-}
-
-.cont-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.cont-field label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: rgba(165,180,252,0.7);
-    letter-spacing: 0.3px;
-}
-
-.cont-field input {
-    padding: 0.72rem 0.9rem;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(99,102,241,0.2);
-    border-radius: 11px;
-    color: rgba(255,255,255,0.88);
-    font-size: 0.87rem;
-    font-family: 'Inter', sans-serif;
-    outline: none;
-    transition: border-color 0.18s, background 0.18s;
-}
-
-.cont-field input::placeholder {
-    color: rgba(255,255,255,0.2);
-}
-
-.cont-field input:focus {
-    border-color: rgba(99,102,241,0.55);
-    background: rgba(99,102,241,0.08);
-}
-
-/* ─── Reguli validare reduceri ─── */
-.cont-reguli-scroll {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    /* scrollbar subtil */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(99,102,241,0.35) transparent;
-}
-
-.cont-reguli-scroll::-webkit-scrollbar {
-    height: 5px;
-}
-
-.cont-reguli-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.cont-reguli-scroll::-webkit-scrollbar-thumb {
-    background: rgba(99,102,241,0.35);
-    border-radius: 10px;
-}
-
-.cont-reguli-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.9rem;
-    min-width: 560px;
-}
-
-.cont-regula-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    padding: 1.1rem 1.15rem;
-    border-radius: 16px;
-    border: 1px solid;
-    transition: transform 0.18s, box-shadow 0.18s;
-}
-
-.cont-regula-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
-}
-
-.cont-regula-card--elev {
-    background: rgba(59,130,246,0.07);
-    border-color: rgba(59,130,246,0.25);
-}
-
-.cont-regula-card--student {
-    background: rgba(99,102,241,0.07);
-    border-color: rgba(99,102,241,0.28);
-}
-
-.cont-regula-card--pensionar {
-    background: rgba(234,179,8,0.07);
-    border-color: rgba(234,179,8,0.25);
-}
-
-.cont-regula-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.cont-regula-icon {
-    font-size: 1.65rem;
-    line-height: 1;
-    flex-shrink: 0;
-}
-
-.cont-regula-titlu {
-    font-size: 0.97rem;
-    font-weight: 800;
-    color: #e2e8f0;
-    letter-spacing: -0.2px;
-}
-
-.cont-regula-reducere {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    margin-top: 1px;
-}
-
-.cont-regula-card--elev .cont-regula-reducere { color: #93c5fd; }
-.cont-regula-card--student .cont-regula-reducere { color: #a5b4fc; }
-.cont-regula-card--pensionar .cont-regula-reducere { color: #fde68a; }
-
-.cont-regula-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.cont-regula-lista li {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
+/* ─── Messages ─── */
+.cont-msg {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.62);
-    line-height: 1.4;
-    font-style: italic;
-    min-width: 0;
-    overflow: hidden;
+    font-weight: 500;
 }
 
-.cont-regula-text {
-    flex: 1;
-    min-width: 0;
-    line-height: 1.45;
-}
-
-.cont-regula-lista li strong {
-    color: rgba(255,255,255,0.88);
-    font-weight: 600;
-}
-
-.cont-regula-dot {
-    display: inline-block;
-    flex-shrink: 0;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    margin-top: 0.42rem;
-}
-
-.cont-regula-card--elev .cont-regula-dot { background: #60a5fa; }
-.cont-regula-card--student .cont-regula-dot { background: #818cf8; }
-.cont-regula-card--pensionar .cont-regula-dot { background: #fbbf24; }
+.cont-msg--ok { background: var(--success-muted); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.2); }
+.cont-msg--err { background: var(--danger-muted); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
 
 /* ─── Responsive ─── */
-@media (max-width: 900px) {
-    .cont-reguli-grid {
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
-    }
+@media (max-width: 640px) {
+    .metro-pass-body { flex-direction: column; align-items: center; text-align: center; }
+    .metro-pass-info { align-items: center; }
+    .metro-pass-fields { justify-content: center; }
+    .metro-pass-barcode { padding-left: 0; border-left: none; border-top: 1px dashed rgba(255,255,255,0.06); padding-top: 0.75rem; }
+    .info-board-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)); }
 }

@@ -1,0 +1,324 @@
+/* ════════════════════════════════════════
+   PAGE CONT — CONTUL MEU
+   ════════════════════════════════════════ */
+.cont-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    animation: fadeUp 0.35s var(--ease-out) both;
+}
+
+.cont-card--narrow { max-width: 720px; }
+
+.cont-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.cont-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 1rem 1.35rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.cont-card-icon { font-size: 1.2rem; }
+
+.cont-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cont-card-body { padding: 1.25rem 1.35rem; }
+
+/* ─── Profil ─── */
+.cont-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+}
+
+.cont-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 3px 12px rgba(37, 99, 235, 0.3);
+}
+
+.cont-profile-info { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.cont-profile-name {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cont-profile-email { font-size: 0.82rem; color: var(--text-secondary); }
+
+.cont-profile-badges {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.1rem;
+}
+
+/* ─── Badges ─── */
+.cont-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.cont-badge--tip {
+    background: var(--accent-muted);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    color: #93c5fd;
+}
+
+.cont-badge--doc-ok {
+    background: var(--success-muted);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #6ee7b7;
+}
+
+.cont-badge--doc-pending {
+    background: var(--warning-muted);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fde68a;
+}
+
+.cont-badge--doc-none {
+    background: var(--danger-muted);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+/* ─── Info grid ─── */
+.cont-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.cont-info-item { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.cont-info-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.cont-info-value { font-size: 0.88rem; color: var(--text-secondary); font-weight: 500; }
+
+/* ─── Status card ─── */
+.cont-status-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 1rem;
+    border: 1px solid;
+}
+
+.cont-status-card--none { background: var(--danger-muted); border-color: rgba(239, 68, 68, 0.2); }
+.cont-status-card--pending { background: var(--warning-muted); border-color: rgba(245, 158, 11, 0.2); }
+.cont-status-card--ok { background: var(--success-muted); border-color: rgba(16, 185, 129, 0.2); }
+.cont-status-card--rejected { background: var(--danger-muted); border-color: rgba(239, 68, 68, 0.2); }
+
+.cont-status-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+
+.cont-status-text h4 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+}
+
+.cont-status-text p { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+
+.cont-status-text .cont-motiv {
+    margin-top: 0.4rem;
+    padding: 0.45rem 0.7rem;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    color: #fca5a5;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.cont-status-date { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+/* ─── Upload zone ─── */
+.cont-upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 1.75rem 1.5rem;
+    border: 2px dashed var(--border-hover);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    background: rgba(255, 255, 255, 0.02);
+    position: relative;
+}
+
+.cont-upload-zone:hover,
+.cont-upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+}
+
+.cont-upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.cont-upload-icon { font-size: 2rem; }
+.cont-upload-title { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
+.cont-upload-hint { font-size: 0.73rem; color: var(--text-muted); }
+.cont-upload-actions { display: flex; gap: 0.6rem; margin-top: 0.85rem; justify-content: flex-end; }
+
+/* ─── Parolă ─── */
+.cont-pass-form { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.cont-field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.cont-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+}
+
+.cont-field input {
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.cont-field input::placeholder { color: var(--text-muted); }
+.cont-field input:focus { border-color: var(--accent); background: var(--bg-input-focus); }
+
+/* ─── Reguli validare reduceri ─── */
+.cont-reguli-scroll {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(37, 99, 235, 0.25) transparent;
+}
+
+.cont-reguli-scroll::-webkit-scrollbar { height: 4px; }
+.cont-reguli-scroll::-webkit-scrollbar-track { background: transparent; }
+.cont-reguli-scroll::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.25); border-radius: 10px; }
+
+.cont-reguli-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    min-width: 540px;
+}
+
+.cont-regula-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid;
+    transition: transform 0.15s, box-shadow var(--transition-fast);
+}
+
+.cont-regula-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.cont-regula-card--elev { background: rgba(37, 99, 235, 0.06); border-color: rgba(37, 99, 235, 0.18); }
+.cont-regula-card--student { background: rgba(99, 102, 241, 0.06); border-color: rgba(99, 102, 241, 0.18); }
+.cont-regula-card--pensionar { background: var(--warning-muted); border-color: rgba(245, 158, 11, 0.18); }
+
+.cont-regula-header { display: flex; align-items: center; gap: 0.65rem; }
+.cont-regula-icon { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+
+.cont-regula-titlu {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.cont-regula-reducere { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3px; margin-top: 1px; }
+.cont-regula-card--elev .cont-regula-reducere { color: #93c5fd; }
+.cont-regula-card--student .cont-regula-reducere { color: #a5b4fc; }
+.cont-regula-card--pensionar .cont-regula-reducere { color: #fde68a; }
+
+.cont-regula-lista { display: flex; flex-direction: column; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+
+.cont-regula-lista li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    font-style: italic;
+    min-width: 0;
+}
+
+.cont-regula-text { flex: 1; min-width: 0; line-height: 1.4; }
+.cont-regula-lista li strong { color: var(--text-primary); font-weight: 600; }
+
+.cont-regula-dot {
+    display: inline-block;
+    flex-shrink: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    margin-top: 0.3rem;
+}
+
+.cont-regula-card--elev .cont-regula-dot { background: #60a5fa; }
+.cont-regula-card--student .cont-regula-dot { background: #818cf8; }
+.cont-regula-card--pensionar .cont-regula-dot { background: #fbbf24; }
+
+@media (max-width: 900px) {
+    .cont-reguli-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)); }
+}

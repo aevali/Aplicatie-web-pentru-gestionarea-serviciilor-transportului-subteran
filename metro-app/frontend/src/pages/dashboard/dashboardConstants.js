@@ -15,12 +15,14 @@ export const navByRole = {
         { id: 'overview',  icon: '🏠', label: 'Home'           },
         { id: 'cumparare', icon: '💳', label: 'Cumpărare'       },
         { id: 'bilete',    icon: '🎫', label: 'Biletele Mele'   },
+        { id: 'transfer',  icon: '🔄', label: 'Transfer Bilete' },
         { id: 'harta',     icon: '🗺️', label: 'Harta Rețelei'  },
     ],
     angajat: [
         { id: 'overview', icon: '🏠', label: 'Home' },
         { id: 'verificari', icon: '📋', label: 'Verificări Documente' },
         { id: 'validare', icon: '🎫', label: 'Validare Bilete' },
+        { id: 'validare_turist', icon: '🌍', label: 'Validare Card Turist' },
         { id: 'suport_clienti', icon: '🎧', label: 'Suport Clienți' },
         { id: 'raport', icon: '📑', label: 'Raport Tură' },
         { id: 'notificari', icon: '🔔', label: 'Notificări' },
@@ -28,6 +30,7 @@ export const navByRole = {
     admin: [
         { id: 'overview', icon: '🏠', label: 'Home' },
         { id: 'angajati', icon: '👤', label: 'Gestionare Angajați' },
+        { id: 'turisti',  icon: '🌍', label: 'Cereri Turiști' },
         { id: 'verificari', icon: '📋', label: 'Verificări Documente' },
         { id: 'rapoarte', icon: '📊', label: 'Rapoarte' },
         { id: 'notificari', icon: '🔔', label: 'Notificări' },

@@ -1,4 +1,5 @@
 import { tipCalatorLabel } from '../dashboardConstants';
+import { User, MessageCircle, LogOut } from 'lucide-react';
 
 /* ─── Dropdown profil ─── */
 export default function ProfileDropdown({ user, label, tipCont, rolEfectiv, onLogout, onNavigate }) {
@@ -29,11 +30,11 @@ export default function ProfileDropdown({ user, label, tipCont, rolEfectiv, onLo
                 <>
                     <div className="pd-menu">
                         <button className="pd-item" type="button" onClick={() => onNavigate('cont')}>
-                            <span className="pd-item-icon">👤</span>
+                            <span className="pd-item-icon"><User size={16} /></span>
                             <span>Contul Meu</span>
                         </button>
                         <button className="pd-item" type="button" onClick={() => onNavigate('suport')}>
-                            <span className="pd-item-icon">💬</span>
+                            <span className="pd-item-icon"><MessageCircle size={16} /></span>
                             <span>Suport</span>
                         </button>
                     </div>
@@ -44,7 +45,7 @@ export default function ProfileDropdown({ user, label, tipCont, rolEfectiv, onLo
 
             <div className="pd-menu">
                 <button className="pd-item pd-item--danger" type="button" onClick={onLogout}>
-                    <span className="pd-item-icon">🚪</span>
+                    <span className="pd-item-icon"><LogOut size={16} /></span>
                     <span>Deconectare</span>
                 </button>
             </div>

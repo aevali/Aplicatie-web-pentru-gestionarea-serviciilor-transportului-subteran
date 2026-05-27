@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { API, OPTIUNI_BILETE, OPTIUNI_ABONAMENTE, LABEL_REDUCERE, calcPretRedus, formatPret } from '../dashboardConstants';
+import { CreditCard, Ticket, Calendar, GraduationCap, CheckCircle, Sparkles, Home } from 'lucide-react';
 import './PageCumparare.css';
 
 export default function PageCumparare({ user, token, onNavigate }) {
@@ -12,6 +13,9 @@ export default function PageCumparare({ user, token, onNavigate }) {
     const [cumparLoad,  setCumparLoad]  = useState(false);
     const [cumparMsg,   setCumparMsg]   = useState(null);
     const [succes,      setSucces]      = useState(null);
+
+    /* Stepper state — index in OPTIUNI_BILETE */
+    const [stepperIdx, setStepperIdx] = useState(0);
 
     useEffect(() => {
         if (!token) return;
@@ -27,8 +31,27 @@ export default function PageCumparare({ user, token, onNavigate }) {
 
     const handleSectiune = (s) => { setSectiune(s); setSelectat(null); setCumparMsg(null); };
 
-    const handleSelectCard = (val) => {
-        setSelectat(prev => (prev?.valoare === val ? null : { tip: sectiune, valoare: val }));
+    /* Stepper: select bilet by index */
+    const handleStepperSelect = (idx) => {
+        setStepperIdx(idx);
+        const opt = OPTIUNI_BILETE[idx];
+        setSelectat({ tip: 'bilete', valoare: opt.nr });
+        setCumparMsg(null);
+    };
+
+    const handleStepperPrev = () => {
+        const newIdx = Math.max(0, stepperIdx - 1);
+        handleStepperSelect(newIdx);
+    };
+
+    const handleStepperNext = () => {
+        const newIdx = Math.min(OPTIUNI_BILETE.length - 1, stepperIdx + 1);
+        handleStepperSelect(newIdx);
+    };
+
+    /* Metro line: select abonament */
+    const handleSelectAbon = (tip) => {
+        setSelectat(prev => (prev?.valoare === tip ? null : { tip: 'abonamente', valoare: tip }));
         setCumparMsg(null);
     };
 
@@ -72,14 +95,17 @@ export default function PageCumparare({ user, token, onNavigate }) {
         } finally { setCumparLoad(false); }
     };
 
+    /* ── Current stepper option ── */
+    const currentOpt = OPTIUNI_BILETE[stepperIdx];
+
     if (succes) {
         return (
             <div className="dash-section cumparare-page">
                 <div className="cumparare-succes">
-                    <div className="cumparare-succes-icon">🎉</div>
+                    <div className="cumparare-succes-icon"><Sparkles size={48} /></div>
                     <h2 className="cumparare-succes-title">Cumpărătură realizată!</h2>
                     <p className="cumparare-succes-desc">{succes.mesaj}</p>
-                    <button className="cumparare-succes-btn" onClick={() => onNavigate('overview')}>🏠 Mergi la Home pentru QR</button>
+                    <button className="cumparare-succes-btn" onClick={() => onNavigate('overview')}><Home size={15} style={{ display: 'inline', verticalAlign: 'middle' }} /> Mergi la Home pentru QR</button>
                 </div>
             </div>
         );
@@ -99,13 +125,13 @@ export default function PageCumparare({ user, token, onNavigate }) {
     return (
         <div className="dash-section cumparare-page">
             <div className="cumparare-header">
-                <h2 className="cumparare-title">💳 Cumpărare titluri de călătorie</h2>
+                <h2 className="cumparare-title"><CreditCard size={20} style={{ display: 'inline', verticalAlign: 'middle' }} /> Cumpărare titluri de călătorie</h2>
                 <p className="cumparare-sub">Selectează tipul și numărul de călătorii dorite</p>
             </div>
 
             {activExist && (
                 <div className="cumparare-banner cumparare-banner--blocat">
-                    <span className="cumparare-banner-icon">{activExist.tip === 'bilet' ? '🎫' : '📅'}</span>
+                    <span className="cumparare-banner-icon">{activExist.tip === 'bilet' ? <Ticket size={18} /> : <Calendar size={18} />}</span>
                     <div className="cumparare-banner-text">
                         <span className="cumparare-banner-title">Ai deja un titlu de călătorie activ</span>
                         <span className="cumparare-banner-desc">
@@ -119,7 +145,7 @@ export default function PageCumparare({ user, token, onNavigate }) {
 
             {!activExist && eligibil?.reducere && sectiune === 'abonamente' && (
                 <div className="cumparare-banner cumparare-banner--reducere">
-                    <span className="cumparare-banner-icon">🎓</span>
+                    <span className="cumparare-banner-icon"><GraduationCap size={18} /></span>
                     <div className="cumparare-banner-text">
                         <span className="cumparare-banner-title">Reducere {LABEL_REDUCERE[eligibil.tip]} aplicată automat!</span>
                         <span className="cumparare-banner-desc">Documentele tale au fost verificate. Beneficiezi de reducere doar la abonamente de până la 1 lună inclusiv.</span>
@@ -128,48 +154,106 @@ export default function PageCumparare({ user, token, onNavigate }) {
             )}
 
             <div className="cumparare-toggle">
-                <button id="toggle-bilete" className={`cumparare-toggle-btn ${sectiune === 'bilete' ? 'active' : ''}`} onClick={() => handleSectiune('bilete')}>🎫 Bilete</button>
-                <button id="toggle-abonamente" className={`cumparare-toggle-btn ${sectiune === 'abonamente' ? 'active' : ''}`} onClick={() => handleSectiune('abonamente')}>📅 Abonamente</button>
+                <button id="toggle-bilete" className={`cumparare-toggle-btn ${sectiune === 'bilete' ? 'active' : ''}`} onClick={() => handleSectiune('bilete')}><Ticket size={15} /> Bilete</button>
+                <button id="toggle-abonamente" className={`cumparare-toggle-btn ${sectiune === 'abonamente' ? 'active' : ''}`} onClick={() => handleSectiune('abonamente')}><Calendar size={15} /> Abonamente</button>
             </div>
 
+            {/* ═══════ BILETE — STEPPER ═══════ */}
             {sectiune === 'bilete' && (
-                <div className="cumparare-grid">
-                    {OPTIUNI_BILETE.map(opt => {
-                        const isSelected = selectat?.valoare === opt.nr && selectat?.tip === 'bilete';
-                        return (
-                            <div key={opt.nr} id={`bilet-card-${opt.nr}`} className={`cumparare-card ${isSelected ? 'selected' : ''} ${activExist ? 'disabled' : ''}`} onClick={() => !activExist && handleSelectCard(opt.nr)} role="button" aria-pressed={isSelected}>
-                                {isSelected && <div className="cumparare-card-badge-selected">✓</div>}
-                                <div className="cumparare-card-emoji">{opt.emoji}</div>
-                                <div className="cumparare-card-label">{opt.label}</div>
-                                <div className="cumparare-card-pret">{formatPret(opt.pret)}</div>
-                            </div>
-                        );
-                    })}
+                <div className={`stepper-container ${activExist ? 'stepper-disabled' : ''}`}>
+                    <div className="stepper-label">Număr de călătorii</div>
+
+                    <div className="stepper-control">
+                        <button
+                            className="stepper-btn stepper-btn--minus"
+                            onClick={handleStepperPrev}
+                            disabled={stepperIdx === 0 || !!activExist}
+                            aria-label="Mai puține călătorii"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+
+                        <div className="stepper-display">
+                            <span className="stepper-number" key={currentOpt.nr}>{currentOpt.nr}</span>
+                            <span className="stepper-unit">călători{currentOpt.nr !== 1 ? 'i' : 'e'}</span>
+                        </div>
+
+                        <button
+                            className="stepper-btn stepper-btn--plus"
+                            onClick={handleStepperNext}
+                            disabled={stepperIdx === OPTIUNI_BILETE.length - 1 || !!activExist}
+                            aria-label="Mai multe călătorii"
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                    </div>
+
+                    {/* Progress dots */}
+                    <div className="stepper-dots">
+                        {OPTIUNI_BILETE.map((opt, i) => (
+                            <button
+                                key={opt.nr}
+                                className={`stepper-dot ${i === stepperIdx ? 'active' : ''} ${i < stepperIdx ? 'passed' : ''}`}
+                                onClick={() => !activExist && handleStepperSelect(i)}
+                                title={opt.label}
+                            >
+                                <span className="stepper-dot-label">{opt.nr}</span>
+                            </button>
+                        ))}
+                        <div className="stepper-dots-track" />
+                        <div className="stepper-dots-fill" style={{ width: `${(stepperIdx / (OPTIUNI_BILETE.length - 1)) * 100}%` }} />
+                    </div>
+
+                    <div className="stepper-price">
+                        <span className="stepper-price-val">{formatPret(currentOpt.pret)}</span>
+                        <span className="stepper-price-unit">
+                            ({(currentOpt.pret / currentOpt.nr).toFixed(2)} lei / călătorie)
+                        </span>
+                    </div>
                 </div>
             )}
 
+            {/* ═══════ ABONAMENTE — METRO LINE SELECTOR ═══════ */}
             {sectiune === 'abonamente' && (
-                <div className="cumparare-grid">
-                    {OPTIUNI_ABONAMENTE.map(opt => {
-                        const isSelected = selectat?.valoare === opt.tip && selectat?.tip === 'abonamente';
-                        const poateReducere = eligibil?.reducere && opt.areReducere;
-                        const pretRedus = poateReducere ? calcPretRedus(opt.pret, eligibil.tip) : null;
-                        return (
-                            <div key={opt.tip} id={`abon-card-${opt.tip}`} className={`cumparare-card ${isSelected ? 'selected' : ''} ${activExist ? 'disabled' : ''}`} onClick={() => !activExist && handleSelectCard(opt.tip)} role="button" aria-pressed={isSelected}>
-                                {isSelected && <div className="cumparare-card-badge-selected">✓</div>}
-                                {eligibil?.reducere && !opt.areReducere && (<div className="cumparare-card-badge-no-red">fără reducere</div>)}
-                                <div className="cumparare-card-emoji">{opt.emoji}</div>
-                                <div className="cumparare-card-label">{opt.label}</div>
-                                {pretRedus !== null && (<div className="cumparare-card-pret-vechi">{opt.pret} lei</div>)}
-                                <div className={`cumparare-card-pret ${pretRedus !== null ? 'cumparare-card-pret-redus' : ''}`}>
-                                    {pretRedus === 0 ? 'Gratuit' : `${pretRedus !== null ? formatPret(pretRedus) : formatPret(opt.pret)}`}
-                                </div>
-                            </div>
-                        );
-                    })}
+                <div className={`metro-line-selector ${activExist ? 'metro-line-disabled' : ''}`}>
+                    <div className="metro-line-track-wrap">
+                        <div className="metro-line-track" />
+                        {OPTIUNI_ABONAMENTE.map((opt, i) => {
+                            const isSelected = selectat?.valoare === opt.tip && selectat?.tip === 'abonamente';
+                            const poateReducere = eligibil?.reducere && opt.areReducere;
+                            const pretRedus = poateReducere ? calcPretRedus(opt.pret, eligibil.tip) : null;
+                            return (
+                                <button
+                                    key={opt.tip}
+                                    id={`abon-station-${opt.tip}`}
+                                    className={`metro-station ${isSelected ? 'selected' : ''}`}
+                                    style={{ left: `${(i / (OPTIUNI_ABONAMENTE.length - 1)) * 100}%` }}
+                                    onClick={() => !activExist && handleSelectAbon(opt.tip)}
+                                >
+                                    <div className={`metro-station-dot ${isSelected ? 'active' : ''}`} />
+                                    <div className="metro-station-info">
+                                        <span className="metro-station-name">{opt.label}</span>
+                                        <span className="metro-station-price">
+                                            {pretRedus !== null ? (
+                                                <>
+                                                    <span className="metro-price-old">{opt.pret}</span>
+                                                    <span className="metro-price-new">{pretRedus === 0 ? 'Gratuit' : `${pretRedus} lei`}</span>
+                                                </>
+                                            ) : (
+                                                formatPret(opt.pret)
+                                            )}
+                                        </span>
+                                        {poateReducere && <span className="metro-station-discount">-{LABEL_REDUCERE[eligibil.tip]}</span>}
+                                        {eligibil?.reducere && !opt.areReducere && <span className="metro-station-no-disc">fără reducere</span>}
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
             )}
 
+            {/* ═══════ SUMAR COMANDĂ ═══════ */}
             {selectat && pretInfo && (
                 <div className="cumparare-sumar">
                     <div className="cumparare-sumar-title">Sumar comandă</div>
@@ -185,10 +269,11 @@ export default function PageCumparare({ user, token, onNavigate }) {
                     </div>
                     <hr className="cumparare-sumar-divider" />
                     {cumparMsg && (<div className={`cont-msg cont-msg--${cumparMsg.tip}`}>{cumparMsg.text}</div>)}
-                    <button id="btn-cumpara" className="cumparare-btn" onClick={() => setShowConfirm(true)} disabled={cumparLoad}>💳 Cumpără acum</button>
+                    <button id="btn-cumpara" className="cumparare-btn" onClick={() => setShowConfirm(true)} disabled={cumparLoad}><CreditCard size={16} style={{ display: 'inline', verticalAlign: 'middle' }} /> Cumpără acum</button>
                 </div>
             )}
 
+            {/* ═══════ MODAL CONFIRMARE ═══════ */}
             {showConfirm && pretInfo && (
                 <>
                     <div className="cumparare-modal-backdrop" onClick={() => setShowConfirm(false)} />
@@ -203,7 +288,7 @@ export default function PageCumparare({ user, token, onNavigate }) {
                         <div className="cumparare-modal-actions">
                             <button className="ang-btn-secondary" onClick={() => setShowConfirm(false)}>Anulează</button>
                             <button id="btn-confirma-cumparare" className="ang-btn-primary" onClick={handleCumparare} disabled={cumparLoad}>
-                                {cumparLoad ? 'Se procesează...' : '✅ Confirmă'}
+                                {cumparLoad ? 'Se procesează...' : <><CheckCircle size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /> Confirmă</>}
                             </button>
                         </div>
                     </div>

@@ -1,0 +1,110 @@
+/* ═══════════════════════════════════════════════
+   PAGE VALIDARE TURIST — Stiluri specifice
+   Moștenește din PageValidare.css (val-*)
+   ═══════════════════════════════════════════════ */
+
+/* ── Tourist badge ── */
+.vt-tourist-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(139, 92, 246, 0.12);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    letter-spacing: 0.02em;
+}
+
+/* ── Pass details mini-table ── */
+.vt-pass-details {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.vt-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.82rem;
+}
+
+.vt-detail-row:last-child {
+    border-bottom: none;
+}
+
+.vt-detail-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+}
+
+.vt-detail-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 60px;
+}
+
+.vt-detail-value {
+    margin-left: auto;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-align: right;
+}
+
+.vt-detail-value--accent {
+    color: #6ee7b7;
+    font-weight: 700;
+}
+
+/* ── Manual code toggle ── */
+.vt-manual-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    justify-content: center;
+}
+
+.vt-manual-toggle:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+/* ── Accent glow pt frame-ul activ ── */
+.page-validare-turist .val-camera-frame--active {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 24px rgba(139, 92, 246, 0.15);
+}
+
+.page-validare-turist .val-vf-corner {
+    border-color: #a78bfa;
+}
+
+.page-validare-turist .val-vf-scan-line {
+    background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+}

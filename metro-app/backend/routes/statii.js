@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const { TRAVEL_TIMES, TRANSFER_TIMES, PLATFORM_CHANGE_TIME, WAIT_TIME_TRANSFER } = require('../config/travelTimes');
 
 // GET /api/statii — returnează toate stațiile + magistralele (public, fără auth)
 router.get('/', async (req, res) => {
@@ -45,7 +46,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+// module.exports mutat la sfârșitul fișierului
 
 /* ═══════════════════════════════════════════
    Perechi de corespondență (transfer fizic)
@@ -213,15 +214,154 @@ router.get('/ruta', async (req, res) => {
 
         const uniqueStations = new Set(path.map(p => p.id_statie)).size;
 
+        // ── Calcul timp estimat realist ──
+        const posLookup = {};
+        for (const sm of smRes.rows) {
+            posLookup[`${sm.id_statie}_${sm.magistrala}`] = sm.pozitie;
+        }
+
+        let timp_estimat = 0;
+        for (let si = 0; si < segments.length; si++) {
+            const seg = segments[si];
+            const times = TRAVEL_TIMES[seg.magistrala] || [];
+
+            for (let i = 0; i < seg.statii.length - 1; i++) {
+                const posA = posLookup[`${seg.statii[i].id_statie}_${seg.magistrala}`];
+                const posB = posLookup[`${seg.statii[i + 1].id_statie}_${seg.magistrala}`];
+                if (posA !== undefined && posB !== undefined) {
+                    const fromIdx = Math.min(posA, posB) - 1;
+                    timp_estimat += times[fromIdx] || 2;
+                }
+            }
+
+            // Adaugă timp de transfer între segmente
+            if (si > 0) {
+                const prevSeg = segments[si - 1];
+                const prevLast = prevSeg.statii[prevSeg.statii.length - 1].id_statie;
+                const curFirst = seg.statii[0].id_statie;
+
+                if (prevLast === curFirst) {
+                    timp_estimat += PLATFORM_CHANGE_TIME + WAIT_TIME_TRANSFER;
+                } else {
+                    const key = [prevLast, curFirst].sort((a, b) => a - b).join('-');
+                    timp_estimat += (TRANSFER_TIMES[key] || 8) + WAIT_TIME_TRANSFER;
+                }
+            }
+        }
+
         res.json({
             ruta: segments,
             total_statii: uniqueStations,
             schimbari: Math.max(0, segments.length - 1),
             plecare: statii[startId].nume,
             destinatie: statii[endId].nume,
+            timp_estimat,
         });
     } catch (err) {
         console.error('Eroare /api/statii/ruta:', err.message);
         res.status(500).json({ mesaj: 'Eroare server.' });
     }
 });
+
+// ═══════════════════════════════════════════
+// GET /api/statii/sosiri — următoarele sosiri
+// Query: id_statie, magistrala, ora (HH:MM), id_statie_next (pt direcție)
+// ═══════════════════════════════════════════
+router.get('/sosiri', async (req, res) => {
+    const { id_statie, magistrala, ora, id_statie_next } = req.query;
+
+    if (!id_statie || !magistrala) {
+        return res.status(400).json({ mesaj: 'Parametrii id_statie și magistrala sunt obligatorii.' });
+    }
+
+    const now = ora || new Date().toLocaleTimeString('ro-RO', {
+        hour: '2-digit', minute: '2-digit', hour12: false,
+        timeZone: 'Europe/Bucharest'
+    });
+
+    try {
+        const tipZi = 'lucratoare';
+        let sens = null;
+
+        // Determină sensul din pozițiile stațiilor pe magistrală
+        if (id_statie_next) {
+            const posRes = await pool.query(`
+                SELECT id_statie, pozitie FROM statii_magistrale
+                WHERE magistrala = $1 AND id_statie IN ($2, $3)
+            `, [magistrala, id_statie, id_statie_next]);
+
+            const posMap = {};
+            for (const r of posRes.rows) posMap[r.id_statie] = r.pozitie;
+
+            const posCurr = posMap[parseInt(id_statie)];
+            const posNext = posMap[parseInt(id_statie_next)];
+
+            if (posCurr !== undefined && posNext !== undefined) {
+                sens = posNext > posCurr ? 'dus' : 'intors';
+            }
+        }
+
+        let result;
+
+        if (sens) {
+            result = await pool.query(`
+                SELECT DISTINCT o.ora_sosire
+                FROM orare o
+                JOIN metrouri m ON o.id_metrou = m.id_metrou
+                WHERE o.id_statie = $1
+                  AND m.magistrala = $2
+                  AND o.tip_zi = $3
+                  AND o.ora_sosire > $4::time
+                  AND o.sens = $5
+                ORDER BY o.ora_sosire
+                LIMIT 3
+            `, [id_statie, magistrala, tipZi, now, sens]);
+        } else {
+            result = await pool.query(`
+                SELECT DISTINCT o.ora_sosire
+                FROM orare o
+                JOIN metrouri m ON o.id_metrou = m.id_metrou
+                WHERE o.id_statie = $1
+                  AND m.magistrala = $2
+                  AND o.tip_zi = $3
+                  AND o.ora_sosire > $4::time
+                ORDER BY o.ora_sosire
+                LIMIT 3
+            `, [id_statie, magistrala, tipZi, now]);
+        }
+
+        // Obține numele stației
+        const statieRes = await pool.query(
+            'SELECT nume FROM statii WHERE id_statie = $1',
+            [id_statie]
+        );
+
+        const numeStatie = statieRes.rows[0]?.nume || '—';
+
+        // Calculează minutele rămase
+        const [nowH, nowM] = now.split(':').map(Number);
+        const nowMin = nowH * 60 + nowM;
+
+        const urmatoarele = result.rows.map(row => {
+            const timeStr = row.ora_sosire.substring(0, 5);
+            const [h, m] = timeStr.split(':').map(Number);
+            const arrMin = h * 60 + m;
+            return {
+                ora_sosire: timeStr,
+                in_minute: Math.max(0, arrMin - nowMin),
+            };
+        });
+
+        res.json({
+            statie: numeStatie,
+            magistrala,
+            sens,
+            urmatoarele,
+        });
+    } catch (err) {
+        console.error('Eroare /api/statii/sosiri:', err.message);
+        res.status(500).json({ mesaj: 'Eroare server.' });
+    }
+});
+
+module.exports = router;

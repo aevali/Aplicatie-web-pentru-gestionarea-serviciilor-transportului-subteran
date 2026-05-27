@@ -1,30 +1,30 @@
 /* ════════════════════════════════════════
    PAGE HARTA — PLANIFICATOR RUTĂ
-════════════════════════════════════════ */
+   ════════════════════════════════════════ */
 .harta-page {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: 1.25rem;
     max-width: 780px;
+    animation: fadeUp 0.35s var(--ease-out) both;
 }
 
 /* ─── Card căutare ─── */
 .ruta-search-card {
-    background: rgba(10, 15, 35, 0.72);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    border-radius: 20px;
-    padding: 1.5rem;
-    backdrop-filter: blur(20px);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 1.35rem;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .ruta-search-fields {
     display: flex;
     align-items: flex-end;
-    gap: 0.75rem;
+    gap: 0.7rem;
 }
 
 /* ─── Field ─── */
@@ -32,85 +32,70 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    gap: 0.35rem;
     position: relative;
 }
 
 .ruta-field label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.78rem;
+    gap: 0.45rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(165, 180, 252, 0.75);
+    color: var(--text-secondary);
     letter-spacing: 0.3px;
 }
 
 .ruta-field-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.ruta-field-dot--start {
-    background: #22c55e;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
-}
-
-.ruta-field-dot--end {
-    background: #ef4444;
-    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
-}
+.ruta-field-dot--start { background: var(--success); box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
+.ruta-field-dot--end { background: var(--danger); box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
 
 .ruta-field input {
-    padding: 0.72rem 0.9rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 12px;
-    color: rgba(255, 255, 255, 0.88);
-    font-size: 0.87rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.85rem;
     font-family: 'Inter', sans-serif;
     outline: none;
-    transition: border-color 0.18s, background 0.18s;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
-.ruta-field input::placeholder {
-    color: rgba(255, 255, 255, 0.22);
-}
-
-.ruta-field input:focus {
-    border-color: rgba(99, 102, 241, 0.55);
-    background: rgba(99, 102, 241, 0.08);
-}
+.ruta-field input::placeholder { color: var(--text-muted); }
+.ruta-field input:focus { border-color: var(--accent); background: var(--bg-input-focus); }
 
 /* ─── Swap button ─── */
 .ruta-swap-btn {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    border-radius: 12px;
-    color: #a5b4fc;
-    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background var(--transition-fast), color var(--transition-fast), transform 0.3s;
     flex-shrink: 0;
     margin-bottom: 1px;
 }
 
 .ruta-swap-btn:hover:not(:disabled) {
-    background: rgba(99, 102, 241, 0.22);
+    background: var(--accent-muted);
+    color: var(--accent-hover);
     transform: rotate(180deg);
 }
 
-.ruta-swap-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
+.ruta-swap-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ─── Dropdown ─── */
 .ruta-dropdown {
@@ -120,14 +105,13 @@
     right: 0;
     z-index: 100;
     margin-top: 4px;
-    max-height: 240px;
+    max-height: 220px;
     overflow-y: auto;
-    background: rgba(10, 14, 36, 0.98);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 14px;
-    backdrop-filter: blur(24px);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-    animation: dropIn 0.18s ease both;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: fadeUp 0.15s var(--ease-out) both;
 }
 
 .ruta-dropdown-item {
@@ -135,195 +119,279 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0.65rem 0.9rem;
+    padding: 0.6rem 0.85rem;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
     text-align: left;
-    transition: background 0.12s;
+    transition: background var(--transition-fast);
     gap: 0.5rem;
 }
 
-.ruta-dropdown-item:hover {
-    background: rgba(99, 102, 241, 0.12);
-}
+.ruta-dropdown-item:hover { background: rgba(255, 255, 255, 0.05); }
+.ruta-dropdown-item:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.ruta-dropdown-item:last-child { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
 
-.ruta-dropdown-item:first-child {
-    border-radius: 14px 14px 0 0;
-}
-
-.ruta-dropdown-item:last-child {
-    border-radius: 0 0 14px 14px;
-}
-
-.ruta-dropdown-name {
-    font-weight: 500;
-}
-
-.ruta-dropdown-mags {
-    display: flex;
-    gap: 0.25rem;
-    flex-shrink: 0;
-}
+.ruta-dropdown-name { font-weight: 500; color: var(--text-primary); }
+.ruta-dropdown-mags { display: flex; gap: 0.2rem; flex-shrink: 0; }
 
 .ruta-mag-dot {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.1rem 0.4rem;
+    padding: 0.08rem 0.35rem;
     border-radius: 50px;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 800;
     color: #000;
     letter-spacing: 0.3px;
 }
 
 .ruta-dropdown-empty {
-    padding: 1.2rem;
+    padding: 1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.84rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
 }
 
 /* ─── Actions ─── */
-.ruta-search-actions {
-    display: flex;
-    gap: 0.65rem;
-}
+.ruta-search-actions { display: flex; gap: 0.6rem; }
 
 /* ─── Rezultat ─── */
-.ruta-result {
+.ruta-result { display: flex; flex-direction: column; gap: 1rem; animation: fadeUp 0.35s var(--ease-out) both; }
+
+/* ─── HUD Banner (replaces 3 stat cards) ─── */
+.ruta-hud {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0.85rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.3s var(--ease-out) both;
+}
+
+.ruta-hud::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--metro-gradient);
+}
+
+.ruta-hud-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1.25rem;
+}
+
+.ruta-hud-icon { font-size: 1rem; line-height: 1; }
+
+.ruta-hud-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.ruta-hud-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.ruta-hud-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+
+/* ─── Metro arrival card ─── */
+.ruta-metro-arrival {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    animation: fadeUp 0.35s ease both;
+    gap: 0.65rem;
+    padding: 1rem 1.15rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.3s var(--ease-out) both;
 }
 
-/* ─── Stats ─── */
-.ruta-stats {
+.ruta-metro-arrival::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--arrival-color, var(--accent));
+    border-radius: 4px 0 0 4px;
+}
+
+.ruta-metro-arrival--loading,
+.ruta-metro-arrival--closed {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.15rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.ruta-metro-arrival--loading::before,
+.ruta-metro-arrival--closed::before {
+    background: var(--text-muted);
+    opacity: 0.3;
+}
+
+.ruta-metro-arrival--closed strong { color: var(--text-primary); }
+
+.ruta-arrival-header {
     display: flex;
-    gap: 0.8rem;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.ruta-stat {
-    flex: 1;
+.ruta-arrival-icon { color: var(--text-muted); flex-shrink: 0; }
+
+.ruta-arrival-title {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.ruta-arrival-title strong { color: var(--text-primary); font-weight: 700; }
+
+.ruta-arrival-times {
+    display: flex;
+    gap: 0.5rem;
+    padding-left: 0.1rem;
+}
+
+.ruta-arrival-time {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.2rem;
-    padding: 1rem 0.75rem;
-    background: rgba(10, 15, 35, 0.7);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    border-radius: 16px;
-    backdrop-filter: blur(20px);
+    padding: 0.55rem 0.9rem;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    min-width: 72px;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
-.ruta-stat-value {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #c7d2fe;
-    letter-spacing: -0.5px;
+.ruta-arrival-next {
+    background: var(--accent-muted);
+    border-color: rgba(37, 99, 235, 0.15);
 }
 
-.ruta-stat-label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
+.ruta-arrival-clock {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.ruta-arrival-eta {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent-hover);
+}
+
+.ruta-arrival-next .ruta-arrival-eta {
+    position: relative;
+    padding-left: 0.75rem;
+}
+
+.ruta-arrival-next .ruta-arrival-eta::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: arrivalPulse 1.5s ease infinite;
+}
+
+@keyframes arrivalPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    50% { opacity: 0.6; box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
 }
 
 /* ─── Journey (traseu vizual) ─── */
 .ruta-journey {
-    background: rgba(10, 15, 35, 0.72);
-    border: 1px solid rgba(99, 102, 241, 0.18);
-    border-radius: 20px;
-    padding: 1.25rem 1.5rem;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 1.15rem 1.35rem;
+    box-shadow: var(--shadow-sm);
 }
 
 /* ─── Segment (o magistrală) ─── */
-.ruta-segment {
-    display: flex;
-    flex-direction: column;
-}
+.ruta-segment { display: flex; flex-direction: column; }
 
 .ruta-segment-header {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.5rem 0;
-    margin-bottom: 0.2rem;
+    gap: 0.6rem;
+    padding: 0.4rem 0;
+    margin-bottom: 0.15rem;
 }
 
 .ruta-segment-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem 0.7rem;
-    border-radius: 8px;
-    font-size: 0.82rem;
+    padding: 0.22rem 0.65rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
     font-weight: 900;
     color: #000;
     letter-spacing: 0.3px;
 }
 
-.ruta-segment-info {
-    font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 500;
-}
+.ruta-segment-info { font-size: 0.76rem; color: var(--text-muted); font-weight: 500; }
 
 /* ─── Transfer indicator ─── */
 .ruta-transfer {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    margin: 0.5rem 0;
-    background: rgba(99, 102, 241, 0.07);
-    border: 1px dashed rgba(99, 102, 241, 0.25);
-    border-radius: 14px;
-    animation: fadeUp 0.25s ease both;
+    gap: 0.65rem;
+    padding: 0.7rem 0.85rem;
+    margin: 0.4rem 0;
+    background: var(--accent-muted);
+    border: 1px dashed rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-md);
 }
 
-.ruta-transfer-icon {
-    font-size: 1.3rem;
-    flex-shrink: 0;
-}
-
-.ruta-transfer-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    font-size: 0.84rem;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.ruta-transfer-text strong {
-    color: #c7d2fe;
-    font-weight: 700;
-}
-
-.ruta-transfer-sub {
-    font-size: 0.73rem;
-    color: rgba(255, 255, 255, 0.3);
-}
+.ruta-transfer-icon { font-size: 1.2rem; flex-shrink: 0; }
+.ruta-transfer-text { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.82rem; color: var(--text-secondary); }
+.ruta-transfer-text strong { color: var(--text-primary); font-weight: 700; }
+.ruta-transfer-sub { font-size: 0.7rem; color: var(--text-muted); }
 
 /* ─── Station row ─── */
-.ruta-station {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.15rem 0;
-    min-height: 32px;
-}
+.ruta-station { display: flex; align-items: center; gap: 0.7rem; padding: 0.12rem 0; min-height: 30px; }
 
 .ruta-station-track {
     position: relative;
-    width: 18px;
+    width: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -338,96 +406,43 @@
     transform: translateX(-50%);
     width: 3px;
     height: calc(100% + 4px);
-    opacity: 0.5;
+    opacity: 0.45;
     z-index: 0;
 }
 
 .ruta-station-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    border: 2.5px solid;
+    border: 2px solid;
     position: relative;
     z-index: 1;
-    transition: transform 0.15s;
+    background: var(--bg-root);
 }
 
-.ruta-station-dot.is-terminal {
-    width: 14px;
-    height: 14px;
-    border-width: 3px;
-}
+.ruta-station-dot.is-terminal { width: 12px; height: 12px; border-width: 3px; }
+.ruta-station-dot.is-node { width: 10px; height: 10px; border-width: 2.5px; }
 
-.ruta-station-dot.is-node {
-    width: 12px;
-    height: 12px;
-    border-width: 3px;
-}
-
-.ruta-station-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex: 1;
-    min-width: 0;
-}
-
-.ruta-station-name {
-    font-size: 0.84rem;
-    color: rgba(255, 255, 255, 0.65);
-    font-weight: 500;
-}
-
-.ruta-station.terminal .ruta-station-name {
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 700;
-    font-size: 0.88rem;
-}
-
-.ruta-station.node .ruta-station-name {
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 600;
-}
-
-.ruta-station-mags {
-    display: flex;
-    gap: 0.2rem;
-}
+.ruta-station-info { display: flex; align-items: center; gap: 0.45rem; flex: 1; min-width: 0; }
+.ruta-station-name { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+.ruta-station.terminal .ruta-station-name { color: var(--text-primary); font-weight: 700; font-size: 0.86rem; }
+.ruta-station.node .ruta-station-name { color: var(--text-primary); font-weight: 600; }
+.ruta-station-mags { display: flex; gap: 0.15rem; }
 
 .ruta-station-terminal-label {
     margin-left: auto;
-    font-size: 0.73rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     white-space: nowrap;
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 640px) {
-    .ruta-search-fields {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .ruta-swap-btn {
-        align-self: center;
-        transform: rotate(0deg);
-    }
-
-    .ruta-swap-btn:hover:not(:disabled) {
-        transform: rotate(0deg);
-    }
-
-    .ruta-stats {
-        flex-direction: row;
-        gap: 0.5rem;
-    }
-
-    .ruta-stat {
-        padding: 0.75rem 0.5rem;
-    }
-
-    .ruta-stat-value {
-        font-size: 1.1rem;
-    }
+    .ruta-search-fields { flex-direction: column; align-items: stretch; }
+    .ruta-swap-btn { align-self: center; transform: rotate(0deg); }
+    .ruta-swap-btn:hover:not(:disabled) { transform: rotate(0deg); }
+    .ruta-stats { gap: 0.4rem; }
+    .ruta-stat { padding: 0.65rem 0.4rem; }
+    .ruta-stat-value { font-size: 1.05rem; }
 }

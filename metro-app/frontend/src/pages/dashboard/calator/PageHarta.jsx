@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { API } from '../dashboardConstants';
+import { Map, Train, RefreshCw, Timer, ArrowUpDown, Search, Loader2, X, Flag, MapPin } from 'lucide-react';
 import './PageHarta.css';
 
 const LINE_COLORS = {
@@ -27,6 +28,9 @@ export default function PageHarta() {
     const [searching, setSearching] = useState(false);
     const [error, setError] = useState('');
 
+    const [arrivals, setArrivals] = useState(null);
+    const [arrivalsLoading, setArrivalsLoading] = useState(false);
+
     const startRef = useRef(null);
     const endRef = useRef(null);
 
@@ -46,6 +50,35 @@ export default function PageHarta() {
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
     }, []);
+
+    // Auto-refresh sosiri la fiecare 30 secunde
+    useEffect(() => {
+        if (!result?.ruta?.[0]) return;
+        const interval = setInterval(() => {
+            const seg = result.ruta[0];
+            const nextId = seg.statii.length > 1 ? seg.statii[1].id_statie : null;
+            fetchArrivals(seg.statii[0].id_statie, seg.magistrala, nextId);
+        }, 30000);
+        return () => clearInterval(interval);
+    }, [result]);
+
+    const fetchArrivals = async (stationId, magistrala, nextStationId) => {
+        setArrivalsLoading(true);
+        try {
+            const now = new Date();
+            const ora = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            let url = `${API}/api/statii/sosiri?id_statie=${stationId}&magistrala=${magistrala}&ora=${ora}`;
+            if (nextStationId) url += `&id_statie_next=${nextStationId}`;
+            const r = await fetch(url);
+            if (r.ok) {
+                const d = await r.json();
+                setArrivals(d);
+            }
+        } catch (e) {
+            console.error('Eroare sosiri:', e);
+        }
+        setArrivalsLoading(false);
+    };
 
     const filterStations = (query) => {
         if (!query.trim()) return stations;
@@ -82,12 +115,20 @@ export default function PageHarta() {
         if (!startId || !endId) { setError('Selectează ambele stații.'); return; }
         if (startId === endId) { setError('Stația de plecare și destinația trebuie să fie diferite.'); return; }
 
-        setSearching(true); setError(''); setResult(null);
+        setSearching(true); setError(''); setResult(null); setArrivals(null);
         try {
             const r = await fetch(`${API}/api/statii/ruta?start=${startId}&end=${endId}`);
             const d = await r.json();
             if (!r.ok) { setError(d.mesaj || 'Eroare la căutare.'); }
-            else { setResult(d); }
+            else {
+                setResult(d);
+                // Fetch sosiri pt stația de plecare pe prima magistrală din rută
+                if (d.ruta?.length > 0) {
+                    const seg = d.ruta[0];
+                    const nextId = seg.statii.length > 1 ? seg.statii[1].id_statie : null;
+                    fetchArrivals(seg.statii[0].id_statie, seg.magistrala, nextId);
+                }
+            }
         } catch { setError('Eroare de conexiune.'); }
         setSearching(false);
     };
@@ -96,6 +137,7 @@ export default function PageHarta() {
         setStartId(''); setEndId('');
         setStartQuery(''); setEndQuery('');
         setResult(null); setError('');
+        setArrivals(null);
     };
 
     const getMagistraleForStation = (id) => {
@@ -113,7 +155,7 @@ export default function PageHarta() {
 
     return (
         <div className="dash-section harta-page">
-            <h2 className="dash-section-title">🗺️ Planificator <span>Rută</span></h2>
+            <h2 className="dash-section-title"><Map size={20} style={{ display: 'inline', verticalAlign: 'middle' }} /> Planificator <span>Rută</span></h2>
             <p className="dash-section-sub">
                 Selectează stația de plecare și destinația pentru a afla cel mai scurt traseu.
             </p>
@@ -158,7 +200,7 @@ export default function PageHarta() {
 
                     {/* Swap button */}
                     <button className="ruta-swap-btn" onClick={handleSwap} title="Inversează" disabled={!startId && !endId}>
-                        ⇅
+                        <ArrowUpDown size={16} />
                     </button>
 
                     {/* End */}
@@ -199,10 +241,10 @@ export default function PageHarta() {
 
                 <div className="ruta-search-actions">
                     <button className="ang-btn-primary" onClick={handleSearch} disabled={searching || !startId || !endId}>
-                        {searching ? '⏳ Se calculează...' : '🔍 Caută ruta'}
+                        {searching ? <><Loader2 size={14} className="spin-icon" /> Se calculează...</> : <><Search size={14} /> Caută ruta</>}
                     </button>
                     {(startId || endId || result) && (
-                        <button className="ang-btn-secondary" onClick={handleClear}>✕ Resetează</button>
+                        <button className="ang-btn-secondary" onClick={handleClear}><X size={14} /> Resetează</button>
                     )}
                 </div>
 
@@ -212,21 +254,64 @@ export default function PageHarta() {
             {/* ── Rezultat rută ── */}
             {result && (
                 <div className="ruta-result" key={`${result.plecare}-${result.destinatie}`}>
-                    {/* Stats */}
-                    <div className="ruta-stats">
-                        <div className="ruta-stat">
-                            <span className="ruta-stat-value">{result.total_statii}</span>
-                            <span className="ruta-stat-label">stații</span>
+                    {/* HUD Banner */}
+                    <div className="ruta-hud">
+                        <div className="ruta-hud-stat">
+                            <span className="ruta-hud-icon"><Train size={16} /></span>
+                            <span className="ruta-hud-value">{result.total_statii}</span>
+                            <span className="ruta-hud-label">stații</span>
                         </div>
-                        <div className="ruta-stat">
-                            <span className="ruta-stat-value">{result.schimbari}</span>
-                            <span className="ruta-stat-label">{result.schimbari === 1 ? 'schimbare' : 'schimbări'}</span>
+                        <div className="ruta-hud-divider" />
+                        <div className="ruta-hud-stat">
+                            <span className="ruta-hud-icon"><RefreshCw size={16} /></span>
+                            <span className="ruta-hud-value">{result.schimbari}</span>
+                            <span className="ruta-hud-label">{result.schimbari === 1 ? 'schimbare' : 'schimbări'}</span>
                         </div>
-                        <div className="ruta-stat">
-                            <span className="ruta-stat-value">~{result.total_statii * 2} min</span>
-                            <span className="ruta-stat-label">estimat</span>
+                        <div className="ruta-hud-divider" />
+                        <div className="ruta-hud-stat">
+                            <span className="ruta-hud-icon"><Timer size={16} /></span>
+                            <span className="ruta-hud-value">~{result.timp_estimat || result.total_statii * 2}</span>
+                            <span className="ruta-hud-label">min estimat</span>
                         </div>
                     </div>
+
+                    {/* ── Sosiri metrouri ── */}
+                    {arrivalsLoading && !arrivals && (
+                        <div className="ruta-metro-arrival ruta-metro-arrival--loading">
+                            <Loader2 size={16} className="spin-icon" />
+                            <span>Se verifică sosirile...</span>
+                        </div>
+                    )}
+                    {arrivals && arrivals.urmatoarele?.length > 0 && (
+                        <div className="ruta-metro-arrival" style={{ '--arrival-color': LINE_COLORS[arrivals.magistrala] }}>
+                            <div className="ruta-arrival-header">
+                                <Train size={16} className="ruta-arrival-icon" />
+                                <span className="ruta-arrival-title">
+                                    Următoarele metrouri{' '}
+                                    <span className="ruta-mag-dot" style={{ background: LINE_COLORS[arrivals.magistrala] }}>
+                                        {arrivals.magistrala}
+                                    </span>
+                                    {' '}în stația <strong>{arrivals.statie}</strong>
+                                </span>
+                            </div>
+                            <div className="ruta-arrival-times">
+                                {arrivals.urmatoarele.map((a, i) => (
+                                    <div key={i} className={`ruta-arrival-time ${i === 0 ? 'ruta-arrival-next' : ''}`}>
+                                        <span className="ruta-arrival-clock">{a.ora_sosire}</span>
+                                        <span className="ruta-arrival-eta">
+                                            {a.in_minute <= 1 ? '< 1 min' : `în ${a.in_minute} min`}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    {arrivals && (!arrivals.urmatoarele || arrivals.urmatoarele.length === 0) && (
+                        <div className="ruta-metro-arrival ruta-metro-arrival--closed">
+                            <Train size={16} />
+                            <span>Programul s-a încheiat pe <strong>{arrivals.magistrala}</strong>. Primul metrou: <strong>05:00</strong></span>
+                        </div>
+                    )}
 
                     {/* Journey */}
                     <div className="ruta-journey">
@@ -237,7 +322,7 @@ export default function PageHarta() {
                                     {/* Transfer indicator */}
                                     {si > 0 && (
                                         <div className="ruta-transfer">
-                                            <div className="ruta-transfer-icon">🔄</div>
+                                            <div className="ruta-transfer-icon"><RefreshCw size={14} /></div>
                                             <div className="ruta-transfer-text">
                                                 <span>Schimbă la <strong>{segment.magistrala}</strong></span>
                                                 <span className="ruta-transfer-sub">{LINE_NAMES[segment.magistrala]}</span>
@@ -294,7 +379,7 @@ export default function PageHarta() {
                                                     </div>
                                                     {isTerminal && (
                                                         <span className="ruta-station-terminal-label">
-                                                            {si === 0 && isFirst ? '🚩 Plecare' : '📍 Destinație'}
+                                                            {si === 0 && isFirst ? <><Flag size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> Plecare</> : <><MapPin size={11} style={{ display: 'inline', verticalAlign: 'middle' }} /> Destinație</>}
                                                         </span>
                                                     )}
                                                 </div>
