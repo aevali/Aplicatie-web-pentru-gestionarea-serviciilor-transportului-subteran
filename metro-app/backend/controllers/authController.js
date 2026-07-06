@@ -11,7 +11,6 @@ const login = async (req, res) => {
     }
 
     try {
-        // Cauta mai intai in angajati
         let result = await pool.query(
             'SELECT * FROM angajati WHERE email = $1',
             [email]
@@ -48,7 +47,6 @@ const login = async (req, res) => {
             });
         }
 
-        // Cauta in calatori
         result = await pool.query(
             'SELECT * FROM calatori WHERE email = $1',
             [email]

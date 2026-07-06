@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import InfoSheet from './InfoSheet';
 import './AuthPage.css';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function AuthPage() {
     const [view, setView] = useState('login'); // 'login' | 'register'
+    const [infoPage, setInfoPage] = useState(null); // 'contact' | 'about' | 'privacy' | 'terms' | null
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -386,17 +388,19 @@ export default function AuthPage() {
                 {/* Footer */}
                 <footer className="auth-footer">
                     <div className="auth-footer-links">
-                        <a href="#contact">Contact</a>
+                        <button type="button" onClick={() => setInfoPage('contact')}>Contact</button>
                         <span className="auth-footer-dot">·</span>
-                        <a href="#about">Despre noi</a>
+                        <button type="button" onClick={() => setInfoPage('about')}>Despre noi</button>
                         <span className="auth-footer-dot">·</span>
-                        <a href="#privacy">Confidențialitate</a>
+                        <button type="button" onClick={() => setInfoPage('privacy')}>Confidențialitate</button>
                         <span className="auth-footer-dot">·</span>
-                        <a href="#terms">Termeni și Condiții</a>
+                        <button type="button" onClick={() => setInfoPage('terms')}>Termeni și Condiții</button>
                     </div>
                     <p className="auth-footer-copy">© 2026 MetroBucurești. Toate drepturile rezervate.</p>
                 </footer>
             </div>
+
+            <InfoSheet page={infoPage} onClose={() => setInfoPage(null)} />
         </div>
     );
 }

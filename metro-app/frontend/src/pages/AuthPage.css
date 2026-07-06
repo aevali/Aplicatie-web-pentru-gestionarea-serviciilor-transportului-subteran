@@ -381,14 +381,18 @@
     margin-bottom: 0.6rem;
 }
 
-.auth-footer-links a {
+.auth-footer-links button {
     font-size: 0.75rem;
+    font-family: 'Inter', sans-serif;
     color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
     transition: color var(--transition-fast);
     padding: 0.15rem 0.25rem;
 }
 
-.auth-footer-links a:hover {
+.auth-footer-links button:hover {
     color: var(--text-secondary);
 }
 

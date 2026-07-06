@@ -17,6 +17,7 @@ export const navByRole = {
         { id: 'bilete',    icon: '🎫', label: 'Biletele Mele'   },
         { id: 'transfer',  icon: '🔄', label: 'Transfer Bilete' },
         { id: 'harta',     icon: '🗺️', label: 'Harta Rețelei'  },
+        { id: 'anunturi',  icon: '📢', label: 'Anunțuri'        },
     ],
     angajat: [
         { id: 'overview', icon: '🏠', label: 'Home' },
@@ -33,6 +34,7 @@ export const navByRole = {
         { id: 'turisti',  icon: '🌍', label: 'Cereri Turiști' },
         { id: 'verificari', icon: '📋', label: 'Verificări Documente' },
         { id: 'rapoarte', icon: '📊', label: 'Rapoarte' },
+        { id: 'anunturi', icon: '📢', label: 'Anunțuri' },
         { id: 'notificari', icon: '🔔', label: 'Notificări' },
         { id: 'setari', icon: '⚙️', label: 'Setări' },
     ],

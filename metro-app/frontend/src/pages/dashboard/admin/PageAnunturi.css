@@ -1,0 +1,338 @@
+/* ════════════════════════════════════════
+   PAGE ANUNȚURI — ADMIN
+   ════════════════════════════════════════ */
+.ana-page {
+    position: relative;
+    animation: fadeUp 0.35s var(--ease-out) both;
+}
+
+/* ─── Header ─── */
+.ana-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+/* ─── Toast ─── */
+.ana-toast {
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.3s ease both;
+}
+
+.ana-toast--success { background: var(--success-muted); border: 1px solid rgba(16, 185, 129, 0.25); color: #6ee7b7; }
+.ana-toast--error   { background: var(--danger-muted);  border: 1px solid rgba(239, 68, 68, 0.25);  color: #fca5a5; }
+
+/* ─── Empty ─── */
+.ana-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 3.5rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+}
+
+.ana-empty-icon { opacity: 0.35; color: var(--text-muted); }
+.ana-empty-title { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin: 0; }
+.ana-empty-sub { font-size: 0.78rem; color: var(--text-muted); margin: 0; }
+
+/* ─── Cards grid ─── */
+.ana-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ana-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid #2563eb;
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.35s var(--ease-out) both;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ana-card:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ─── Card top row ─── */
+.ana-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.65rem;
+}
+
+.ana-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+}
+
+.ana-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.ana-card:hover .ana-card-actions {
+    opacity: 1;
+}
+
+.ana-btn-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.ana-btn-icon:hover {
+    background: var(--accent-muted);
+    color: var(--accent);
+    border-color: rgba(37, 99, 235, 0.25);
+}
+
+.ana-btn-icon--danger:hover {
+    background: var(--danger-muted);
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* ─── Card body ─── */
+.ana-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 650;
+    color: var(--text-primary);
+    margin: 0 0 0.4rem;
+    line-height: 1.35;
+}
+
+.ana-card-content {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0 0 0.75rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.ana-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.ana-card-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.2px;
+}
+
+.ana-card-author {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--border);
+}
+
+/* ─── Modal ─── */
+.ana-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+}
+
+.ana-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 301;
+    width: min(520px, 92vw);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    animation: fadeUp 0.25s var(--ease-out) both;
+    overflow: hidden;
+}
+
+.ana-modal--sm { width: min(400px, 92vw); }
+
+.ana-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 1.35rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.ana-modal-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ana-modal-close {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.ana-modal-close:hover { background: var(--danger-muted); color: #fca5a5; border-color: rgba(239, 68, 68, 0.2); }
+
+/* ─── Form ─── */
+.ana-form { padding: 1rem 1.35rem 1.35rem; display: flex; flex-direction: column; gap: 0.85rem; }
+.ana-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.ana-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ana-char-count {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0;
+}
+
+.ana-field input,
+.ana-field textarea {
+    padding: 0.62rem 0.85rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.ana-field textarea {
+    resize: vertical;
+    min-height: 100px;
+    max-height: 240px;
+    line-height: 1.55;
+}
+
+.ana-field input::placeholder,
+.ana-field textarea::placeholder { color: var(--text-muted); }
+
+.ana-field input:focus,
+.ana-field textarea:focus { border-color: var(--accent); background: var(--bg-input-focus); }
+
+/* ─── Level selector ─── */
+.ana-level-selector {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ana-level-opt {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.ana-level-opt:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.ana-level-opt--active {
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Form error ─── */
+.ana-form-error {
+    font-size: 0.8rem;
+    color: #fca5a5;
+    background: var(--danger-muted);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+}
+
+.ana-form-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.15rem; }
+
+/* ─── Confirmare ștergere ─── */
+.ana-confirm-text {
+    padding: 1rem 1.35rem 0.45rem;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.ana-confirm-text strong { color: var(--text-primary); }
+
+/* ─── Responsive ─── */
+@media (max-width: 700px) {
+    .ana-card { padding: 0.9rem 1rem; }
+    .ana-card-actions { opacity: 1; }
+    .ana-level-selector { flex-direction: column; }
+    .ana-modal { width: min(520px, 96vw); }
+    .ana-modal--sm { width: min(400px, 96vw); }
+}

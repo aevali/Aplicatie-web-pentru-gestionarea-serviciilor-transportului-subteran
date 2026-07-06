@@ -20,11 +20,15 @@ router.use((req, res, next) => {
 ───────────────────────────────────────────────────────────────────────────── */
 router.get('/', async (req, res) => {
     try {
+        const esteAdmin = req.user.rol === 'admin';
+        const conditieExtra = esteAdmin ? '' : `WHERE n.tip IN ('ticket_nou', 'mesaj_ticket', 'ticket_acceptat', 'ticket_rezolvat')`;
+
         const r = await pool.query(
             `SELECT n.id_notificare, n.mesaj, n.tip, n.citita, n.created_at,
                     c.prenume, c.nume
              FROM notificari n
              LEFT JOIN calatori c ON c.id_calator = n.id_calator
+             ${conditieExtra}
              ORDER BY n.created_at DESC
              LIMIT 100`
         );
@@ -41,8 +45,13 @@ router.get('/', async (req, res) => {
 ───────────────────────────────────────────────────────────────────────────── */
 router.get('/numar-necitite', async (req, res) => {
     try {
+        const esteAdmin = req.user.rol === 'admin';
+        const whereClause = esteAdmin 
+            ? 'WHERE citita = FALSE' 
+            : `WHERE citita = FALSE AND tip IN ('ticket_nou', 'mesaj_ticket', 'ticket_acceptat', 'ticket_rezolvat')`;
+
         const r = await pool.query(
-            `SELECT COUNT(*) AS numar FROM notificari WHERE citita = FALSE`
+            `SELECT COUNT(*) AS numar FROM notificari ${whereClause}`
         );
         res.json({ numar: parseInt(r.rows[0].numar, 10) });
     } catch (err) {
@@ -58,8 +67,13 @@ router.get('/numar-necitite', async (req, res) => {
 router.put('/:id/citita', async (req, res) => {
     const { id } = req.params;
     try {
+        const esteAdmin = req.user.rol === 'admin';
+        const andConditie = esteAdmin 
+            ? '' 
+            : `AND tip IN ('ticket_nou', 'mesaj_ticket', 'ticket_acceptat', 'ticket_rezolvat')`;
+
         await pool.query(
-            `UPDATE notificari SET citita = TRUE WHERE id_notificare = $1`,
+            `UPDATE notificari SET citita = TRUE WHERE id_notificare = $1 ${andConditie}`,
             [id]
         );
         res.json({ mesaj: 'Notificare marcată ca citită.' });
@@ -75,7 +89,12 @@ router.put('/:id/citita', async (req, res) => {
 ───────────────────────────────────────────────────────────────────────────── */
 router.put('/marcheaza-toate/citite', async (req, res) => {
     try {
-        await pool.query(`UPDATE notificari SET citita = TRUE WHERE citita = FALSE`);
+        const esteAdmin = req.user.rol === 'admin';
+        const whereClause = esteAdmin 
+            ? 'WHERE citita = FALSE' 
+            : `WHERE citita = FALSE AND tip IN ('ticket_nou', 'mesaj_ticket', 'ticket_acceptat', 'ticket_rezolvat')`;
+
+        await pool.query(`UPDATE notificari SET citita = TRUE ${whereClause}`);
         res.json({ mesaj: 'Toate notificările au fost marcate ca citite.' });
     } catch (err) {
         console.error('PUT /notificari/marcheaza-toate:', err.message);

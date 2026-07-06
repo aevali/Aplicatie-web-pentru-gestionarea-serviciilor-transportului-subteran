@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 // Stocheaza payload-ul in req.user (universal) si req.angajat (compatibilitate)
 const verificaToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>"
+    const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) {
         return res.status(401).json({ mesaj: 'Token lipsa. Autentificare necesara.' });
@@ -12,8 +12,8 @@ const verificaToken = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user    = decoded; // universal: { id, email, tip_cont, ... }
-        req.angajat = decoded; // compatibilitate cu rutele existente
+        req.user    = decoded; 
+        req.angajat = decoded; 
         next();
     } catch (err) {
         return res.status(403).json({ mesaj: 'Token invalid sau expirat.' });

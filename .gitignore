@@ -28,3 +28,6 @@ Thumbs.db
 
 # Coverage
 coverage/
+
+# Visual Paradigm backups
+*.bak_*

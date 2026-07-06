@@ -13,6 +13,9 @@ const statiiRouter     = require('./routes/statii');
 const suportRouter     = require('./routes/suport');
 const validareRouter   = require('./routes/validare');
 const touristRouter    = require('./routes/tourist');
+const rapoarteRouter   = require('./routes/rapoarte');
+const anunturiRouter   = require('./routes/anunturi');
+const setariRouter     = require('./routes/setari');
 
 const app = express();
 
@@ -46,6 +49,9 @@ app.use('/api/statii',     statiiRouter);
 app.use('/api/suport',     suportRouter);
 app.use('/api/validare',   validareRouter);
 app.use('/api/turisti',    touristRouter);
+app.use('/api/rapoarte',   rapoarteRouter);
+app.use('/api/anunturi',   anunturiRouter);
+app.use('/api/setari',     setariRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {

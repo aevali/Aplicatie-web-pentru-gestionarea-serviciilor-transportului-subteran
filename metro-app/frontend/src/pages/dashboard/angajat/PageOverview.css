@@ -1,0 +1,289 @@
+/* ══════════════════════════════════════════════
+   PAGE OVERVIEW — Home Angajat & Admin
+   Prefix: ovw-
+   ══════════════════════════════════════════════ */
+
+.ovw-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    animation: fadeUp 0.35s var(--ease-out) both;
+}
+
+.ovw-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ── KPI grid ── */
+.ovw-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.875rem;
+}
+
+.ovw-stats-grid--secondary {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.ovw-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.ovw-stat-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.ovw-stat-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: var(--radius-md);
+    background: var(--accent-muted);
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ovw-stat-card--warning .ovw-stat-icon {
+    background: var(--warning-muted);
+    color: #fbbf24;
+}
+
+.ovw-stat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.ovw-stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.ovw-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.ovw-stat-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* ── Sections ── */
+.ovw-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.ovw-section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ovw-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* ── Quick action cards ── */
+.ovw-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.ovw-actions-grid--stack {
+    grid-template-columns: 1fr;
+}
+
+.ovw-action-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.ovw-action-card:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-card-hover);
+    transform: translateY(-1px);
+}
+
+.ovw-action-icon {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.ovw-action-card:hover .ovw-action-icon {
+    color: var(--accent-hover);
+    background: var(--accent-muted);
+}
+
+.ovw-action-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.ovw-action-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.ovw-action-desc {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ovw-action-arrow {
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.ovw-action-card:hover .ovw-action-arrow {
+    color: var(--accent-hover);
+    transform: translateX(2px);
+}
+
+/* ── Employee rating list ── */
+.ovw-employee-list {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.ovw-employee-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.ovw-employee-row:last-child {
+    border-bottom: none;
+}
+
+.ovw-employee-avatar {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ovw-employee-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.ovw-employee-name {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ovw-employee-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.ovw-employee-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #fbbf24;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    flex-shrink: 0;
+}
+
+.ovw-empty-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+    .ovw-stats-grid,
+    .ovw-stats-grid--secondary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ovw-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .ovw-stats-grid,
+    .ovw-stats-grid--secondary,
+    .ovw-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}

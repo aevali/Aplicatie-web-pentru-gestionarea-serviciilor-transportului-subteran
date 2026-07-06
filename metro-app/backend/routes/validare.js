@@ -72,8 +72,8 @@ router.post('/scaneaza', async (req, res) => {
                     numar_calatorii:  bilet.numar_calatorii,
                 },
                 mesaj: ramase === 0
-                    ? `✅ Bilet validat! Ultima călătorie utilizată.`
-                    : `✅ Bilet validat! Au rămas ${ramase} din ${bilet.numar_calatorii} călătorii.`,
+                    ? ` Bilet validat! Ultima călătorie utilizată.`
+                    : ` Bilet validat! Au rămas ${ramase} din ${bilet.numar_calatorii} călătorii.`,
             });
         }
 
@@ -115,7 +115,7 @@ router.post('/scaneaza', async (req, res) => {
                         nume:        abon.nume,
                         tip_calator: abon.tip_calator,
                     },
-                    mesaj: `⏳ Abonament folosit recent. Mai așteaptă ${minuteRamase}m ${secundeRamase}s.`,
+                    mesaj: ` Abonament folosit recent. Mai așteaptă ${minuteRamase}m ${secundeRamase}s.`,
                 });
             }
 

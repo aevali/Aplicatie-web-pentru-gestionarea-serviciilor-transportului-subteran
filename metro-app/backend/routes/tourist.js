@@ -24,7 +24,7 @@ const ZILE_VALIDE = Object.keys(PRETURI_TOURIST).map(Number);
 ───────────────────────────────────────────────────────────────────────────── */
 function genereazaCodRidicare() {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // fără I, O, 0, 1 (confuzie)
-    let cod = 'TR-';
+    let cod = 'RO-';
     for (let i = 0; i < 6; i++) {
         cod += chars.charAt(Math.floor(Math.random() * chars.length));
     }

@@ -689,14 +689,14 @@ router.post('/transfera', async (req, res) => {
         await client.query(
             `INSERT INTO notificari (mesaj, tip, id_calator)
              VALUES ($1, 'transfer_bilet', $2)`,
-            [`${expeditor.prenume} ${expeditor.nume} ți-a transferat ${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} de metrou!`,
+            [`${expeditor.prenume} ${expeditor.nume} a transferat ${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} de metrou către ${dest.prenume} ${dest.nume}.`,
              dest.id_calator]
         );
 
         await client.query('COMMIT');
 
         res.status(201).json({
-            mesaj: `${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} transferate cu succes către ${dest.prenume} ${dest.nume}!`,
+            mesaj: `${nrTransfer} călători${nrTransfer !== 1 ? 'i' : 'e'} transferate cu succes către ${dest.prenume} ${dest.nume}.`,
             bilet_sursa: {
                 id_bilet: bilet.id_bilet,
                 numar_calatorii_ramase: ramase,

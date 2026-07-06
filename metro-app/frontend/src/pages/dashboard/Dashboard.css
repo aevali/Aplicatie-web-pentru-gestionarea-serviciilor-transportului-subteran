@@ -494,6 +494,47 @@
     color: var(--text-muted);
 }
 
+/* ── Anunțuri badge (topbar) ── */
+.topbar-anunturi-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    background: var(--accent-warm-muted);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 50px;
+    color: #fcd34d;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    animation: anuntBadgePulse 2.5s ease infinite;
+}
+
+.topbar-anunturi-badge:hover {
+    transform: translateY(-1px);
+    background: rgba(245, 158, 11, 0.18);
+    box-shadow: 0 2px 12px rgba(245, 158, 11, 0.2);
+}
+
+.topbar-anunturi-count {
+    background: var(--accent-warm);
+    color: #0c0e16;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.05rem 0.38rem;
+    border-radius: 50px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+@keyframes anuntBadgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.15); }
+    50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+}
+
 /* ── Profile button ── */
 .topbar-profile-wrap {
     position: relative;

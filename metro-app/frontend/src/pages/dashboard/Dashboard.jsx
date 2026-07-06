@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { API, navByRole, labelsByRole, getRolEfectiv } from './dashboardConstants';
-import { Home, CreditCard, Ticket, Map, User, MessageCircle, ClipboardCheck, ScanLine, Headphones, FileBarChart, Users, BarChart3, Bell, Settings, Clock, AlertTriangle, Plane, Globe, ArrowLeftRight, X } from 'lucide-react';
+import { Home, CreditCard, Ticket, Map, User, MessageCircle, ClipboardCheck, ScanLine, Headphones, FileBarChart, Users, BarChart3, Bell, Settings, Clock, AlertTriangle, Plane, Globe, ArrowLeftRight, X, Megaphone } from 'lucide-react';
 import { ChevronIcon, ChevronDownIcon } from './components/ChevronIcons';
 import ProfileDropdown from './components/ProfileDropdown';
 import PagePlaceholder from './components/PagePlaceholder';
@@ -21,6 +21,10 @@ import PageValidare from './angajat/PageValidare';
 import PageValidareTurist from './angajat/PageValidareTurist';
 import PageAngajati from './admin/PageAngajati';
 import PageTuristi from './admin/PageTuristi';
+import PageRapoarte from './admin/PageRapoarte';
+import PageAnunturi from './admin/PageAnunturi';
+import PageAnunturiCalator from './calator/PageAnunturiCalator';
+import PageSetari from './admin/PageSetari';
 import './Dashboard.css';
 
 /* ─── Dashboard principal ─── */
@@ -45,6 +49,9 @@ export default function Dashboard() {
     const [transferNotif, setTransferNotif] = useState([]);
     const [bellOpen, setBellOpen] = useState(false);
     const bellRef = useRef(null);
+
+    // Anunțuri necitite (călător)
+    const [anunturiNecitite, setAnunturiNecitite] = useState(0);
 
     const rolEfectiv = getRolEfectiv(user, tipCont);
     const navItems   = navByRole[rolEfectiv] ?? navByRole.calator;
@@ -106,9 +113,26 @@ export default function Dashboard() {
         return () => document.removeEventListener('mousedown', handler);
     }, []);
 
+    // Fetch + poll anunțuri necitite (doar călători)
+    useEffect(() => {
+        if (tipCont !== 'calator' || !token) return;
+        const fetchAnunturiNecitite = () => {
+            fetch(`${API}/api/anunturi/necitite`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(r => r.json())
+                .then(d => setAnunturiNecitite(d.numar ?? 0))
+                .catch(() => {});
+        };
+        fetchAnunturiNecitite();
+        const iv = setInterval(fetchAnunturiNecitite, 60000);
+        return () => clearInterval(iv);
+    }, [tipCont, token]);
+
     const handleLogout = () => { logout(); navigate('/auth', { replace: true }); };
     const handleNav    = (id) => {
         if (id === 'suport') setSuportNoi(0);
+        if (id === 'anunturi' && tipCont === 'calator') setAnunturiNecitite(0);
         setActivePage(id);
         setSidebarOpen(false);
         setBellOpen(false);
@@ -158,7 +182,7 @@ export default function Dashboard() {
     // Badge documente calator
     const navIconMap = {
         overview: Home, cumparare: CreditCard, bilete: Ticket, transfer: ArrowLeftRight,
-        harta: Map, cont: User, suport: MessageCircle,
+        harta: Map, cont: User, suport: MessageCircle, anunturi: Megaphone,
         verificari: ClipboardCheck, validare: ScanLine, validare_turist: Globe, suport_clienti: Headphones,
         raport: FileBarChart, angajati: Users, turisti: Plane, rapoarte: BarChart3,
         notificari: Bell, setari: Settings
@@ -178,7 +202,7 @@ export default function Dashboard() {
             case 'overview':
                 if (rolEfectiv === 'calator')
                     return <PageHome user={user} token={token} onNavigate={handleNav} docStatus={docStatus} />;
-                return <PageOverview user={user} rol={rolEfectiv} />;
+                return <PageOverview user={user} rol={rolEfectiv} token={token} onNavigate={handleNav} />;
 
             // Calator
             case 'cumparare': return <PageCumparare user={user} token={token} onNavigate={handleNav} />;
@@ -198,11 +222,16 @@ export default function Dashboard() {
             // Admin
             case 'angajati':   return <PageAngajati />;
             case 'turisti':    return <PageTuristi />;
-            case 'rapoarte':   return <PagePlaceholder icon="📊" title="Rapoarte"            desc="Statistici și analize detaliate ale utilizării sistemului." />;
+            case 'rapoarte':   return <PageRapoarte />;
+
+            // Anunțuri
+            case 'anunturi':
+                if (rolEfectiv === 'admin') return <PageAnunturi token={token} />;
+                return <PageAnunturiCalator token={token} />;
 
             // Comun
             case 'notificari': return <PageNotificari token={token} />;
-            case 'setari':     return <PagePlaceholder icon="⚙️" title="Setări"             desc="Configurații generale ale sistemului MetroBucurești." />;
+            case 'setari':     return <PageSetari token={token} />;
 
             default: return <PageHome user={user} onNavigate={handleNav} />;
         }
@@ -348,6 +377,18 @@ export default function Dashboard() {
                                 </div>
                             )}
                         </div>
+                    )}
+
+                    {/* Anunțuri necitite badge (calator) */}
+                    {tipCont === 'calator' && anunturiNecitite > 0 && (
+                        <button
+                            className="topbar-anunturi-badge"
+                            onClick={() => handleNav('anunturi')}
+                            aria-label="Anunțuri necitite"
+                        >
+                            <Megaphone size={14} />
+                            <span className="topbar-anunturi-count">{anunturiNecitite}</span>
+                        </button>
                     )}
 
                     {/* Profil dreapta */}
