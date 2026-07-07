@@ -5,8 +5,7 @@ import { API, formatData } from '../dashboardConstants';
 import './PageTuristi.css';
 
 export default function PageTuristi() {
-    const { user } = useAuth();
-    const token = localStorage.getItem('token');
+    const { user, token } = useAuth();
 
     const [passes,  setPasses]  = useState([]);
     const [loading, setLoading] = useState(true);

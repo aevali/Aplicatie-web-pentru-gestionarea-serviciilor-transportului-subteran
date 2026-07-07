@@ -28,9 +28,8 @@ import './Dashboard.css';
 
 /* ─── Dashboard principal ─── */
 export default function Dashboard() {
-    const { user, tipCont, logout } = useAuth();
+    const { user, tipCont, token, logout } = useAuth();
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
 
     const [activePage,    setActivePage]    = useState('overview');
     const [sidebarOpen,   setSidebarOpen]   = useState(false);

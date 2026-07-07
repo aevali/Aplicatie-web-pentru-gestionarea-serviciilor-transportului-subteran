@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../../../context/AuthContext';
 import { API } from '../dashboardConstants';
 import {
     BarChart3, Users, TrendingUp, Ticket, FileText, Headphones, Globe,
@@ -97,9 +98,9 @@ function renderPieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, n
    Componenta principala
    ══════════════════════════════════════════════ */
 export default function PageRapoarte() {
+    const { token } = useAuth();
     const [raport,   setRaport]   = useState('utilizatori');
     const [perioada, setPerioada] = useState(12);
-    const token = localStorage.getItem('token');
 
     const [sumar,    setSumar]    = useState(null);
     const [loadingS, setLoadingS] = useState(true);

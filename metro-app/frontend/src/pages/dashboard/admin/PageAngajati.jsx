@@ -5,8 +5,7 @@ import { API, normalizeazaEmail } from '../dashboardConstants';
 import './PageAngajati.css';
 
 export default function PageAngajati() {
-    const { user } = useAuth();
-    const token = localStorage.getItem('token');
+    const { user, token } = useAuth();
 
     const [angajati,    setAngajati]    = useState([]);
     const [loading,     setLoading]     = useState(true);
