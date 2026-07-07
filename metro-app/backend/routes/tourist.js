@@ -381,7 +381,7 @@ router.post('/valideaza', verificaToken, verificaAngajat, async (req, res) => {
 
         res.json({
             ok: true,
-            mesaj: `✅ Card turist activat cu succes! Valid ${pass.zile} ${pass.zile === 1 ? 'zi' : 'zile'}, până la ${expirare.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}.`,
+            mesaj: `Card turist activat cu succes! Valid ${pass.zile} ${pass.zile === 1 ? 'zi' : 'zile'}, până la ${expirare.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' })}.`,
             pass: {
                 email: pass.email,
                 tara: pass.tara,

@@ -7,19 +7,19 @@ import './TouristPage.css';
 const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const PLANS = [
-    { zile: 1, pret: 6,  desc: 'Perfect for a quick visit', badge: null, icon: '⚡' },
-    { zile: 2, pret: 12, desc: 'Ideal for a weekend', badge: null, icon: '🌙' },
-    { zile: 3, pret: 16, desc: 'Most popular', badge: '★ Popular', icon: '🔥' },
-    { zile: 4, pret: 20, desc: 'Extended discovery', badge: null, icon: '🧭' },
-    { zile: 5, pret: 24, desc: 'Full week explorer', badge: null, icon: '🗺️' },
-    { zile: 7, pret: 40, desc: 'Best value', badge: '💎 Best value', icon: '👑' },
+    { zile: 1, pret: 6,  desc: 'Perfect for a quick visit', badge: null },
+    { zile: 2, pret: 12, desc: 'Ideal for a weekend', badge: null },
+    { zile: 3, pret: 16, desc: 'Most popular', badge: 'Popular' },
+    { zile: 4, pret: 20, desc: 'Extended discovery', badge: null },
+    { zile: 5, pret: 24, desc: 'Full week explorer', badge: null },
+    { zile: 7, pret: 40, desc: 'Best value', badge: 'Best value' },
 ];
 
 const STEPS = [
-    { label: 'Account', icon: '👤' },
-    { label: 'Plan',    icon: '🎫' },
-    { label: 'Station', icon: '🚇' },
-    { label: 'Done!',   icon: '✅' },
+    { label: 'Account' },
+    { label: 'Plan' },
+    { label: 'Station' },
+    { label: 'Done!' },
 ];
 
 export default function TouristPage() {
@@ -216,7 +216,7 @@ export default function TouristPage() {
                                         <polyline points="20 6 9 17 4 12" />
                                     </svg>
                                 ) : (
-                                    <span>{s.icon}</span>
+                                    <span>{i + 1}</span>
                                 )}
                             </div>
                             <span className="stepper-label">{s.label}</span>
@@ -229,7 +229,6 @@ export default function TouristPage() {
                 <div className="tourist-card">
                     {/* Header */}
                     <div className="tourist-header">
-                        <div className="tourist-globe">🌍</div>
                         <h1 className="tourist-title">
                             {step === 0 && 'Welcome, Tourist!'}
                             {step === 1 && 'Choose Your Pass'}
@@ -340,7 +339,6 @@ export default function TouristPage() {
                                     type="button"
                                 >
                                     {plan.badge && <div className="plan-badge">{plan.badge}</div>}
-                                    <div className="plan-icon">{plan.icon}</div>
                                     <div className="plan-days">
                                         {plan.zile} <span>{plan.zile === 1 ? 'day' : 'days'}</span>
                                     </div>
@@ -388,7 +386,7 @@ export default function TouristPage() {
                                                 type="button"
                                             >
                                                 <span className="station-name">{s.nume}</span>
-                                                {s.este_nod && <span className="station-nod">🔄</span>}
+                                                {s.este_nod && <span className="station-nod">Interchange</span>}
                                                 {String(selectedStatie) === String(s.id_statie) && (
                                                     <svg className="station-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                                                         <polyline points="20 6 9 17 4 12" />
@@ -405,7 +403,7 @@ export default function TouristPage() {
 
                             {selectedStatie && (
                                 <div className="station-selected-banner">
-                                    🚇 Pickup: <strong>{statii.find(s => s.id_statie === selectedStatie)?.nume || selectedStatie}</strong>
+                                    Pickup: <strong>{statii.find(s => s.id_statie === selectedStatie)?.nume || selectedStatie}</strong>
                                 </div>
                             )}
                         </div>
@@ -469,7 +467,7 @@ export default function TouristPage() {
                                             </span>
                                             <span className="pickup-text">
                                                 {isRidicat
-                                                    ? (autoRidicat && !cardRidicat ? 'Auto-collected (7 days expired)' : 'Card collected ✓')
+                                                    ? (autoRidicat && !cardRidicat ? 'Auto-collected (7 days expired)' : 'Card collected')
                                                     : 'Mark as card collected'
                                                 }
                                             </span>
