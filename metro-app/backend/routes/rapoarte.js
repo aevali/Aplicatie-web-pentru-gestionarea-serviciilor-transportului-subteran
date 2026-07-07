@@ -59,18 +59,20 @@ router.get('/sumar', async (_req, res) => {
 
 // ══════════════════════════════════════════════
 // GET /api/rapoarte/utilizatori?luni=12
-// Inregistrari noi pe luna + distributie pe tip
+// Calatori activi pe luna (au facut cel putin o calatorie) + distributie pe tip
+// Nota: calatori.created_at nu exista in schema curenta, deci nu putem calcula
+// inregistrari noi pe luna — folosim activitatea reala (calatorii_efectuate) in loc.
 // ══════════════════════════════════════════════
 router.get('/utilizatori', async (req, res) => {
     const luni = getLuni(req);
     try {
         const [peLuna, peTip, total] = await Promise.all([
             pool.query(`
-                SELECT TO_CHAR(date_trunc('month', created_at), 'YYYY-MM-DD') AS luna,
-                       COUNT(*)::INT AS numar
-                FROM calatori
-                ${dateWhere('created_at', luni)}
-                GROUP BY date_trunc('month', created_at)
+                SELECT TO_CHAR(date_trunc('month', scanat_la), 'YYYY-MM-DD') AS luna,
+                       COUNT(DISTINCT id_calator)::INT AS numar
+                FROM calatorii_efectuate
+                ${dateWhere('scanat_la', luni)}
+                GROUP BY date_trunc('month', scanat_la)
                 ORDER BY luna
             `),
             pool.query('SELECT tip, COUNT(*)::INT AS numar FROM calatori GROUP BY tip ORDER BY numar DESC'),

@@ -33,6 +33,11 @@ export default function PageBiletele({ token, onNavigate }) {
 
     useEffect(() => { fetchTitluri(); }, [fetchTitluri]);
 
+    useEffect(() => {
+        document.body.style.overflow = modal ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [modal]);
+
     const calcPretOptiune = (pretBaza) => {
         if (!eligibil || !eligibil.reducere) return { pretFinal: pretBaza, redus: false, pretBaza };
         const pretRedus = calcPretRedus(pretBaza, eligibil.tip);

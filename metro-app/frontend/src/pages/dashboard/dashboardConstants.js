@@ -25,7 +25,6 @@ export const navByRole = {
         { id: 'validare', icon: '🎫', label: 'Validare Bilete' },
         { id: 'validare_turist', icon: '🌍', label: 'Validare Card Turist' },
         { id: 'suport_clienti', icon: '🎧', label: 'Suport Clienți' },
-        { id: 'raport', icon: '📑', label: 'Raport Tură' },
         { id: 'notificari', icon: '🔔', label: 'Notificări' },
     ],
     admin: [

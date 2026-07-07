@@ -44,6 +44,12 @@ export default function PageAnunturi({ token }) {
 
     useEffect(() => { fetchAnunturi(); }, [fetchAnunturi]);
 
+    useEffect(() => {
+        const open = showModal || deleteId !== null;
+        document.body.style.overflow = open ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [showModal, deleteId]);
+
     /* ─── Helpers ─── */
     const openCreate = () => {
         setForm(FORM_INIT);

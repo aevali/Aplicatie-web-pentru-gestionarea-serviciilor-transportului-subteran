@@ -52,6 +52,12 @@ export default function PageAngajati() {
 
     useEffect(() => { fetchAngajati(); }, [fetchAngajati]);
 
+    useEffect(() => {
+        const open = showModal || deleteId !== null;
+        document.body.style.overflow = open ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [showModal, deleteId]);
+
     const handleFormChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
         setFormEroare('');

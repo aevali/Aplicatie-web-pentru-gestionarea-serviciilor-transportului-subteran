@@ -189,7 +189,6 @@ export default function InfoSheet({ page, onClose }) {
                 aria-labelledby="info-sheet-title"
             >
                 <div className="info-sheet-stripe" />
-                <div className="info-sheet-handle" />
                 <div className="info-sheet-header">
                     <div className="info-sheet-header-icon"><data.Icon size={18} /></div>
                     <h2 className="info-sheet-title" id="info-sheet-title">{data.title}</h2>

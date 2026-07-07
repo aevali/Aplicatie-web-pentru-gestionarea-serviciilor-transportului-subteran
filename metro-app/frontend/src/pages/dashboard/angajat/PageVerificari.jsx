@@ -35,6 +35,11 @@ export default function PageVerificari({ token }) {
 
     useEffect(() => { fetchCereri(); }, [fetchCereri]);
 
+    useEffect(() => {
+        document.body.style.overflow = selected ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [selected]);
+
     const handleActiune = async (actiune) => {
         if (actiune === 'respinge' && !motiv.trim()) return;
         setActLoad(true); setActMsg(null);

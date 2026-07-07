@@ -93,155 +93,45 @@ function renderPieLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, n
     );
 }
 
-/* ─── Date demo pentru grafice ─── */
-const DEMO = {
-    sumar: {
-        total_calatori: 1247, total_venituri: 187450.00, venituri_bilete: 62300.00,
-        venituri_abonamente: 98750.00, venituri_turisti: 26400.00,
-        total_calatorii: 34520, abonamente_active: 312,
-    },
-    utilizatori: {
-        pe_luna: [
-            { luna: '2025-07-01', numar: 45 }, { luna: '2025-08-01', numar: 62 },
-            { luna: '2025-09-01', numar: 98 }, { luna: '2025-10-01', numar: 87 },
-            { luna: '2025-11-01', numar: 110 }, { luna: '2025-12-01', numar: 76 },
-            { luna: '2026-01-01', numar: 124 }, { luna: '2026-02-01', numar: 135 },
-            { luna: '2026-03-01', numar: 142 }, { luna: '2026-04-01', numar: 118 },
-            { luna: '2026-05-01', numar: 156 }, { luna: '2026-06-01', numar: 94 },
-        ],
-        pe_tip: [
-            { tip: 'adult', numar: 687 }, { tip: 'student', numar: 312 },
-            { tip: 'elev', numar: 168 }, { tip: 'pensionar', numar: 80 },
-        ],
-        total: 1247,
-    },
-    venituri: {
-        pe_luna: [
-            { luna: '2025-07-01', bilete: 3200, abonamente: 5800, turisti: 1400 },
-            { luna: '2025-08-01', bilete: 4100, abonamente: 6200, turisti: 2800 },
-            { luna: '2025-09-01', bilete: 5600, abonamente: 8900, turisti: 1900 },
-            { luna: '2025-10-01', bilete: 4800, abonamente: 7600, turisti: 1600 },
-            { luna: '2025-11-01', bilete: 5200, abonamente: 9100, turisti: 1200 },
-            { luna: '2025-12-01', bilete: 4500, abonamente: 7800, turisti: 3200 },
-            { luna: '2026-01-01', bilete: 6100, abonamente: 9400, turisti: 1800 },
-            { luna: '2026-02-01', bilete: 5800, abonamente: 8700, turisti: 2100 },
-            { luna: '2026-03-01', bilete: 6400, abonamente: 9800, turisti: 2400 },
-            { luna: '2026-04-01', bilete: 5500, abonamente: 8200, turisti: 2600 },
-            { luna: '2026-05-01', bilete: 6800, abonamente: 10200, turisti: 3100 },
-            { luna: '2026-06-01', bilete: 4300, abonamente: 7050, turisti: 2300 },
-        ],
-        total_bilete: 62300, total_abonamente: 98750, total_turisti: 26400, total: 187450,
-    },
-    calatorii: {
-        pe_statie: [
-            { nume: 'Piața Unirii 1', numar: 4820 }, { nume: 'Piața Victoriei 1', numar: 3950 },
-            { nume: 'Universitate', numar: 3740 }, { nume: 'Eroilor', numar: 3210 },
-            { nume: 'Dristor 1', numar: 2890 }, { nume: 'Gara de Nord 1', numar: 2650 },
-            { nume: 'Pipera', numar: 2480 }, { nume: 'Piața Romană', numar: 2150 },
-            { nume: 'Timpuri Noi', numar: 1920 }, { nume: 'Tineretului', numar: 1780 },
-            { nume: 'Obor', numar: 1650 }, { nume: 'Aurel Vlaicu', numar: 1520 },
-            { nume: 'Basarab', numar: 1380 }, { nume: 'Lujerului', numar: 1240 },
-            { nume: 'Titan', numar: 1140 },
-        ],
-        pe_ora: [
-            { ora: 0, numar: 45 }, { ora: 1, numar: 20 }, { ora: 2, numar: 12 }, { ora: 3, numar: 8 },
-            { ora: 4, numar: 35 }, { ora: 5, numar: 320 }, { ora: 6, numar: 1450 }, { ora: 7, numar: 3820 },
-            { ora: 8, numar: 4210 }, { ora: 9, numar: 2650 }, { ora: 10, numar: 1580 }, { ora: 11, numar: 1320 },
-            { ora: 12, numar: 1680 }, { ora: 13, numar: 1850 }, { ora: 14, numar: 1720 }, { ora: 15, numar: 2100 },
-            { ora: 16, numar: 3150 }, { ora: 17, numar: 4380 }, { ora: 18, numar: 3650 }, { ora: 19, numar: 2240 },
-            { ora: 20, numar: 1420 }, { ora: 21, numar: 850 }, { ora: 22, numar: 520 }, { ora: 23, numar: 190 },
-        ],
-        pe_luna: [], total: 34520, medie_zilnica: 95.6,
-    },
-    titluri: {
-        abonamente_pe_tip: [
-            { tip: 'luna', numar: 428, venit: 42800 }, { tip: 'saptamana', numar: 312, venit: 14040 },
-            { tip: 'zi', numar: 245, venit: 2940 }, { tip: 'trei_zile', numar: 186, venit: 6510 },
-            { tip: 'sase_luni', numar: 72, venit: 36000 }, { tip: 'an', numar: 18, venit: 16200 },
-        ],
-        bilete_pe_tip: [
-            { numar_calatorii: 1, numar: 520, venit: 2600 }, { numar_calatorii: 2, numar: 380, venit: 3800 },
-            { numar_calatorii: 5, numar: 290, venit: 7250 }, { numar_calatorii: 10, numar: 210, venit: 9450 },
-            { numar_calatorii: 20, numar: 85, venit: 6800 },
-        ],
-        total_abonamente: 1261, total_bilete: 1485,
-    },
-    cereri: {
-        pe_luna: [
-            { luna: '2025-07-01', numar: 8 }, { luna: '2025-08-01', numar: 12 },
-            { luna: '2025-09-01', numar: 22 }, { luna: '2025-10-01', numar: 18 },
-            { luna: '2025-11-01', numar: 15 }, { luna: '2025-12-01', numar: 10 },
-            { luna: '2026-01-01', numar: 24 }, { luna: '2026-02-01', numar: 19 },
-            { luna: '2026-03-01', numar: 26 }, { luna: '2026-04-01', numar: 16 },
-            { luna: '2026-05-01', numar: 21 }, { luna: '2026-06-01', numar: 13 },
-        ],
-        pe_status: [
-            { status: 'aprobata', numar: 148 }, { status: 'respinsa', numar: 32 },
-            { status: 'in_asteptare', numar: 24 },
-        ],
-        total: 204, rata_aprobare: 72.5,
-    },
-    suport: {
-        pe_luna: [
-            { luna: '2025-07-01', numar: 5 }, { luna: '2025-08-01', numar: 8 },
-            { luna: '2025-09-01', numar: 12 }, { luna: '2025-10-01', numar: 9 },
-            { luna: '2025-11-01', numar: 14 }, { luna: '2025-12-01', numar: 7 },
-            { luna: '2026-01-01', numar: 11 }, { luna: '2026-02-01', numar: 16 },
-            { luna: '2026-03-01', numar: 13 }, { luna: '2026-04-01', numar: 10 },
-            { luna: '2026-05-01', numar: 15 }, { luna: '2026-06-01', numar: 6 },
-        ],
-        pe_status: [
-            { status: 'rezolvat', numar: 82 }, { status: 'inchis', numar: 28 },
-            { status: 'deschis', numar: 12 }, { status: 'in_lucru', numar: 4 },
-        ],
-        rating_mediu: 4.3, total_cu_rating: 95, rata_rezolvare: 87.3, total: 126,
-    },
-    turisti: {
-        pe_tara: [
-            { tara: 'Germania', numar: 48, venit: 1152 }, { tara: 'Franța', numar: 42, venit: 1008 },
-            { tara: 'Italia', numar: 38, venit: 912 }, { tara: 'Spania', numar: 28, venit: 672 },
-            { tara: 'Marea Britanie', numar: 26, venit: 780 }, { tara: 'Olanda', numar: 22, venit: 528 },
-            { tara: 'Austria', numar: 18, venit: 432 }, { tara: 'Polonia', numar: 16, venit: 320 },
-            { tara: 'SUA', numar: 14, venit: 560 }, { tara: 'Japonia', numar: 8, venit: 320 },
-        ],
-        pe_zile: [
-            { zile: 1, numar: 65 }, { zile: 2, numar: 48 }, { zile: 3, numar: 72 },
-            { zile: 4, numar: 35 }, { zile: 5, numar: 28 }, { zile: 7, numar: 42 },
-        ],
-        pe_luna: [],
-        total: 290, venit_total: 6684,
-    },
-};
-
-/* ── Helper: completeaza datele API cu demo daca sunt goale ── */
-function mergeDemo(apiData, demoData) {
-    if (!apiData) return demoData;
-    const merged = { ...apiData };
-    for (const key of Object.keys(demoData)) {
-        const val = merged[key];
-        if (val === undefined || val === null) {
-            merged[key] = demoData[key];
-        } else if (Array.isArray(val) && val.length === 0) {
-            merged[key] = demoData[key];
-        } else if (typeof val === 'number' && val === 0 && typeof demoData[key] === 'number' && demoData[key] > 0) {
-            merged[key] = demoData[key];
-        }
-    }
-    return merged;
-}
-
 /* ══════════════════════════════════════════════
    Componenta principala
    ══════════════════════════════════════════════ */
 export default function PageRapoarte() {
     const [raport,   setRaport]   = useState('utilizatori');
     const [perioada, setPerioada] = useState(12);
+    const token = localStorage.getItem('token');
 
-    /* ── Date demo direct — toate graficele populate ── */
-    const sumar   = DEMO.sumar;
-    const date    = DEMO[raport] || null;
-    const loading  = false;
-    const loadingS = false;
+    const [sumar,    setSumar]    = useState(null);
+    const [loadingS, setLoadingS] = useState(true);
+    const [date,     setDate]     = useState(null);
+    const [loading,  setLoading]  = useState(true);
+    const [eroare,   setEroare]   = useState('');
+
+    const fetchSumar = useCallback(async () => {
+        setLoadingS(true);
+        try {
+            const r = await fetch(`${API}/api/rapoarte/sumar`, { headers: { Authorization: `Bearer ${token}` } });
+            if (!r.ok) throw new Error('Eroare la încărcarea sumarului.');
+            setSumar(await r.json());
+        } catch (e) { /* pastreaza sumarul anterior daca exista deja */ }
+        finally { setLoadingS(false); }
+    }, [token]);
+
+    const fetchRaport = useCallback(async () => {
+        setLoading(true);
+        setEroare('');
+        try {
+            const r = await fetch(`${API}/api/rapoarte/${raport}?luni=${perioada}`, { headers: { Authorization: `Bearer ${token}` } });
+            if (!r.ok) throw new Error('Eroare la încărcarea raportului.');
+            setDate(await r.json());
+        } catch (e) {
+            setEroare(e.message);
+            setDate(null);
+        } finally { setLoading(false); }
+    }, [raport, perioada, token]);
+
+    useEffect(() => { fetchSumar(); }, [fetchSumar]);
+    useEffect(() => { fetchRaport(); }, [fetchRaport]);
 
     /* ═══════════════════════════════════════════
        Rendere grafice per tip raport
@@ -261,7 +151,7 @@ export default function PageRapoarte() {
             return (
                 <div className="rap-empty">
                     <BarChart3 size={40} className="rap-empty-icon" />
-                    <span>Nu s-au putut încărca datele raportului.</span>
+                    <span>{eroare || 'Nu s-au putut încărca datele raportului.'}</span>
                 </div>
             );
         }
@@ -292,7 +182,7 @@ export default function PageRapoarte() {
                     <div className="rap-chart-header">
                         <h3 className="rap-chart-title">
                             <TrendingUp size={16} className="rap-chart-title-icon" />
-                            Înregistrări noi pe lună
+                            Călători activi pe lună
                         </h3>
                     </div>
                     <div className="rap-chart-body">
@@ -309,7 +199,7 @@ export default function PageRapoarte() {
                                     <XAxis dataKey="name" tick={AXIS_TICK} axisLine={false} tickLine={false} />
                                     <YAxis tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} />
                                     <Tooltip content={<RapTooltip />} />
-                                    <Area type="monotone" dataKey="valoare" name="Utilizatori noi"
+                                    <Area type="monotone" dataKey="valoare" name="Călători activi"
                                           stroke="#2563eb" strokeWidth={2} fill="url(#gradUtilizatori)"
                                           dot={{ r: 3, fill: '#2563eb', strokeWidth: 0 }}
                                           activeDot={{ r: 5, fill: '#2563eb', stroke: '#fff', strokeWidth: 2 }} />

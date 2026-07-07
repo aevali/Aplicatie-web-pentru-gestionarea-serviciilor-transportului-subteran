@@ -3,7 +3,7 @@
    ════════════════════════════════════════ */
 .ang-page {
     position: relative;
-    animation: fadeUp 0.35s var(--ease-out) both;
+    animation: fadeUp 0.35s var(--ease-out) backwards;
 }
 
 /* ─── Header ─── */
@@ -193,21 +193,31 @@
     background: var(--bg-overlay);
     backdrop-filter: blur(4px);
     z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 2rem 1rem;
 }
 
 .ang-modal {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 301;
     width: min(460px, 92vw);
+    max-height: calc(100vh - 4rem);
+    overflow: hidden auto;
     background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
-    animation: fadeUp 0.25s var(--ease-out) both;
-    overflow: hidden;
+    animation: angModalIn 0.25s var(--ease-out) both;
+}
+
+@keyframes angModalIn {
+    from { opacity: 0; transform: translate(-50%, -50%) translateY(16px); }
+    to   { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
 }
 
 .ang-modal--sm { width: min(370px, 92vw); }

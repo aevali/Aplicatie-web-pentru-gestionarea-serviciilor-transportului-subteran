@@ -29,6 +29,11 @@ export default function PageCumparare({ user, token, onNavigate }) {
         }).catch(() => {}).finally(() => setLoadInit(false));
     }, [token]);
 
+    useEffect(() => {
+        document.body.style.overflow = showConfirm ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [showConfirm]);
+
     const handleSectiune = (s) => { setSectiune(s); setSelectat(null); setCumparMsg(null); };
 
     /* Stepper: select bilet by index */

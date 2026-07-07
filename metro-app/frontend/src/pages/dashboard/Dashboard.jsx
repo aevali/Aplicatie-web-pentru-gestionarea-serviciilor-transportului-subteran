@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { API, navByRole, labelsByRole, getRolEfectiv } from './dashboardConstants';
-import { Home, CreditCard, Ticket, Map, User, MessageCircle, ClipboardCheck, ScanLine, Headphones, FileBarChart, Users, BarChart3, Bell, Settings, Clock, AlertTriangle, Plane, Globe, ArrowLeftRight, X, Megaphone } from 'lucide-react';
+import { Home, CreditCard, Ticket, Map, User, MessageCircle, ClipboardCheck, ScanLine, Headphones, Users, BarChart3, Bell, Settings, Clock, AlertTriangle, Plane, Globe, ArrowLeftRight, X, Megaphone } from 'lucide-react';
 import { ChevronIcon, ChevronDownIcon } from './components/ChevronIcons';
 import ProfileDropdown from './components/ProfileDropdown';
-import PagePlaceholder from './components/PagePlaceholder';
 import PageHome from './calator/PageHome';
 import PageCumparare from './calator/PageCumparare';
 import PageBiletele from './calator/PageBiletele';
@@ -184,7 +183,7 @@ export default function Dashboard() {
         overview: Home, cumparare: CreditCard, bilete: Ticket, transfer: ArrowLeftRight,
         harta: Map, cont: User, suport: MessageCircle, anunturi: Megaphone,
         verificari: ClipboardCheck, validare: ScanLine, validare_turist: Globe, suport_clienti: Headphones,
-        raport: FileBarChart, angajati: Users, turisti: Plane, rapoarte: BarChart3,
+        angajati: Users, turisti: Plane, rapoarte: BarChart3,
         notificari: Bell, setari: Settings
     };
 
@@ -217,7 +216,6 @@ export default function Dashboard() {
             case 'validare':       return <PageValidare token={token} />;
             case 'validare_turist': return <PageValidareTurist token={token} />;
             case 'suport_clienti': return <PageSuportClienti token={token} user={user} />;
-            case 'raport':         return <PagePlaceholder icon="📑" title="Raport Tură"        desc="Raportul detaliat al activității din tura curentă." />;
 
             // Admin
             case 'angajati':   return <PageAngajati />;
