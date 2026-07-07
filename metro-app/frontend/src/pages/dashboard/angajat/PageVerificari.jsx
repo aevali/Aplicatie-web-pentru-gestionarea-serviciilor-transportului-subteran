@@ -28,8 +28,9 @@ export default function PageVerificari({ token }) {
             const url = tab === 'toate' ? `${API}/api/verificari` : `${API}/api/verificari?status=${tab}`;
             const r = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             const data = await r.json();
-            setCereri(Array.isArray(data) ? data : []);
-        } catch { setCereri([]); }
+            // Nu goli lista existentă la un răspuns eronat (ex: server rece pe hosting gratuit) — păstrează ultimele date bune
+            if (r.ok && Array.isArray(data)) setCereri(data);
+        } catch { /* păstrează lista curentă la eroare de rețea */ }
         finally { setLoading(false); }
     }, [tab, token]);
 

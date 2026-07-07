@@ -18,8 +18,9 @@ export default function PageBiletele({ token, onNavigate }) {
         try {
             const r = await fetch(`${API}/api/bilete/toate`, { headers: { Authorization: `Bearer ${token}` } });
             const data = await r.json();
-            setTitluri(data.titluri ?? []);
-        } catch { setTitluri([]); }
+            // Nu goli lista existentă la un răspuns eronat — păstrează ultimele date bune
+            if (r.ok) setTitluri(data.titluri ?? []);
+        } catch { /* păstrează lista curentă la eroare de rețea */ }
         finally { setLoading(false); }
     }, [token]);
 
@@ -31,7 +32,13 @@ export default function PageBiletele({ token, onNavigate }) {
             .catch(() => {});
     }, [token]);
 
-    useEffect(() => { fetchTitluri(); }, [fetchTitluri]);
+    useEffect(() => {
+        fetchTitluri();
+        const iv = setInterval(fetchTitluri, 15000);
+        const onVisible = () => { if (document.visibilityState === 'visible') fetchTitluri(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => { clearInterval(iv); document.removeEventListener('visibilitychange', onVisible); };
+    }, [fetchTitluri]);
 
     useEffect(() => {
         document.body.style.overflow = modal ? 'hidden' : '';

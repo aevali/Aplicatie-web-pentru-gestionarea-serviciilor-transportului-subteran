@@ -20,12 +20,20 @@ export default function PageHome({ user, token, onNavigate, docStatus }) {
 
     useEffect(() => {
         if (!token) return;
-        fetch(`${API}/api/bilete/activ`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then(r => r.json())
-            .then(data => setBiletActiv(data.activ ?? null))
-            .catch(() => setBiletActiv(null));
+        const fetchBiletActiv = () => {
+            fetch(`${API}/api/bilete/activ`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(r => r.json())
+                .then(data => setBiletActiv(data.activ ?? null))
+                .catch(() => setBiletActiv(null));
+        };
+        fetchBiletActiv();
+        const iv = setInterval(fetchBiletActiv, 15000);
+        // Re-fetch instant când utilizatorul revine pe tab (ex: după un transfer primit)
+        const onVisible = () => { if (document.visibilityState === 'visible') fetchBiletActiv(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => { clearInterval(iv); document.removeEventListener('visibilitychange', onVisible); };
     }, [token]);
 
     /* Fetch stations for picker */

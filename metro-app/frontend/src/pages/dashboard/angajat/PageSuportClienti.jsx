@@ -39,8 +39,9 @@ export default function PageSuportClienti({ token, user }) {
             const qs  = statusFilter && statusFilter !== 'toate' ? `?status=${statusFilter}` : '';
             const r   = await fetch(`${API}/api/suport/tickets${qs}`, { headers: h });
             const d   = await r.json();
-            setTickets(d.tickets ?? []);
-        } catch {}
+            // Nu goli lista existentă la un răspuns eronat (ex: server rece pe hosting gratuit) — păstrează ultimele date bune
+            if (r.ok && Array.isArray(d.tickets)) setTickets(d.tickets);
+        } catch { /* păstrează lista curentă la eroare de rețea */ }
         setLoading(false);
     }, [token]);
 
