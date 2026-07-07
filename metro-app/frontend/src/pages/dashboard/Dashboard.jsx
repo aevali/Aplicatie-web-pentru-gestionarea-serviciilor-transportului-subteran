@@ -56,19 +56,31 @@ export default function Dashboard() {
     const navItems   = navByRole[rolEfectiv] ?? navByRole.calator;
     const label      = labelsByRole[rolEfectiv] ?? rolEfectiv;
 
-    // Fetch status documente (doar pentru calatori)
+    // Fetch + poll status documente (doar pentru calatori)
     useEffect(() => {
         if (tipCont !== 'calator' || !token) return;
-        fetch(`${API}/api/cont/verificare`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then(r => r.json())
-            .then(data => {
-                const st = data.cerere ? data.cerere.status : null;
-                setDocStatus(st);
-                docStatusRef.current = st;
+        const fetchDocStatus = () => {
+            fetch(`${API}/api/cont/verificare`, {
+                headers: { Authorization: `Bearer ${token}` },
             })
-            .catch(() => {});
+                .then(r => {
+                    if (r.status === 401 || r.status === 403) { logout(); navigate('/auth', { replace: true }); return null; }
+                    return r.json();
+                })
+                .then(data => {
+                    if (!data) return;
+                    const st = data.cerere ? data.cerere.status : null;
+                    setDocStatus(st);
+                    docStatusRef.current = st;
+                })
+                .catch(() => {});
+        };
+        fetchDocStatus();
+        const iv = setInterval(fetchDocStatus, 30000);
+        // Re-fetch instant când utilizatorul revine pe tab
+        const onVisible = () => { if (document.visibilityState === 'visible') fetchDocStatus(); };
+        document.addEventListener('visibilitychange', onVisible);
+        return () => { clearInterval(iv); document.removeEventListener('visibilitychange', onVisible); };
     }, [tipCont, token]);
 
     // Fetch + poll mesaje suport noi (doar calatori)
